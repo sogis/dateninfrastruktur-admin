@@ -22,12 +22,13 @@ ENTRYPOINT ["java","-jar","/opt/admin/app.jar"]
 FROM rclone/rclone:1.75.2 AS rclone-binary
 FROM ${PG_TOOL_IMAGE} AS tooling
 USER root
-RUN apt-get update && apt-get install -y --no-install-recommends python3 libasound2 libfontconfig1 libfreetype6 libx11-6 libxext6 libxi6 libxrender1 libxtst6 && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends python3 python3-boto3 libasound2 libfontconfig1 libfreetype6 libx11-6 libxext6 libxi6 libxrender1 libxtst6 && rm -rf /var/lib/apt/lists/*
 COPY --from=jvm-build /opt/java/openjdk /opt/java/openjdk
 COPY --from=rclone-binary /usr/local/bin/rclone /usr/local/bin/rclone
 ENV JAVA_HOME=/opt/java/openjdk PATH=/opt/java/openjdk/bin:$PATH DI_DATABASE_TARGET=postgresql DI_TOOL_RUNTIME=/runtime/tools
 WORKDIR /opt/admin
 COPY --from=jvm-build /workspace/build/libs/dateninfrastruktur-admin.jar /opt/admin/app.jar
+COPY --from=stack_source services/migration /opt/stack-tools/migration
 COPY --from=stack_source services/garage/setup-compose.py /opt/stack-tools/setup_garage.py
 COPY --from=stack_source services/postgres/initialize-compose.py /opt/stack-tools/initialize_postgres.py
 COPY scripts ./scripts

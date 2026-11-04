@@ -4,7 +4,7 @@ from management_db import R,sql
 from persistence_contract import calculate
 
 def plans():
-    return [json.loads((R/name).read_text()) for name in ['db/upgrade-MA-B-to-MA-C.json','db/upgrade-MA-C-to-MA-D.json']]
+    return [json.loads((R/name).read_text()) for name in ['db/upgrade-MA-B-to-MA-C.json','db/upgrade-MA-C-to-MA-D.json','db/upgrade-MA-D-to-MA-F.json']]
 def recognized_contract(current):
     _,target=calculate()
     return current in [target,*[p['fromFingerprint'] for p in plans()]]

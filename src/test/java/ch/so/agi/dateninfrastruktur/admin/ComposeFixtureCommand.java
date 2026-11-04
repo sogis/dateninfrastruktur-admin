@@ -3,6 +3,7 @@ package ch.so.agi.dateninfrastruktur.admin;
 public final class ComposeFixtureCommand {
     public static void main(String[] args)throws Exception{
         if(!"true".equals(System.getenv("DI_COMPOSE_TEST_FIXTURE")))throw new IllegalStateException("Explicit isolated test profile required");
+        if(args.length==1 && args[0].equals("migration-sentinels")){new MigrationSentinelFixture().seed();return;}
         new ManagedDownloadFixtureIT().seedPreparedPrivateDeliveries();
         System.out.println("Explicit synthetic Compose fixture created; no ordinary startup seed");
     }
