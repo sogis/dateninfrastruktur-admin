@@ -87,6 +87,8 @@ try:
     mapping()
     first=snapshot();mapping()
     if first!=snapshot():raise RuntimeError('second cdbimport/cgen changed generated product bytes')
+    run(['python3','scripts/verify_physical_mapping.py'])
+    run(['python3','scripts/upgrade_contract.py'])
     run(['python3','scripts/contract_fingerprint.py'])
     print('M07 PASS: second M3 cdbimport/cgen is byte-identical; real shared sequence mapping')
     run([str(R/'gradlew'),'--no-daemon','integrationTest',

@@ -4,6 +4,8 @@ import json, secrets
 from management_db import R,D,start,state,sql,ili_schema,mapping,cmd
 import runtime_lock
 from audit_setup import apply,resolve,ident
+from interlis_tools import ensure
+ensure()
 
 if not (D/'connection.json').exists():
     start()
@@ -36,5 +38,7 @@ for policy in resolve():
             'CREATE TRIGGER di_aggregate_revision AFTER INSERT OR UPDATE OR DELETE ON di_management.'+
             table+' FOR EACH ROW EXECUTE FUNCTION di_ops.touch_aggregate();')
 mapping()
+cmd(['python3',str(R/'scripts/verify_physical_mapping.py')])
+cmd(['python3',str(R/'scripts/upgrade_contract.py')])
 cmd(['python3',str(R/'scripts/contract_fingerprint.py')])
 print('Management setup ready. Existing UUIDs, grants, decisions, audit and credentials retained. No demo reset.')

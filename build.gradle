@@ -4,6 +4,7 @@ buildscript {
 }
 plugins {
     id 'java'
+    id 'gg.jte.gradle' version '3.2.4'
     id 'org.springframework.boot' version '4.1.2'
     id 'io.spring.dependency-management' version '1.1.7'
 }
@@ -15,6 +16,12 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webmvc'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'gg.jte:jte-spring-boot-starter-4:3.2.4'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'com.microsoft.playwright:playwright:1.60.0'
     implementation 'org.apache.cayenne:cayenne:5.0-M3'
     runtimeOnly 'org.postgresql:postgresql'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -67,4 +74,10 @@ tasks.named('processResources') {
 tasks.named('integrationTest') {
     outputs.upToDateWhen { false }
     outputs.cacheIf { false }
+}
+
+jte { generate(); binaryStaticContent = true }
+tasks.register('operator', JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'ch.so.agi.dateninfrastruktur.admin.operator.AuthorityBootstrapCommand'
 }

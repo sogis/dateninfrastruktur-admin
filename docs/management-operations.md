@@ -1,4 +1,7 @@
-# Lokaler Managementbetrieb – Stand MA-B
+# Lokaler Managementbetrieb – MA-B-Persistenz
+
+Für den aktuellen MA-C-Web-/OIDC-Betrieb siehe [management-web.md](management-web.md).
+Die folgenden Angaben beschreiben den separat testbaren Persistenzstand.
 
 Voraussetzung: Java25, Docker, Python3 und Netzwerk beim ersten Tool-/Imagebuild.
 Alle Befehle aus ADMIN, alternativ Setup/Testdispatcher im STACK-Schwesterrepo.

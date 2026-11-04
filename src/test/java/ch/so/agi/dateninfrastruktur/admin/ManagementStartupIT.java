@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.apache.cayenne.runtime.CayenneRuntime;
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.RANDOM_PORT,properties="di.web.enabled=false")
 class ManagementStartupIT {
     @DynamicPropertySource
     static void dataSources(DynamicPropertyRegistry properties) {

@@ -1,26 +1,26 @@
 # dateninfrastruktur-admin
 
-Management-/Access-Anwendung: MA-0 und MA-A unabhängig abgenommen;
-MA-B-Persistenz/Audit implementiert und zur unabhängigen Prüfung vorbereitet.
+Management-/Access-Anwendung: MA-0, MA-A und MA-B unabhängig abgenommen;
+MA-C-Verwaltung/Identität/Authorizationkern implementiert, Gate im STACK.
 Java25, Spring Boot4.1.2 GA, Apache Cayenne5.0-M3; kein JPA/Hibernate.
 Gesamtauftrag im Schwesterrepo unter
 `dateninfrastruktur-dev-stack/docs/implementation/management-and-access/`.
 
 ```sh
 python3 scripts/setup.py
-python3 scripts/run.py
+./gradlew bootJar
+python3 scripts/identity_runtime.py start
 ```
 
-Explizites Setup erhält vorhandene eigene Daten/Secrets und importiert ein
-bekanntes Schema nicht erneut. JVM-Start mit getrenntem Writer-/Authz-Konto,
-lesender Vertragsprüfung und ohne DDL. Loopback-Readiness standardmässig unter
-`http://127.0.0.1:18090/actuator/health/readiness` (real geprüft).
-Admin-/Self-Service-UI, OIDC und geschützte Downloads folgen erst nach den
-weiteren unabhängigen Phasengates.
+Explizites Setup erhält eigene Daten/Secrets und importiert bekannte Schemata
+nicht erneut. Details zum JVM-/Keycloak-/APISIX-Start, lokalen Operatorbootstrap,
+URLs, Testcredentials, Grenzen und Cleanup: [Managementbetrieb](docs/management-web.md).
+Noch keine Sodata-DB-Umschaltung oder geschützte Dateiauslieferung vor MA-D/MA-E.
 
 ```sh
 python3 scripts/test_models.py
 python3 scripts/test_persistence_all.py
+python3 scripts/test_management_all.py
 python3 scripts/compatibility.py
 ```
 

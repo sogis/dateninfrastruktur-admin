@@ -35,7 +35,8 @@ def ili_schema():
   if sql("SELECT di_ops.runtime_contract();")!='t':
    raise RuntimeError('Existing schema has unknown/incomplete contract; no automatic schema reimport')
   contract=R/'db/persistence-contract.properties'
-  if not contract.exists() or hashlib.sha256(contract.read_bytes()).hexdigest()!=sql('SELECT di_ops.contract_fingerprint();'):
+  from upgrade_contract import recognized_contract
+  if not contract.exists() or not recognized_contract(sql('SELECT di_ops.contract_fingerprint();')):
    raise RuntimeError('Existing schema fingerprint differs; explicit reviewed upgrade required')
   print('Known existing schema retained; no ili2pg reimport')
   return

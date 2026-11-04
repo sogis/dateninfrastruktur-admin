@@ -39,8 +39,9 @@ public class ManagementConfiguration {
     }
     @Bean
     public SchemaContractHealthIndicator managementSchema(
+            @org.springframework.beans.factory.annotation.Value("${di.web.enabled:true}") boolean web,
             @Qualifier("managementWriterDataSource") HikariDataSource source) {
-        return new SchemaContractHealthIndicator(source);
+        return new SchemaContractHealthIndicator(source,web);
     }
     @Bean
     public ApplicationRunner verifyManagementContract(

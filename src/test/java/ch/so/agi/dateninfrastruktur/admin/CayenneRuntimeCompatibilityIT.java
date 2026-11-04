@@ -12,7 +12,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties={
-    "di.management.enabled=false","management.endpoint.health.group.readiness.include=readinessState"})
+    "di.web.enabled=false","di.management.enabled=false","management.endpoint.health.group.readiness.include=readinessState"})
 class CayenneRuntimeCompatibilityIT {
     @Test void sameConnectionTransaction() throws Exception {
         try (var pool = new HikariDataSource()) {
