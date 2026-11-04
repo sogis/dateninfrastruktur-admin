@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<data-map xmlns="http://cayenne.apache.org/schema/13/modelMap" project-version="13">
+  <db-entity name="probe">
+    <db-attribute name="id" type="BIGINT" isPrimaryKey="true" isMandatory="true"/>
+    <db-attribute name="message" type="VARCHAR" length="255"/>
+  </db-entity>
+  <obj-entity name="Probe" className="ch.so.agi.dateninfrastruktur.admin.Probe" dbEntityName="probe">
+    <obj-attribute name="id" type="java.lang.Long" db-attribute-path="id"/>
+    <obj-attribute name="message" type="java.lang.String" db-attribute-path="message"/>
+  </obj-entity>
+</data-map>
