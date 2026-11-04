@@ -81,3 +81,7 @@ tasks.register('operator', JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     mainClass = 'ch.so.agi.dateninfrastruktur.admin.operator.AuthorityBootstrapCommand'
 }
+tasks.register('legacyImport', JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'ch.so.agi.dateninfrastruktur.admin.legacy.LegacyCatalogImportCommand'
+}

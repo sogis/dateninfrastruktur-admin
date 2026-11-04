@@ -48,26 +48,7 @@ public class ManagementConfiguration {
             @Qualifier("managementWriterDataSource") HikariDataSource writer,
             @Qualifier("managementAuthorizationDataSource") HikariDataSource authorization) {
         return args -> {
-            byte[] contract;
-            try(var stream=ManagementConfiguration.class.getResourceAsStream("/management/persistence-contract.properties")) {
-                if(stream==null)throw new IllegalStateException("Missing packaged persistence contract");
-                contract=stream.readAllBytes();
-            }
-            var properties=new java.util.Properties();
-            properties.load(new java.io.ByteArrayInputStream(contract));
-            try(var map=ManagementConfiguration.class.getResourceAsStream("/cayenne/management.map.xml")) {
-                if(map==null || !properties.getProperty("datamap.sha256").equals(
-                    java.util.HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256").digest(map.readAllBytes()))))
-                    throw new IllegalStateException("Packaged Cayenne mapping differs from persistence contract");
-            }
-            String fingerprint=java.util.HexFormat.of().formatHex(
-                java.security.MessageDigest.getInstance("SHA-256").digest(contract));
-            try(var connection=writer.getConnection();
-                var statement=connection.createStatement();
-                var result=statement.executeQuery("SELECT di_ops.runtime_contract(),di_ops.contract_fingerprint()")) {
-                if(!result.next() || !result.getBoolean(1) || !fingerprint.equals(result.getString(2)))
-                    throw new IllegalStateException("Management schema/audit contract is not ready; run explicit setup");
-            }
+            RuntimeContractVerifier.require(writer);
             try(var connection=authorization.getConnection();
                 var statement=connection.createStatement();
                 var result=statement.executeQuery("SELECT current_user")) {

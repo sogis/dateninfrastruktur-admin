@@ -14,7 +14,7 @@ public final class ManagementExceptionHandler {
             if(cause instanceof AggregateWriteGuard.StaleAggregateException)return ResponseEntity.status(409).body(new Error("STALE_VERSION","Der Eintrag wurde inzwischen verändert. Bitte neu laden."));
             if(cause instanceof AggregateWriteGuard.MissingAggregateException)return ResponseEntity.status(404).body(new Error("NOT_FOUND","Der Eintrag wurde nicht gefunden."));
         }
-        if(error instanceof MethodArgumentTypeMismatchException || error instanceof org.springframework.web.bind.MissingServletRequestParameterException || error instanceof IllegalArgumentException)
+        if(error instanceof MethodArgumentTypeMismatchException || error instanceof org.springframework.web.bind.MissingServletRequestParameterException || error instanceof IllegalArgumentException || error instanceof java.time.DateTimeException)
             return ResponseEntity.badRequest().body(new Error("INVALID_INPUT","Die Angaben sind unvollständig oder ungültig."));
         if(error instanceof org.springframework.web.HttpRequestMethodNotSupportedException)return ResponseEntity.status(405).body(new Error("METHOD_NOT_ALLOWED","Diese HTTP-Methode ist nicht erlaubt."));
         return ResponseEntity.status(503).body(new Error("TEMPORARILY_UNAVAILABLE","Der Vorgang ist vorübergehend nicht verfügbar. Bitte neu laden; derselbe Vorgangsschlüssel kann erneut gesendet werden."));

@@ -1,4 +1,8 @@
-# Management-Schema und Audit-Lebenszyklus (MA-B)
+# Management-Schema und Audit-Lebenszyklus
+
+Der folgende Grundvertrag stammt aus MA-B. MA-C ergänzt Receipt-/Webvertrag
+(V007), MA-D die technische Legacyherkunft (V008); siehe management-web.md und
+legacy-import.md. Beide Schritte sind explizite gepinnte additive Upgrades.
 
 INTERLIS ist die Fachquelle. Stock-ili2pg5.5.2 erzeugt `di_management`; der
 reale Mappingstand steht in `db/model-mapping.json`, Pins/Optionen/Modellhashes

@@ -11,7 +11,7 @@ class OidcLoginIT {
     }
     @Test void realBrowserCodeFlowRequestApproveAndScopedViews()throws Exception{
         assertNotNull(System.getenv("DI_TEST_GATEWAY"),"Run owned identity harness");
-        try(var f=new ManagementFixture(System.getenv("DI_TEST_OIDC_ISSUER"),CLAUDIA,ANNA,BEN);var playwright=Playwright.create();var browser=playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(true));var anna=browser.newContext();var claudia=browser.newContext()){
+        try(var f=new ManagementFixture(System.getenv("DI_TEST_OIDC_ISSUER"),CLAUDIA,ANNA,BEN);var playwright=Playwright.create(new Playwright.CreateOptions().setEnv(Map.of("PLAYWRIGHT_SKIP_BROWSER_GC","1")));var browser=playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(true));var anna=browser.newContext();var claudia=browser.newContext()){
             var root=f.published();long principalsBefore;try(var c=f.admin.getConnection();var st=c.createStatement();var rs=st.executeQuery("SELECT count(*) FROM di_management.principal")){rs.next();principalsBefore=rs.getLong(1);}
             var page=anna.newPage();login(page,"/access/requests/new?dataset="+root,"anna");
             assertTrue(page.locator("h1").innerText().contains("Datenzugang anfragen"));
@@ -24,7 +24,7 @@ class OidcLoginIT {
             page.reload();assertTrue(page.locator("main").innerText().contains("Genehmigt"));assertTrue(page.locator("main").innerText().contains("Wirksamer Dateizugang"));
             manager.navigate(System.getenv("DI_TEST_GATEWAY")+"/management/datasets/"+root+"/audit");assertTrue(manager.locator("main").innerText().contains("approve"));
             var blocked=page.navigate(System.getenv("DI_TEST_GATEWAY")+"/management/datasets/"+root+"/grants");assertEquals(403,blocked.status());
-            assertTrue(anna.cookies().stream().filter(c->c.name.equals("di_management_session")).allMatch(c->c.httpOnly && c.sameSite==com.microsoft.playwright.options.SameSiteAttribute.LAX));
+            var sessions=anna.cookies().stream().filter(c->c.name.equals("di_management_session")).toList();assertFalse(sessions.isEmpty(),"OIDC session cookie must exist");assertTrue(sessions.stream().allMatch(c->c.httpOnly && c.sameSite==com.microsoft.playwright.options.SameSiteAttribute.LAX));
             var output=java.nio.file.Path.of(".runtime/identity/browser-management.png");manager.screenshot(new Page.ScreenshotOptions().setPath(output).setFullPage(true));
         }
     }

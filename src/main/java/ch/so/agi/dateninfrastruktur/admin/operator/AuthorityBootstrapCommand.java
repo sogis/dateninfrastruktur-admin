@@ -8,12 +8,12 @@ import ch.so.agi.dateninfrastruktur.admin.model.*;
 import ch.so.agi.dateninfrastruktur.admin.persistence.*;
 /** Local operator entry point, deliberately absent from Spring/MVC. No secret or token CLI arguments. */
 public final class AuthorityBootstrapCommand {
-    public static void main(String[] args){
+    public static void main(String[] args)throws Exception{
         if(args.length!=5 || !args[0].equals("bootstrap-office"))throw new IllegalArgumentException("Usage: operator bootstrap-office <verified-issuer> <verified-subject> <office-identifier> <office-name>");
         var actor=new ActorContext(required("DI_OPERATOR_ISSUER"),required("DI_OPERATOR_SUBJECT"),"service",null);
         try(var ds=new HikariDataSource()){
             ds.setJdbcUrl(required("DI_MANAGEMENT_WRITER_JDBCURL"));ds.setUsername("di_writer");ds.setPassword(required("DI_MANAGEMENT_WRITER_PASSWORD"));ds.setMaximumPoolSize(1);
-            var runtime=ManagementRuntime.create(ds);
+            RuntimeContractVerifier.require(ds);var runtime=ManagementRuntime.create(ds);
             try{
                 var office=new AuditedUnitOfWork(runtime).execute(actor,new CommandContext(UUID.randomUUID(),UUID.randomUUID(),"operator.bootstrap_office","Explicit local operator setup"),ctx->{
                     var operator=principal(ctx,actor.issuer(),actor.subject(),"service");var user=principal(ctx,args[1],args[2],"user");
