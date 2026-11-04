@@ -7,16 +7,20 @@ import jakarta.servlet.http.*;
 import org.springframework.web.filter.OncePerRequestFilter;
 /** Cookie-to-bearer forwarding does not remove the browser origin requirement. */
 public final class BrowserOriginFilter extends OncePerRequestFilter {
-    private final String origin;
+    private final Set<String> origins;
     public BrowserOriginFilter(String origin){
-        URI uri=URI.create(origin);
+        var values=new java.util.HashSet<String>();
+        for(String item:origin.split(",",-1)){
+        URI uri=URI.create(item.strip());
         if(uri.getHost()==null || uri.getUserInfo()!=null || uri.getQuery()!=null || uri.getFragment()!=null ||
             !Set.of("http","https").contains(uri.getScheme()) || !(uri.getPath().isEmpty() || uri.getPath().equals("/")))throw new IllegalArgumentException("Public origin must be an absolute origin");
-        this.origin=uri.getScheme()+"://"+uri.getRawAuthority();
+        values.add(uri.getScheme()+"://"+uri.getRawAuthority());
+        }
+        this.origins=Set.copyOf(values);
     }
     private boolean same(String raw,boolean originOnly){
         try{var uri=URI.create(raw);return uri.getUserInfo()==null && uri.getFragment()==null &&
-            origin.equals(uri.getScheme()+"://"+uri.getRawAuthority()) && (!originOnly || (uri.getRawQuery()==null && uri.getPath().isEmpty()));}
+            origins.contains(uri.getScheme()+"://"+uri.getRawAuthority()) && (!originOnly || (uri.getRawQuery()==null && uri.getPath().isEmpty()));}
         catch(IllegalArgumentException|NullPointerException invalid){return false;}
     }
     protected void doFilterInternal(HttpServletRequest req,HttpServletResponse res,FilterChain chain) throws ServletException,IOException{

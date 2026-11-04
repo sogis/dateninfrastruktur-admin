@@ -1,7 +1,7 @@
 # dateninfrastruktur-admin
 
 Management-/Access-Anwendung: MA-0, MA-A und MA-B unabhängig abgenommen;
-MA-C unabhängig abgenommen; MA-D-DB-Portal und Legacyimport implementiert, Gate im STACK.
+MA-C und MA-D unabhängig abgenommen; MA-E-Dateikette und Gesamtintegration implementiert, Gate im STACK.
 Java25, Spring Boot4.1.2 GA, Apache Cayenne5.0-M3; kein JPA/Hibernate.
 Gesamtauftrag im Schwesterrepo unter
 `dateninfrastruktur-dev-stack/docs/implementation/management-and-access/`.
@@ -16,7 +16,7 @@ Explizites Setup erhält eigene Daten/Secrets und importiert bekannte Schemata
 nicht erneut. Details zum JVM-/Keycloak-/APISIX-Start, lokalen Operatorbootstrap,
 URLs, Testcredentials, Grenzen und Cleanup: [Managementbetrieb](docs/management-web.md).
 DB-Portal/Legacyübernahme: [Legacyimport](docs/legacy-import.md) und PUBLIC/docs/database-catalog.md.
-Geschützte Dateiauslieferung folgt hinter MA-E.
+Private Dateiauslieferung und Standardstart: [Dateibetrieb](docs/managed-downloads.md).
 
 ```sh
 python3 scripts/test_models.py

@@ -4,7 +4,7 @@ Never reads the user's .env or attaches user containers. Test-only direct loopba
 """
 import argparse,json,os,pathlib,secrets,socket,subprocess,time,urllib.request
 from management_db import R,D,state,cmd
-I=R/'.runtime/identity';I.mkdir(exist_ok=True,parents=True);I.chmod(0o700)
+I=D.parent/'identity' if os.environ.get('DI_MANAGEMENT_RUNTIME_DIR') else R/'.runtime/identity';I.mkdir(exist_ok=True,parents=True);I.chmod(0o700)
 def port():
     with socket.socket() as s:s.bind(('127.0.0.1',0));return s.getsockname()[1]
 def write(name,data,public=False):
@@ -74,4 +74,8 @@ def stop():
     if cmd(['docker','network','inspect','--format','{{index .Labels "di.identity"}}',s['network']])!=s['id']:raise RuntimeError('Network ownership mismatch')
     cmd(['docker','network','rm',s['network']]);(I/'state.json').unlink();print('Removed only owned MA-C identity resources; database retained')
 if __name__=='__main__':
-    parser=argparse.ArgumentParser();parser.add_argument('action',choices=['start','stop']);parser.add_argument('--portal-jar');args=parser.parse_args();start(args.portal_jar) if args.action=='start' else stop()
+    parser=argparse.ArgumentParser();parser.add_argument('action',choices=['start','stop']);parser.add_argument('--portal-jar');parser.add_argument('--managed',action='store_true');args=parser.parse_args()
+    if args.managed:
+        from managed_runtime import main
+        main(args.action,args.portal_jar)
+    else:start(args.portal_jar) if args.action=='start' else stop()

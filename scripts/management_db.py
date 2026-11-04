@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """Explicit isolated MA-B database harness. Never reads the user's stack env."""
 import argparse, hashlib, json, os, pathlib, secrets, subprocess, time
-R=pathlib.Path(__file__).resolve().parents[1];D=R/'.runtime/management-db';D.mkdir(parents=True,exist_ok=True)
+R=pathlib.Path(__file__).resolve().parents[1];D=pathlib.Path(os.environ.get('DI_MANAGEMENT_RUNTIME_DIR',str(R/'.runtime/management-db'))).resolve()
+if (os.environ.get('DI_MANAGEMENT_RUNTIME_DIR') and not pathlib.Path(os.environ['DI_MANAGEMENT_RUNTIME_DIR']).is_absolute()) or D==(R/'.runtime').resolve() or not D.is_relative_to((R/'.runtime').resolve()):raise RuntimeError('Management runtime must remain under this checkout .runtime')
+D.mkdir(parents=True,exist_ok=True);D.chmod(0o700)
 IMAGE='ghcr.io/baosystems/postgis:16-3.5@sha256:0f1c5c0f70f03d4d19ad1d7308d86e6162dff5429c491002298a7b5e46d2f2e8'
 def cmd(args,env=None,input=None):
  p=subprocess.run(args,capture_output=True,text=True,env=env,input=input)
