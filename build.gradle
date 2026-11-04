@@ -85,3 +85,11 @@ tasks.register('legacyImport', JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     mainClass = 'ch.so.agi.dateninfrastruktur.admin.legacy.LegacyCatalogImportCommand'
 }
+
+// Explicit test-profile tooling; never part of the web image or normal startup.
+tasks.register('composeTestRuntime', Copy) {
+    dependsOn tasks.named('testClasses')
+    into layout.buildDirectory.dir('compose-test')
+    into('classes') { from sourceSets.main.output; from sourceSets.test.output }
+    into('lib') { from configurations.testRuntimeClasspath }
+}

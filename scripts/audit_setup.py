@@ -2,7 +2,7 @@
 """Resolve the real ili2db mapping, install and verify complete audit coverage."""
 import argparse, hashlib, json, re
 from pathlib import Path
-from management_db import R, D, state, sql
+from management_db import R, D, state, sql, TARGET_MODE
 
 def ident(s):
  if not re.fullmatch(r'[a-z_][a-z0-9_]*',s):raise ValueError('unsafe identifier')
@@ -60,6 +60,7 @@ def verify(policies):
  if len(installed)!=len(policies):raise RuntimeError('audit table set mismatch')
  print('PASS audit coverage: '+str(len(policies))+' physical tables, timing/events/enabled/functions/policies verified')
 def apply(policies):
+ if TARGET_MODE and policies!=json.loads((R/'db/audit-policy.json').read_text()):raise RuntimeError('Runtime audit policy differs from the pinned physical mapping')
  commands=['BEGIN;','SELECT pg_advisory_xact_lock(749583200);']
  for p in policies:
   t=ident(p['table'])
@@ -70,7 +71,7 @@ def apply(policies):
    'GRANT SELECT,INSERT,UPDATE,DELETE ON di_management.'+t+' TO di_writer;', ('GRANT SELECT ON di_management.'+t+' TO di_authz;') if any(x.rsplit('.',1)[-1] in ('Dataset','DatasetIssue','DataVersion','Distribution','Principal','AccessGrant','GroupMembership') for x in p['model_elements']) else ('REVOKE ALL ON di_management.'+t+' FROM di_authz;')]
  commands+=['ALTER SEQUENCE di_management.t_ili2db_seq OWNER TO di_owner;','GRANT USAGE,SELECT ON SEQUENCE di_management.t_ili2db_seq TO di_writer;',"INSERT INTO di_ops.schema_revision(revision) VALUES('MA-B-1') ON CONFLICT DO NOTHING;",'COMMIT;']
  sql('\n'.join(commands));verify(policies)
- (R/'db/audit-policy.json').write_text(json.dumps(policies,indent=2)+'\n')
+ if not TARGET_MODE:(R/'db/audit-policy.json').write_text(json.dumps(policies,indent=2)+'\n')
 if __name__=='__main__':
  p=argparse.ArgumentParser();p.add_argument('mode',choices=['plan','apply','verify']);a=p.parse_args();policies=resolve()
  if a.mode=='plan':print(json.dumps(policies,indent=2))

@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Explicit isolated MA-B database harness. Never reads the user's stack env."""
 import argparse, hashlib, json, os, pathlib, secrets, subprocess, time
-R=pathlib.Path(__file__).resolve().parents[1];D=pathlib.Path(os.environ.get('DI_MANAGEMENT_RUNTIME_DIR',str(R/'.runtime/management-db'))).resolve()
-if (os.environ.get('DI_MANAGEMENT_RUNTIME_DIR') and not pathlib.Path(os.environ['DI_MANAGEMENT_RUNTIME_DIR']).is_absolute()) or D==(R/'.runtime').resolve() or not D.is_relative_to((R/'.runtime').resolve()):raise RuntimeError('Management runtime must remain under this checkout .runtime')
+TARGET_MODE=os.environ.get('DI_DATABASE_TARGET')=='postgresql'
+R=pathlib.Path(__file__).resolve().parents[1];D=pathlib.Path(os.environ.get('DI_TOOL_RUNTIME','/runtime/tools') if TARGET_MODE else os.environ.get('DI_MANAGEMENT_RUNTIME_DIR',str(R/'.runtime/management-db'))).resolve()
+if not TARGET_MODE and ((os.environ.get('DI_MANAGEMENT_RUNTIME_DIR') and not pathlib.Path(os.environ['DI_MANAGEMENT_RUNTIME_DIR']).is_absolute()) or D==(R/'.runtime').resolve() or not D.is_relative_to((R/'.runtime').resolve())):raise RuntimeError('Management runtime must remain under this checkout .runtime')
 D.mkdir(parents=True,exist_ok=True);D.chmod(0o700)
 IMAGE='ghcr.io/baosystems/postgis:16-3.5@sha256:0f1c5c0f70f03d4d19ad1d7308d86e6162dff5429c491002298a7b5e46d2f2e8'
 def cmd(args,env=None,input=None):
@@ -61,6 +62,10 @@ def cleanup():
  st=state();label=cmd(['docker','inspect','--format','{{index .Config.Labels "di.phase"}}',st['container']])
  if label!='MA-B':raise RuntimeError('Not our resource; refusing cleanup')
  cmd(['docker','rm','--force','--volumes',st['container']]);(D/'connection.json').unlink();print('Removed only own MA-B container and own anonymous volumes')
+if TARGET_MODE:
+ from database_target import sql
+ def _no_container_lifecycle(*args,**kwargs):raise RuntimeError('Explicit database target never creates or manages containers')
+ start=cleanup=mapping=ili_schema=state=_no_container_lifecycle
 if __name__=='__main__':
  p=argparse.ArgumentParser();p.add_argument('command',choices=['start','schema','mapping','cleanup','inspect']);a=p.parse_args()
  {'start':start,'schema':ili_schema,'mapping':mapping,'cleanup':cleanup,'inspect':lambda:print(sql("SELECT version(); SELECT postgis_full_version(); SELECT * FROM di_management.t_ili2db_attrname LIMIT 12;"))}[a.command]()

@@ -1,0 +1,6 @@
+.git
+.runtime
+.gradle
+build
+**/__pycache__
+*.log
