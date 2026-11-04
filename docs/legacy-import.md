@@ -97,3 +97,13 @@ Reale Upgrades über nichtleere UUID-/Auditdaten sind getestet. Appstart kein DD
 Standalone-/Serienmigration, Attribute/Assoziationen, unbekannten Code,
 Konfliktverweigerung, stabile UUIDs, Replay und erhaltene spätere Adminänderung.
 CLI-Dry-run und ausgewählter CLI-Apply werden zusätzlich wirklich ausgeführt.
+
+Nach Review MA-D-REV-02: Mehrere ThemeAssignment-Strukturen in einem
+kanonischen themes-BAG werden vollständig gelesen und nach localTheme
+dedupliziert. Identische Creator-/Kontaktstrukturen werden ebenfalls
+zusammengeführt. Unterschiedliche Creator beziehungsweise Kontakte benötigen
+eine explizite Owner-/Kontaktauswahl und ergeben einen strukturierten
+Konfliktbericht, keinen abgebrochenen Dry-run. Auch mehrdeutige übrige skalare
+Felder werden je Root als Konflikt berichtet; kein erster Treffer gewinnt.
+Distributionskennungen mit mehreren Eltern werden vor dem Apply als Konflikt
+gemeldet. Die neuen Tests verwenden vollständige temporäre XTF-Dateien.

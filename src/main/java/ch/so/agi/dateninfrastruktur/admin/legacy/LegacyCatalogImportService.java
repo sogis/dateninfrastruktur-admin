@@ -25,12 +25,22 @@ public final class LegacyCatalogImportService {
         var ctx=runtime.newContext();var plans=new ArrayList<EntryPlan>();var identifiers=new HashSet<String>();
         var officeHashes=new HashMap<String,Set<String>>();
         for(var root:source.roots()){var nodes=root.getElementsByTagNameNS("*","Office");for(int i=0;i<nodes.getLength();i++){var office=(Element)nodes.item(i);String key=text(office,"officeUri");if(key!=null)officeHashes.computeIfAbsent(key,k->new HashSet<>()).add(hash(office));}}
+        var distributionOwners=new HashMap<String,Set<String>>();
+        for(var root:source.roots()){String owner=text(root,"identifier");var nodes=root.getElementsByTagNameNS("*","Distribution");for(int n=0;n<nodes.getLength();n++){String key=text((Element)nodes.item(n),"distributionUri");if(key!=null)distributionOwners.computeIfAbsent(key,k->new HashSet<>()).add(owner);}}
         for(var root:source.roots()){
-            var conflicts=new ArrayList<String>();var warnings=new ArrayList<String>();String identifier=text(root,"identifier"),kind=name(root).equals("DatasetSeries")?"series":"standalone";
+            var conflicts=new ArrayList<String>();var warnings=new ArrayList<String>();String identifier=null,kind=name(root).equals("DatasetSeries")?"series":"standalone";
+            try {
+            identifier=text(root,"identifier");
+            var resources=new ArrayList<Element>();resources.add(root);resources.addAll(issues(root));
+            for(var resource:resources){
+                if(distinctBag(resource,"creator","Office").size()>1)conflicts.add("MULTIPLE_CREATORS_REQUIRE_EXPLICIT_OWNER: "+text(resource,"identifier"));
+                if(distinctBag(resource,"contactPoint","ContactPoint").size()>1)conflicts.add("MULTIPLE_CONTACT_POINTS_REQUIRE_EXPLICIT_CONTACT: "+text(resource,"identifier"));
+            }
+            if(!conflicts.isEmpty()){plans.add(new EntryPlan(identifier,kind,"CONFLICT",List.copyOf(conflicts),List.copyOf(warnings)));continue;}
             if(identifier==null || identifier.isBlank() || identifier.length()>255 || !identifiers.add(identifier))conflicts.add("MISSING_OR_DUPLICATE_IDENTIFIER");
             String level=text(root,"accessRights/AccessRights/localAccessLevel");if(!ACCESS.contains(level==null?"":level))conflicts.add("UNKNOWN_ACCESS_CODE: "+level);else if(!level.equals("open"))warnings.add("ACCESS_MAPPED_TO_RESTRICTED: "+level);
-            for(String required:List.of("title","description","modified","contactPoint/ContactPoint/email","publisher/Office/officeUri","creator/Office/officeUri"))if(text(root,required)==null || text(root,required).isBlank())conflicts.add("MISSING_REQUIRED: "+required);
-            if("series".equals(kind))for(String field:SHARED){var values=new TreeSet<String>();String own=text(root,field);if(own!=null && !own.isBlank())values.add(own);for(var issue:issues(root)){String value=text(issue,field);if(value!=null && !value.isBlank())values.add(value);}if(values.size()>1)conflicts.add("SERIES_SHARED_CONFLICT: "+field+"="+values);}
+            for(String required:List.of("title","description","modified","contactPoint/ContactPoint/email","publisher/Office/officeUri","creator/Office/officeUri"))if(value(root,required)==null || value(root,required).isBlank())conflicts.add("MISSING_REQUIRED: "+required);
+            if("series".equals(kind))for(String field:SHARED){var values=new TreeSet<String>();String own=value(root,field);if(own!=null && !own.isBlank())values.add(own);for(var issue:issues(root)){String value=value(issue,field);if(value!=null && !value.isBlank())values.add(value);}if(values.size()>1)conflicts.add("SERIES_SHARED_CONFLICT: "+field+"="+values);}
             for(var issue:issues(root)){String childLevel=text(issue,"accessRights/AccessRights/localAccessLevel");if(!ACCESS.contains(childLevel==null?"":childLevel))conflicts.add("UNKNOWN_ISSUE_ACCESS_CODE: "+childLevel);}
             String publication=text(root,"publicationStatus");if(!Set.of("draft","in_review","published","archived").contains(publication==null?"":publication))conflicts.add("UNKNOWN_PUBLICATION_CODE: "+publication);
             var issueKeys=new HashSet<String>();int currentIssues=0;
@@ -43,19 +53,39 @@ public final class LegacyCatalogImportService {
                 var mapped=origin(ctx,"office",key);if(mapped!=null && !hash(office).equals(mapped.get("object_sha256")))conflicts.add("OFFICE_SOURCE_CHANGED_AFTER_IMPORT: "+key);
                 if(mapped==null && !ObjectSelect.query(Office.class).where(Office.IDENTIFIER.eq(key)).select(ctx).isEmpty())conflicts.add("OFFICE_EXISTS_WITHOUT_PROVENANCE: "+key);
             }
+            var seenDistributions=new HashSet<String>();var distributionNodes=root.getElementsByTagNameNS("*","Distribution");
+            for(int n=0;n<distributionNodes.getLength();n++){
+                String key=text((Element)distributionNodes.item(n),"distributionUri");
+                if(key==null || !seenDistributions.add(key)){conflicts.add("MISSING_OR_DUPLICATE_DISTRIBUTION_IDENTIFIER");continue;}
+                if(distributionOwners.get(key).size()>1)conflicts.add("DISTRIBUTION_ASSIGNED_TO_MULTIPLE_DATASETS: "+key);
+                var mapped=origin(ctx,"distribution",key);if(mapped!=null){var file=ObjectSelect.query(Distribution.class).where(Distribution.T_ILI_TID.eq(UUID.fromString(mapped.get("target_oid").toString()))).selectOne(ctx);
+                    if(file==null || !Objects.equals(identifier,file.getVersion1().getIssue1().getDataset1().getIdentifier()))conflicts.add("DISTRIBUTION_ALREADY_ASSIGNED_ELSEWHERE: "+key);}
+            }
             for(var t:themes(root))if(!CatalogCommandService.THEMES.contains(t))conflicts.add("UNKNOWN_THEME: "+t);
             var existing=identifier==null?null:origin(ctx,"dataset",identifier);
             if(existing!=null && !hash(root).equals(existing.get("object_sha256")))conflicts.add("SOURCE_CHANGED_AFTER_IMPORT: explicit reconciliation required");
             if(existing==null && identifier!=null && !ObjectSelect.query(Dataset.class).where(Dataset.IDENTIFIER.eq(identifier)).select(ctx).isEmpty())conflicts.add("TARGET_IDENTIFIER_ALREADY_EXISTS_WITHOUT_LEGACY_MAPPING");
             String status=!conflicts.isEmpty()?"CONFLICT":existing!=null?"SKIP":"NEW";
             plans.add(new EntryPlan(identifier,kind,status,List.copyOf(conflicts),List.copyOf(warnings)));
+            } catch(IllegalArgumentException invalid){
+                conflicts.add("AMBIGUOUS_OR_UNREPRESENTABLE_LEGACY_FIELD: "+invalid.getMessage());
+                plans.add(new EntryPlan(identifier,kind,"CONFLICT",List.copyOf(conflicts),List.copyOf(warnings)));
+            }
         }
         return new Plan(source.path().toString(),source.fileSha256(),MODEL,List.copyOf(plans));
     });}
-    private SortedSet<String> themes(Element root){var result=new TreeSet<String>();for(var e:children(root,"themes")){String t=text(e,"ThemeAssignment/localTheme");if(t!=null)result.add(t);}return result;}
+    private List<Element> bag(Element root,String wrapper,String item){var result=new ArrayList<Element>();for(var e:children(root,wrapper))result.addAll(children(e,item));return result;}
+    private List<Element> distinctBag(Element root,String wrapper,String item){var unique=new LinkedHashMap<String,Element>();for(var element:bag(root,wrapper,item))unique.putIfAbsent(canonical(element),element);return List.copyOf(unique.values());}
+    private Element oneBag(Element root,String wrapper,String item){var unique=distinctBag(root,wrapper,item);if(unique.size()>1)throw new IllegalArgumentException("Several distinct "+wrapper+" values require explicit resolution");return unique.isEmpty()?null:unique.getFirst();}
+    private String value(Element root,String path){
+        if(path.startsWith("creator/Office/"))return text(oneBag(root,"creator","Office"),path.substring("creator/Office/".length()));
+        if(path.startsWith("contactPoint/ContactPoint/"))return text(oneBag(root,"contactPoint","ContactPoint"),path.substring("contactPoint/ContactPoint/".length()));
+        return text(root,path);
+    }
+    private SortedSet<String> themes(Element root){var result=new TreeSet<String>();for(var assignment:bag(root,"themes","ThemeAssignment")){String t=text(assignment,"localTheme");if(t!=null)result.add(t);}return result;}
     private SortedSet<String> keywords(Element root){var result=new TreeSet<String>();for(var e:children(root,"keywords"))result.add(e.getTextContent().strip());return result;}
     private LocalDate date(Element e,String field){String value=text(e,field);return value==null?null:LocalDate.parse(value);}
-    private String shared(Element root,String path){String own=text(root,path);if(own!=null && !own.isBlank())return own;var values=new TreeSet<String>();for(var issue:issues(root)){String value=text(issue,path);if(value!=null && !value.isBlank())values.add(value);}if(values.size()>1)throw new IllegalArgumentException("Unresolved shared metadata");return values.isEmpty()?null:values.first();}
+    private String shared(Element root,String path){String own=value(root,path);if(own!=null && !own.isBlank())return own;var values=new TreeSet<String>();for(var issue:issues(root)){String value=value(issue,path);if(value!=null && !value.isBlank())values.add(value);}if(values.size()>1)throw new IllegalArgumentException("Unresolved shared metadata");return values.isEmpty()?null:values.first();}
     private String level(Element e){String value=text(e,"accessRights/AccessRights/localAccessLevel");if(!ACCESS.contains(value==null?"":value))throw new IllegalArgumentException("Unknown access code");return value.equals("open")?"open":"restricted";}
     private String publication(Element e){String value=text(e,"publicationStatus");if(!Set.of("draft","in_review","published","archived").contains(value==null?"":value))throw new IllegalArgumentException("Unknown publication code");return value;}
     private void remember(ObjectContext ctx,LegacyCatalog source,CommandContext command,String kind,String identifier,UUID target,Element xml){
@@ -110,8 +140,8 @@ public final class LegacyCatalogImportService {
     }
     private UUID importRoot(ObjectContext ctx,ActorContext actor,CommandContext command,LegacyCatalog source,Element xml,Map<String,Office> offices,Map<String,Dataschema> schemas){
         String identifier=text(xml,"identifier");UUID id=stable("dataset",identifier);var root=ctx.newObject(Dataset.class);root.setTIliTid(id);root.setIdentifier(identifier);root.setAkind(name(xml).equals("DatasetSeries")?"series":"standalone");root.setTitle(text(xml,"title"));root.setAdescription(text(xml,"description"));
-        root.setOwneroffice1(office(ctx,source,command,at(xml,"creator/Office"),offices));root.setPublisheroffice1(office(ctx,source,command,at(xml,"publisher/Office"),offices));
-        root.setContactname(shared(xml,"contactPoint/ContactPoint/name"));root.setContactunit(shared(xml,"contactPoint/ContactPoint/organizationUnit"));root.setContactemail(text(xml,"contactPoint/ContactPoint/email"));root.setContactphone(shared(xml,"contactPoint/ContactPoint/phone"));root.setContacturl(shared(xml,"contactPoint/ContactPoint/url"));root.setAccesslevel(level(xml));root.setPublicationstatus(publication(xml));root.setOrigin(shared(xml,"origin"));root.setFrequency(shared(xml,"accrualPeriodicity/AccrualPeriodicity/localFrequency"));root.setIssued(date(xml,"issued"));root.setModified(date(xml,"modified"));root.setLicenseuri(shared(xml,"licenseUri"));root.setSurveymethod(text(xml,"surveyMethod"));root.setFurtheruses(text(xml,"furtherUses"));root.setAuxiliarydata(text(xml,"auxiliaryData"));root.setDataavailablefrom(text(xml,"dataAvailableFrom"));
+        root.setOwneroffice1(office(ctx,source,command,oneBag(xml,"creator","Office"),offices));root.setPublisheroffice1(office(ctx,source,command,at(xml,"publisher/Office"),offices));
+        root.setContactname(shared(xml,"contactPoint/ContactPoint/name"));root.setContactunit(shared(xml,"contactPoint/ContactPoint/organizationUnit"));root.setContactemail(value(xml,"contactPoint/ContactPoint/email"));root.setContactphone(shared(xml,"contactPoint/ContactPoint/phone"));root.setContacturl(shared(xml,"contactPoint/ContactPoint/url"));root.setAccesslevel(level(xml));root.setPublicationstatus(publication(xml));root.setOrigin(shared(xml,"origin"));root.setFrequency(shared(xml,"accrualPeriodicity/AccrualPeriodicity/localFrequency"));root.setIssued(date(xml,"issued"));root.setModified(date(xml,"modified"));root.setLicenseuri(shared(xml,"licenseUri"));root.setSurveymethod(text(xml,"surveyMethod"));root.setFurtheruses(text(xml,"furtherUses"));root.setAuxiliarydata(text(xml,"auxiliaryData"));root.setDataavailablefrom(text(xml,"dataAvailableFrom"));
         for(String theme:themes(xml)){var row=ctx.newObject(Datasettheme.class);row.setTIliTid(stable("theme",identifier+":"+theme));row.setDataset1(root);row.setTheme(theme);}
         for(String keyword:keywords(xml)){var row=ctx.newObject(Datasetkeyword.class);row.setTIliTid(stable("keyword",identifier+":"+keyword));row.setDataset1(root);row.setKeyword(keyword);}
         if("standalone".equals(root.getAkind())){var issue=issue(ctx,source,command,root,xml,"default",schemas);root.setCurrentissue1(issue);}
