@@ -1,0 +1,229 @@
+INTERLIS 2.4;
+/** Local identity references and dataset-wide access decisions; no credentials. */
+MODEL SO_AGI_DataInfrastructure_Access_20261104 (en)
+ AT "https://geo.so.ch/models/AGI" VERSION "2026-11-04" =
+ IMPORTS SO_AGI_DataInfrastructure_Catalog_20261104;
+ DOMAIN
+   EventTime = FORMAT INTERLIS.XMLDateTime "1582-01-01T00:00:00.000" .. "2999-12-31T23:59:59.999";
+ TOPIC Access =
+   OID AS INTERLIS.UUIDOID;
+   DEPENDS ON SO_AGI_DataInfrastructure_Catalog_20261104.Catalog;
+    !!@ di.audit=full
+    CLASS Principal =
+      kind : MANDATORY (user, group, service);
+      issuer : MANDATORY TEXT*1024;
+      subject : MANDATORY TEXT*255;
+      !!@ di.audit.redact=true
+      displayName : TEXT*255;
+      active : MANDATORY BOOLEAN;
+      provisionedAt : MANDATORY EventTime;
+      UNIQUE issuer, subject;
+    END Principal;
+
+    !!@ di.audit=full
+    CLASS GroupMembership =
+      validFrom : MANDATORY EventTime;
+      validUntil : EventTime;
+      revokedAt : EventTime;
+      reason : MANDATORY MTEXT;
+      MANDATORY CONSTRAINT NOT (DEFINED(validUntil)) OR validFrom < validUntil;
+    END GroupMembership;
+
+    !!@ di.audit=full
+    CLASS AuthorityAssignment =
+      capability : MANDATORY (manage_metadata, publish, manage_access);
+      validFrom : MANDATORY EventTime;
+      validUntil : EventTime;
+      revokedAt : EventTime;
+      reason : MANDATORY MTEXT;
+      MANDATORY CONSTRAINT NOT (DEFINED(validUntil)) OR validFrom < validUntil;
+    END AuthorityAssignment;
+
+    !!@ di.audit=full
+    CLASS AccessRequest =
+      reason : MANDATORY MTEXT;
+      requestedAt : MANDATORY EventTime;
+      requestedValidUntil : EventTime;
+      status : MANDATORY (pending, approved, denied, cancelled);
+      MANDATORY CONSTRAINT NOT (DEFINED(requestedValidUntil)) OR requestedAt < requestedValidUntil;
+    END AccessRequest;
+
+    !!@ di.audit=full
+    CLASS AccessDecision =
+      kind : MANDATORY (approve, deny, direct_grant, revoke);
+      decidedAt : MANDATORY EventTime;
+      reason : MANDATORY MTEXT;
+      commandId : MANDATORY INTERLIS.UUIDOID;
+      UNIQUE commandId;
+    END AccessDecision;
+
+    !!@ di.audit=full
+    CLASS AccessGrant =
+      permission : MANDATORY (read_data);
+      validFrom : MANDATORY EventTime;
+      validUntil : EventTime;
+      revokedAt : EventTime;
+      MANDATORY CONSTRAINT NOT (DEFINED(validUntil)) OR validFrom < validUntil;
+    END AccessGrant;
+
+    !!@ di.audit=full
+    CLASS CatalogAction =
+      performedAt : MANDATORY EventTime;
+      actionCode : MANDATORY (publish, archive, change_access_level, withdraw_version, withdraw_distribution);
+      reason : MANDATORY MTEXT;
+      commandId : MANDATORY INTERLIS.UUIDOID;
+      UNIQUE commandId;
+    END CatalogAction;
+
+    !!@ di.audit=full
+    ASSOCIATION MembershipGroup =
+      group -- {1} Principal;
+      membershipsAsGroup -- {0..*} GroupMembership;
+    END MembershipGroup;
+
+    !!@ di.audit=full
+    ASSOCIATION MembershipMember =
+      member -- {1} Principal;
+      membershipsAsMember -- {0..*} GroupMembership;
+    END MembershipMember;
+
+    !!@ di.audit=full
+    ASSOCIATION MembershipRevoker =
+      revokedBy -- {0..1} Principal;
+      revokedMemberships -- {0..*} GroupMembership;
+    END MembershipRevoker;
+
+    !!@ di.audit=full
+    ASSOCIATION AuthorityPrincipal =
+      principal -- {1} Principal;
+      authorities -- {0..*} AuthorityAssignment;
+    END AuthorityPrincipal;
+
+    !!@ di.audit=full
+    ASSOCIATION AuthorityActor =
+      assignedBy -- {1} Principal;
+      assignedAuthorities -- {0..*} AuthorityAssignment;
+    END AuthorityActor;
+
+    !!@ di.audit=full
+    ASSOCIATION AuthorityOffice =
+      office (EXTERNAL) -- {0..1} SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Office;
+      officeAuthorities -- {0..*} AuthorityAssignment;
+    END AuthorityOffice;
+
+    !!@ di.audit=full
+    ASSOCIATION AuthorityDataset =
+      dataset (EXTERNAL) -- {0..1} SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset;
+      datasetAuthorities -- {0..*} AuthorityAssignment;
+    END AuthorityDataset;
+
+    !!@ di.audit=full
+    ASSOCIATION RequestApplicant =
+      applicant -- {1} Principal;
+      requests -- {0..*} AccessRequest;
+    END RequestApplicant;
+
+    !!@ di.audit=full
+    ASSOCIATION DecisionBeneficiary =
+      beneficiary -- {1} Principal;
+      decisionsFor -- {0..*} AccessDecision;
+    END DecisionBeneficiary;
+
+    !!@ di.audit=full
+    ASSOCIATION DecisionActor =
+      actor -- {1} Principal;
+      decisionsBy -- {0..*} AccessDecision;
+    END DecisionActor;
+
+    !!@ di.audit=full
+    ASSOCIATION DecisionRequest =
+      request -- {0..1} AccessRequest;
+      decisions -- {0..*} AccessDecision;
+    END DecisionRequest;
+
+    !!@ di.audit=full
+    ASSOCIATION DecisionSupersedes =
+      supersedes -- {0..1} AccessDecision;
+      supersededBy -- {0..*} AccessDecision;
+    END DecisionSupersedes;
+
+    !!@ di.audit=full
+    ASSOCIATION GrantBeneficiary =
+      beneficiary -- {1} Principal;
+      grants -- {0..*} AccessGrant;
+    END GrantBeneficiary;
+
+    !!@ di.audit=full
+    ASSOCIATION GrantDecision =
+      grantingDecision -- {1} AccessDecision;
+      issuedGrants -- {0..*} AccessGrant;
+    END GrantDecision;
+
+    !!@ di.audit=full
+    ASSOCIATION GrantRevocation =
+      revocationDecision -- {0..1} AccessDecision;
+      revokedGrants -- {0..*} AccessGrant;
+    END GrantRevocation;
+
+    !!@ di.audit=full
+    ASSOCIATION ActionActor =
+      actor -- {1} Principal;
+      catalogActions -- {0..*} CatalogAction;
+    END ActionActor;
+
+    !!@ di.audit=full
+    ASSOCIATION ActionVersion =
+      affectedVersion (EXTERNAL) -- {0..1} SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataVersion;
+      versionActions -- {0..*} CatalogAction;
+    END ActionVersion;
+
+    !!@ di.audit=full
+    ASSOCIATION ActionDistribution =
+      affectedDistribution (EXTERNAL) -- {0..1} SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Distribution;
+      distributionActions -- {0..*} CatalogAction;
+    END ActionDistribution;
+
+    !!@ di.audit=full
+    ASSOCIATION AccessRequestDataset =
+      dataset (EXTERNAL) -- {1} SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset;
+      accessrequests -- {0..*} AccessRequest;
+    END AccessRequestDataset;
+
+    !!@ di.audit=full
+    ASSOCIATION AccessDecisionDataset =
+      dataset (EXTERNAL) -- {1} SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset;
+      accessdecisions -- {0..*} AccessDecision;
+    END AccessDecisionDataset;
+
+    !!@ di.audit=full
+    ASSOCIATION AccessGrantDataset =
+      dataset (EXTERNAL) -- {1} SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset;
+      accessgrants -- {0..*} AccessGrant;
+    END AccessGrantDataset;
+
+    !!@ di.audit=full
+    ASSOCIATION CatalogActionDataset =
+      dataset (EXTERNAL) -- {1} SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset;
+      catalogactions -- {0..*} CatalogAction;
+    END CatalogActionDataset;
+
+    CONSTRAINTS OF AuthorityAssignment =
+      MANDATORY CONSTRAINT (DEFINED(office) OR DEFINED(dataset)) AND NOT (DEFINED(office) AND DEFINED(dataset));
+    END;
+    CONSTRAINTS OF GroupMembership =
+      MANDATORY CONSTRAINT group->kind == #group;
+      MANDATORY CONSTRAINT member->kind != #group;
+      MANDATORY CONSTRAINT (DEFINED(revokedAt) AND DEFINED(revokedBy)) OR NOT (DEFINED(revokedAt) OR DEFINED(revokedBy));
+    END;
+    CONSTRAINTS OF AccessRequest =
+      MANDATORY CONSTRAINT applicant->kind == #user;
+    END;
+    CONSTRAINTS OF AccessDecision =
+      MANDATORY CONSTRAINT ((kind == #approve OR kind == #deny) AND DEFINED(request)) OR ((kind == #direct_grant OR kind == #revoke) AND NOT (DEFINED(request)));
+    END;
+    CONSTRAINTS OF AccessGrant =
+      MANDATORY CONSTRAINT (DEFINED(revokedAt) AND DEFINED(revocationDecision)) OR NOT (DEFINED(revokedAt) OR DEFINED(revocationDecision));
+      MANDATORY CONSTRAINT grantingDecision->kind == #approve OR grantingDecision->kind == #direct_grant;
+    END;
+  END Access;
+END SO_AGI_DataInfrastructure_Access_20261104.

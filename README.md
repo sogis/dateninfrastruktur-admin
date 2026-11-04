@@ -22,3 +22,11 @@ Geprüft werden Bootstart, echte ORM-DML, identische Backend-PID/Transaktions-ID
 bei Actorbindung und Trigger, äusserer Rollback nach Flush und Actortrennung
 bei Poolgrösse1. Fachmodelle, produktiver DB-/Securityvertrag und UI folgen erst
 nach unabhängigem MA-0-Gate. Kein ungeprüftes Native-Versprechen.
+
+MA-A-Modelle und echte XTF-Validierung:
+
+```sh
+python3 scripts/test_models.py
+```
+
+Invarianten und noch offene DB-/Servicepflichten: `models/constraints.md`.
