@@ -1,14 +1,20 @@
+buildscript {
+    repositories { mavenCentral() }
+    dependencies { classpath 'org.apache.cayenne.plugins:cayenne-gradle-plugin:5.0-M3'; classpath 'org.postgresql:postgresql:42.7.14' }
+}
 plugins {
     id 'java'
     id 'org.springframework.boot' version '4.1.2'
     id 'io.spring.dependency-management' version '1.1.7'
 }
+apply plugin: 'org.apache.cayenne'
 group = 'ch.so.agi'
 java { toolchain { languageVersion = JavaLanguageVersion.of(25) } }
 repositories { mavenCentral() }
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webmvc'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.apache.cayenne:cayenne:5.0-M3'
     runtimeOnly 'org.postgresql:postgresql'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -22,4 +28,43 @@ tasks.register('integrationTest', Test) {
     classpath = sourceSets.test.runtimeClasspath
     include '**/*IT.class'
     useJUnitPlatform()
+}
+
+cdbimport {
+    map 'src/main/resources/cayenne/management.map.xml'
+    adapter 'org.apache.cayenne.dba.postgres.PostgresAdapter'
+    dataSource {
+        url System.getenv('DI_MAPPING_URL') ?: 'jdbc:postgresql://127.0.0.1:1/unconfigured'
+        username System.getenv('DI_MAPPING_USER') ?: 'unconfigured'
+        password System.getenv('DI_MAPPING_PASSWORD') ?: ''
+        driver 'org.postgresql.Driver'
+    }
+    dbImport {
+        schema 'di_management'
+        excludeTable 't_ili2db_.*'
+        defaultPackage 'ch.so.agi.dateninfrastruktur.admin.model'
+    }
+}
+cgen {
+    map 'src/main/resources/cayenne/management.map.xml'
+    destDir 'src/main/java'
+}
+
+tasks.named('cgen') { mustRunAfter tasks.named('cdbimport') }
+
+tasks.register('normalizeCayenneUuid', Exec) {
+    commandLine 'python3', 'scripts/normalize_cayenne_uuid.py'
+    mustRunAfter tasks.named('cdbimport')
+}
+tasks.named('cgen') { dependsOn tasks.named('normalizeCayenneUuid') }
+
+tasks.named('cgen') { outputs.upToDateWhen { false } }
+
+tasks.named('processResources') {
+    from('db/persistence-contract.properties') { into 'management' }
+}
+// PostgreSQL contents and credentials are external state, not reusable task outputs.
+tasks.named('integrationTest') {
+    outputs.upToDateWhen { false }
+    outputs.cacheIf { false }
 }

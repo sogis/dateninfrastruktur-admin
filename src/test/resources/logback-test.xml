@@ -1,0 +1,1 @@
+<configuration><logger name="cayenne-sql" level="OFF"/><root level="WARN"/></configuration>

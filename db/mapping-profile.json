@@ -1,0 +1,34 @@
+{
+  "schema": "di_management",
+  "tools": {
+    "ili2pg": {
+      "version": "5.5.2",
+      "url": "https://downloads.interlis.ch/ili2pg/ili2pg-5.5.2.zip",
+      "sha256": "f923ba7e7f0c09724d3b7bda004441d1b41712384332201faffb8b873baabce4"
+    },
+    "ili2c": {
+      "version": "5.6.9",
+      "url": "https://downloads.interlis.ch/ili2c/ili2c-5.6.9.zip",
+      "sha256": "0d6fc5dc739a490ef6b027072d58281bb0731c932f03d95662f83d20dc07c8ee"
+    },
+    "ilivalidator": {
+      "version": "1.15.0",
+      "url": "https://downloads.interlis.ch/ilivalidator/ilivalidator-1.15.0.zip",
+      "sha256": "df7ee8961743e3dfc586f646af4f63d49dabf920e98a4836a32edf676d0b20c7"
+    }
+  },
+  "options": [
+    "--createMetaInfo",
+    "--createStdCols",
+    "--createTidCol",
+    "--createFk",
+    "--createFkIdx",
+    "--createUnique",
+    "--createNumChecks",
+    "--setupPgExt"
+  ],
+  "models": {
+    "SO_AGI_DataInfrastructure_Access_20261104.ili": "c19e3bea780d3b17575cf77c68b1a596cbdea3ee243cb2771bfbab06e79df5fd",
+    "SO_AGI_DataInfrastructure_Catalog_20261104.ili": "91e1fc0b33f31395c6f19c69bc75b797fab7f0d2c5ce94a02ac2dd736c920368"
+  }
+}
