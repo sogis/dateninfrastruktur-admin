@@ -1,40 +1,40 @@
 # dateninfrastruktur-admin
 
-Management-/Access-Anwendung: MA-0, MA-A und MA-B unabhängig abgenommen;
-MA-C und MA-D unabhängig abgenommen; MA-E-Dateikette und Gesamtintegration implementiert, Gate im STACK.
-Java25, Spring Boot4.1.2 GA, Apache Cayenne5.0-M3; kein JPA/Hibernate.
-Gesamtauftrag im Schwesterrepo unter
-`dateninfrastruktur-dev-stack/docs/implementation/management-and-access/`.
+Management-/Access-Anwendung mit Java25, Spring Boot4.1.2 und Apache Cayenne5.0-M3;
+kein JPA/Hibernate. Modelle, Transaktionen, Audit und fachliche Autorisierung aus
+MA-0–E bleiben erhalten. Aktueller Betriebsauftrag ist MA-F im Schwesterrepo
+`dateninfrastruktur-dev-stack/docs/implementation/compose-consolidation/`.
+
+Der normale Start gehört ausschliesslich zum gemeinsamen Compose-Stack:
 
 ```sh
-python3 scripts/setup.py
-./gradlew bootJar
-python3 scripts/identity_runtime.py start
+cd ../dateninfrastruktur-dev-stack
+./scripts/setup.sh
+./scripts/up.sh --skip-build
+./scripts/status.sh
 ```
 
-Explizites Setup erhält eigene Daten/Secrets und importiert bekannte Schemata
-nicht erneut. Details zum JVM-/Keycloak-/APISIX-Start, lokalen Operatorbootstrap,
-URLs, Testcredentials, Grenzen und Cleanup: [Managementbetrieb](docs/management-web.md).
-DB-Portal/Legacyübernahme: [Legacyimport](docs/legacy-import.md) und PUBLIC/docs/database-catalog.md.
-Private Dateiauslieferung und Standardstart: [Dateibetrieb](docs/managed-downloads.md).
+Bestehende Daten benötigen zuerst die kontrollierte Migration, keinen leeren
+Neuaufbau. Siehe [Betrieb](../dateninfrastruktur-dev-stack/docs/operations.md),
+[Übernahme/Rückfall](../dateninfrastruktur-dev-stack/docs/migration-ma-f.md) und
+[aktuellen Abnahmestand](../dateninfrastruktur-dev-stack/docs/implementation/compose-consolidation/WORK_QUEUE.md).
+Konfiguration und Secrets liegen nur im aktiven STACK/.runtime-Bereich.
+`setup.py`, `managed_setup.py`, `managed_runtime.py`, `identity_runtime.py` und
+`run.py` delegieren; sie erzeugen keine eigenen Container oder Host-JVM-Instanzen.
 
-```sh
-python3 scripts/test_models.py
-python3 scripts/test_persistence_all.py
-python3 scripts/test_management_all.py
-python3 scripts/test_catalog_all.py
-python3 scripts/compatibility.py
-```
+Schema-/Auditwerkzeuge benötigen einen expliziten PostgreSQL-Toolkontext und laufen
+über Compose. Bei Bestand werden Vertrag, Mapping und Audit nur geprüft.
+Die vorhandenen Javaoperatoren für Legacyimport und Dateiverifikation bleiben
+über STACK/scripts/compose_operator.py erreichbar. Kein automatischer Fachseed.
 
-Die Persistenzsuite verwendet einen neuen eigenen nativen PG16/PostGIS-Container,
-zufälligen Loopbackport und frische Testcredentials. Nur dieser Container und
-seine eigenen anonymen Volumes werden entfernt. Bei vorhandenem persönlichem
-Runtimezustand stoppt sie; kein impliziter Reset. Kein Zugriff auf Nutzer-.env
-oder fremde Dienste. Java25/Docker/Python3 erforderlich; gepinnte Toolarchive
-werden bei Bedarf mit SHA256 geprüft heruntergeladen.
+Javafachtests und bestehende JVM-/Native-Gradle-Buildoptionen bleiben erhalten.
+Die früheren separaten Python-Containerharnesses sind retired; aktuelle isolierte
+Integrationstests: STACK/scripts/test-consolidation.sh --phase MA-F1/MA-F2/MA-F3/MA-F4.
+Die unveränderten Modelle lassen sich weiterhin ausdrücklich mit
+`python3 scripts/test_models.py` kompilieren/validieren; das ist kein Normalstart.
 
-Invarianten: `models/constraints.md`.
-Betrieb: `docs/management-operations.md`.
-Mapping/Transaktionen/Audit/Migration/Restore: `docs/schema-lifecycle.md`.
-Rohbelege ausschliesslich im ignorierten `.runtime/`. Keine ungeprüfte Native-
-oder Produktionszusage und keine persönliche ClickHouse-Rechteprojektion.
+Technische Verträge: [Modellinvarianten](models/constraints.md),
+[Schema/Audit/Mapping](docs/schema-lifecycle.md), [Legacyimport](docs/legacy-import.md).
+Historische Laufzeitbeispiele in den MA-A–E-Dokumenten sind keine zweite aktive
+Betriebsarchitektur. Rohbelege privat unter .runtime; keine Produktions-/Native-
+Zusage und keine persönliche ClickHouse-Rechteprojektion.

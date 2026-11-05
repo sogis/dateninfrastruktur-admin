@@ -1,5 +1,11 @@
 # Management-Schema und Audit-Lebenszyklus
 
+> MA-F: Der normale Betrieb und die Operatoren verwenden ausschliesslich den
+> gemeinsamen [STACK-Composekontext](../../dateninfrastruktur-dev-stack/docs/operations.md).
+> Frühere separate Python-/Host-JVM-Laufzeitbeispiele hier sind historisch; die
+> fachlichen, Modell-, Mapping- und Auditverträge bleiben gültig.
+
+
 Der folgende Grundvertrag stammt aus MA-B. MA-C ergänzt Receipt-/Webvertrag
 (V007), MA-D die technische Legacyherkunft (V008); siehe management-web.md und
 legacy-import.md. Beide Schritte sind explizite gepinnte additive Upgrades.

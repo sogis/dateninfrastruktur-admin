@@ -1,5 +1,11 @@
 # Explizite Legacyübernahme – MA-D
 
+> MA-F: Der normale Betrieb und die Operatoren verwenden ausschliesslich den
+> gemeinsamen [STACK-Composekontext](../../dateninfrastruktur-dev-stack/docs/operations.md).
+> Frühere separate Python-/Host-JVM-Laufzeitbeispiele hier sind historisch; die
+> fachlichen, Modell-, Mapping- und Auditverträge bleiben gültig.
+
+
 Einmaliger **Java**-Importer über Cayenne, keine laufende zweite Änderungsquelle.
 `LegacyCatalogImportCommand`/`LegacyCatalogImportService` lesen die lokale
 PublishedCatalog-Datei namespace-aware und ohne DTD-/externe Entitäten.

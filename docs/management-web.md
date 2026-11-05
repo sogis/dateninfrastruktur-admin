@@ -1,5 +1,11 @@
 # Management und Selbstbedienung – MA-C
 
+> MA-F: Der normale Betrieb und die Operatoren verwenden ausschliesslich den
+> gemeinsamen [STACK-Composekontext](../../dateninfrastruktur-dev-stack/docs/operations.md).
+> Frühere separate Python-/Host-JVM-Laufzeitbeispiele hier sind historisch; die
+> fachlichen, Modell-, Mapping- und Auditverträge bleiben gültig.
+
+
 MA-0, MA-A und MA-B sind unabhängig akzeptiert. MA-C implementiert Verwaltung,
 Selbstbedienung und den Authorizationkern. Die Phasenfreigabe erfolgt nur über
 den gebundenen unabhängigen OpenCode-Bericht im STACK. Sodata-DB-Betrieb und

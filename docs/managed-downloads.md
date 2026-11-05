@@ -1,5 +1,11 @@
 # Management-/Dateibetrieb
 
+> MA-F: Der normale Betrieb und die Operatoren verwenden ausschliesslich den
+> gemeinsamen [STACK-Composekontext](../../dateninfrastruktur-dev-stack/docs/operations.md).
+> Frühere separate Python-/Host-JVM-Laufzeitbeispiele hier sind historisch; die
+> fachlichen, Modell-, Mapping- und Auditverträge bleiben gültig.
+
+
 ## Lokale Laufzeit
 
 Aus STACK `scripts/management/setup.sh` einmal ausdrücklich ausführen, dann

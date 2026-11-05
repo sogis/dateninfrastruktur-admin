@@ -1,5 +1,11 @@
 # Lokaler Managementbetrieb – MA-B-Persistenz
 
+> MA-F: Der normale Betrieb und die Operatoren verwenden ausschliesslich den
+> gemeinsamen [STACK-Composekontext](../../dateninfrastruktur-dev-stack/docs/operations.md).
+> Frühere separate Python-/Host-JVM-Laufzeitbeispiele hier sind historisch; die
+> fachlichen, Modell-, Mapping- und Auditverträge bleiben gültig.
+
+
 Für den aktuellen MA-C-Web-/OIDC-Betrieb siehe [management-web.md](management-web.md).
 Die folgenden Angaben beschreiben den separat testbaren Persistenzstand.
 
