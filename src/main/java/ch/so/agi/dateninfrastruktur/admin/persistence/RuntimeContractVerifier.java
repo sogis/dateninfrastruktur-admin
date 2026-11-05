@@ -15,7 +15,7 @@ public final class RuntimeContractVerifier {
             if(map==null || !properties.getProperty("datamap.sha256").equals(HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(map.readAllBytes()))))throw new IllegalStateException("Packaged Cayenne mapping differs from persistence contract");
         }
         String fingerprint=HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(contract));
-        try(var connection=source.getConnection();var statement=connection.createStatement();var result=statement.executeQuery("SELECT di_ops.runtime_contract(),di_ops.contract_fingerprint()")){
+        try(var connection=source.getConnection();var statement=connection.createStatement();var result=statement.executeQuery("SELECT di_ops.runtime_contract() AND di_ops.single_storage_contract(),di_ops.contract_fingerprint()")){
             if(!result.next() || !result.getBoolean(1) || !fingerprint.equals(result.getString(2)))throw new IllegalStateException("Management schema/audit contract is not ready; run explicit setup");
         }
     }

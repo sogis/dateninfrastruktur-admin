@@ -11,7 +11,7 @@ class DownloadAuthorizationRepositoryIT {
     static UUID file(ManagementFixture f,UUID root,int sequence){return f.unit.execute(f.manager,command("operator.register_fixture"),ctx->{
         var dataset=ObjectSelect.query(Dataset.class).where(Dataset.T_ILI_TID.eq(root)).selectOne(ctx);
         var version=ctx.newObject(Dataversion.class);version.setTIliTid(UUID.randomUUID());version.setIssue1(dataset.getDatasetissues().getFirst());version.setVersionkey("v"+sequence);version.setAsequence(sequence);version.setAvailability("available");version.setValidationstatus("success");version.setAcceptedat(CayenneSql.now(ctx));
-        var distribution=ctx.newObject(Distribution.class);UUID id=UUID.randomUUID();distribution.setTIliTid(id);distribution.setVersion1(version);distribution.setAformat("csv");distribution.setFilename("data.csv");distribution.setMediatype("text/csv");distribution.setAvailability("available");distribution.setBytesize(10L);distribution.setSha256("0".repeat(64));distribution.setStorageprofile("private-test");distribution.setObjectkey("downloads/"+id+"/data.csv");return id;
+        var distribution=ctx.newObject(Distribution.class);UUID id=UUID.randomUUID();distribution.setTIliTid(id);distribution.setVersion1(version);distribution.setAformat("csv");distribution.setFilename("data.csv");distribution.setMediatype("text/csv");distribution.setAvailability("available");distribution.setBytesize(10L);distribution.setSha256("0".repeat(64));distribution.setObjectkey("downloads/"+id+"/data.csv");return id;
     });}
     @Test void freshSingleStatementEvaluatesAllAvailableVersionsGroupsValidityAndRevocation(){
         try(var f=new ManagementFixture()){

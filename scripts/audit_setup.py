@@ -32,7 +32,7 @@ def resolve():
  links={}
  for x in mappings:
   if x['target']:links.setdefault(x['colowner'],[]).append((x['sqlname'],x['target']))
- root=elements['SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset']
+ root=elements['SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset']
  for t,p in policies.items():
   if not p['model_elements']:raise RuntimeError('physical table without audit policy: '+t)
   p['model_elements'].sort();p['redacted_columns'].sort()

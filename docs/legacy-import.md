@@ -1,3 +1,7 @@
+> Historische Referenz: Der Legacy-Metadatenimport wurde in MA-G1 aus Produktcode,
+> Gradle und Operator-API entfernt. Die folgenden früheren Aufrufe sind nicht mehr aktiv.
+> Bestehende Herkunftsdaten und Auditgeschichte bleiben erhalten.
+
 # Explizite Legacyübernahme – MA-D
 
 > MA-F: Der normale Betrieb und die Operatoren verwenden ausschliesslich den

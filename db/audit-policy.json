@@ -2,12 +2,12 @@
   {
     "table": "accessdecision",
     "model_elements": [
-      "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessDecision",
-      "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessDecisionDataset",
-      "SO_AGI_DataInfrastructure_Access_20261104.Access.DecisionActor",
-      "SO_AGI_DataInfrastructure_Access_20261104.Access.DecisionBeneficiary",
-      "SO_AGI_DataInfrastructure_Access_20261104.Access.DecisionRequest",
-      "SO_AGI_DataInfrastructure_Access_20261104.Access.DecisionSupersedes"
+      "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessDecision",
+      "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessDecisionDataset",
+      "SO_AGI_DataInfrastructure_Access_20261105.Access.DecisionActor",
+      "SO_AGI_DataInfrastructure_Access_20261105.Access.DecisionBeneficiary",
+      "SO_AGI_DataInfrastructure_Access_20261105.Access.DecisionRequest",
+      "SO_AGI_DataInfrastructure_Access_20261105.Access.DecisionSupersedes"
     ],
     "redacted_columns": [],
     "dataset_path": [
@@ -21,11 +21,11 @@
   {
     "table": "accessgrant",
     "model_elements": [
-      "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessGrant",
-      "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessGrantDataset",
-      "SO_AGI_DataInfrastructure_Access_20261104.Access.GrantBeneficiary",
-      "SO_AGI_DataInfrastructure_Access_20261104.Access.GrantDecision",
-      "SO_AGI_DataInfrastructure_Access_20261104.Access.GrantRevocation"
+      "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessGrant",
+      "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessGrantDataset",
+      "SO_AGI_DataInfrastructure_Access_20261105.Access.GrantBeneficiary",
+      "SO_AGI_DataInfrastructure_Access_20261105.Access.GrantDecision",
+      "SO_AGI_DataInfrastructure_Access_20261105.Access.GrantRevocation"
     ],
     "redacted_columns": [],
     "dataset_path": [
@@ -39,9 +39,9 @@
   {
     "table": "accessrequest",
     "model_elements": [
-      "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessRequest",
-      "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessRequestDataset",
-      "SO_AGI_DataInfrastructure_Access_20261104.Access.RequestApplicant"
+      "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessRequest",
+      "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessRequestDataset",
+      "SO_AGI_DataInfrastructure_Access_20261105.Access.RequestApplicant"
     ],
     "redacted_columns": [],
     "dataset_path": [
@@ -55,8 +55,8 @@
   {
     "table": "attributedefinition",
     "model_elements": [
-      "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.AttributeDefinition",
-      "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.AttributeSchema"
+      "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.AttributeDefinition",
+      "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.AttributeSchema"
     ],
     "redacted_columns": [],
     "dataset_path": [],
@@ -65,11 +65,11 @@
   {
     "table": "authorityassignment",
     "model_elements": [
-      "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityActor",
-      "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityAssignment",
-      "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityDataset",
-      "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityOffice",
-      "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityPrincipal"
+      "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityActor",
+      "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityAssignment",
+      "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityDataset",
+      "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityOffice",
+      "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityPrincipal"
     ],
     "redacted_columns": [],
     "dataset_path": [
@@ -83,11 +83,11 @@
   {
     "table": "catalogaction",
     "model_elements": [
-      "SO_AGI_DataInfrastructure_Access_20261104.Access.ActionActor",
-      "SO_AGI_DataInfrastructure_Access_20261104.Access.ActionDistribution",
-      "SO_AGI_DataInfrastructure_Access_20261104.Access.ActionVersion",
-      "SO_AGI_DataInfrastructure_Access_20261104.Access.CatalogAction",
-      "SO_AGI_DataInfrastructure_Access_20261104.Access.CatalogActionDataset"
+      "SO_AGI_DataInfrastructure_Access_20261105.Access.ActionActor",
+      "SO_AGI_DataInfrastructure_Access_20261105.Access.ActionDistribution",
+      "SO_AGI_DataInfrastructure_Access_20261105.Access.ActionVersion",
+      "SO_AGI_DataInfrastructure_Access_20261105.Access.CatalogAction",
+      "SO_AGI_DataInfrastructure_Access_20261105.Access.CatalogActionDataset"
     ],
     "redacted_columns": [],
     "dataset_path": [
@@ -101,7 +101,7 @@
   {
     "table": "dataschema",
     "model_elements": [
-      "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataSchema"
+      "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataSchema"
     ],
     "redacted_columns": [],
     "dataset_path": [],
@@ -110,10 +110,10 @@
   {
     "table": "dataset",
     "model_elements": [
-      "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.CurrentIssue",
-      "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset",
-      "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetOwner",
-      "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetPublisher"
+      "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CurrentIssue",
+      "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset",
+      "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetOwner",
+      "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetPublisher"
     ],
     "redacted_columns": [],
     "dataset_path": [],
@@ -122,9 +122,9 @@
   {
     "table": "datasetissue",
     "model_elements": [
-      "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.CurrentVersion",
-      "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetIssue",
-      "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.IssueDataset"
+      "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CurrentVersion",
+      "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetIssue",
+      "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.IssueDataset"
     ],
     "redacted_columns": [],
     "dataset_path": [
@@ -138,8 +138,8 @@
   {
     "table": "datasetkeyword",
     "model_elements": [
-      "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetKeyword",
-      "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.KeywordDataset"
+      "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetKeyword",
+      "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.KeywordDataset"
     ],
     "redacted_columns": [],
     "dataset_path": [
@@ -153,8 +153,8 @@
   {
     "table": "datasettheme",
     "model_elements": [
-      "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetTheme",
-      "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.ThemeDataset"
+      "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetTheme",
+      "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.ThemeDataset"
     ],
     "redacted_columns": [],
     "dataset_path": [
@@ -168,9 +168,9 @@
   {
     "table": "dataversion",
     "model_elements": [
-      "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataVersion",
-      "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.VersionIssue",
-      "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.VersionSchema"
+      "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataVersion",
+      "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.VersionIssue",
+      "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.VersionSchema"
     ],
     "redacted_columns": [],
     "dataset_path": [
@@ -188,8 +188,8 @@
   {
     "table": "distribution",
     "model_elements": [
-      "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Distribution",
-      "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DistributionVersion"
+      "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Distribution",
+      "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DistributionVersion"
     ],
     "redacted_columns": [],
     "dataset_path": [
@@ -211,10 +211,10 @@
   {
     "table": "groupmembership",
     "model_elements": [
-      "SO_AGI_DataInfrastructure_Access_20261104.Access.GroupMembership",
-      "SO_AGI_DataInfrastructure_Access_20261104.Access.MembershipGroup",
-      "SO_AGI_DataInfrastructure_Access_20261104.Access.MembershipMember",
-      "SO_AGI_DataInfrastructure_Access_20261104.Access.MembershipRevoker"
+      "SO_AGI_DataInfrastructure_Access_20261105.Access.GroupMembership",
+      "SO_AGI_DataInfrastructure_Access_20261105.Access.MembershipGroup",
+      "SO_AGI_DataInfrastructure_Access_20261105.Access.MembershipMember",
+      "SO_AGI_DataInfrastructure_Access_20261105.Access.MembershipRevoker"
     ],
     "redacted_columns": [],
     "dataset_path": [],
@@ -223,7 +223,7 @@
   {
     "table": "office",
     "model_elements": [
-      "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Office"
+      "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Office"
     ],
     "redacted_columns": [],
     "dataset_path": [],
@@ -232,7 +232,7 @@
   {
     "table": "principal",
     "model_elements": [
-      "SO_AGI_DataInfrastructure_Access_20261104.Access.Principal"
+      "SO_AGI_DataInfrastructure_Access_20261105.Access.Principal"
     ],
     "redacted_columns": [
       "displayname"

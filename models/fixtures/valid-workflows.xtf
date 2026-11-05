@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='utf-8'?>
-<ili:transfer xmlns:access="http://www.interlis.ch/xtf/2.4/SO_AGI_DataInfrastructure_Access_20261104" xmlns:catalog="http://www.interlis.ch/xtf/2.4/SO_AGI_DataInfrastructure_Catalog_20261104" xmlns:ili="http://www.interlis.ch/xtf/2.4/INTERLIS">
+<ili:transfer xmlns:access="http://www.interlis.ch/xtf/2.4/SO_AGI_DataInfrastructure_Access_20261105" xmlns:catalog="http://www.interlis.ch/xtf/2.4/SO_AGI_DataInfrastructure_Catalog_20261105" xmlns:ili="http://www.interlis.ch/xtf/2.4/INTERLIS">
   <ili:headersection>
     <ili:models>
-      <ili:model>SO_AGI_DataInfrastructure_Catalog_20261104</ili:model>
-      <ili:model>SO_AGI_DataInfrastructure_Access_20261104</ili:model>
+      <ili:model>SO_AGI_DataInfrastructure_Catalog_20261105</ili:model>
+      <ili:model>SO_AGI_DataInfrastructure_Access_20261105</ili:model>
     </ili:models>
     <ili:sender>Dateninfrastruktur MA-A synthetic fixture</ili:sender>
   </ili:headersection>
@@ -164,7 +164,6 @@
         <catalog:availability>available</catalog:availability>
         <catalog:byteSize>42</catalog:byteSize>
         <catalog:sha256>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</catalog:sha256>
-        <catalog:storageProfile>managed-private</catalog:storageProfile>
         <catalog:objectKey>downloads/60dc2f4e-312e-52cf-a0c3-03fb5a4d82ff/data.csv</catalog:objectKey>
         <catalog:version ili:ref="82d07c24-1368-58a6-9d98-e2c9e74700e6" />
       </catalog:Distribution>
@@ -175,7 +174,6 @@
         <catalog:availability>available</catalog:availability>
         <catalog:byteSize>42</catalog:byteSize>
         <catalog:sha256>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</catalog:sha256>
-        <catalog:storageProfile>managed-private</catalog:storageProfile>
         <catalog:objectKey>downloads/22579c26-05fd-586d-a659-595e4f489dff/data.csv</catalog:objectKey>
         <catalog:version ili:ref="08d16b74-ae1a-54c3-be9f-c73f8acd7b70" />
       </catalog:Distribution>
@@ -186,7 +184,6 @@
         <catalog:availability>available</catalog:availability>
         <catalog:byteSize>42</catalog:byteSize>
         <catalog:sha256>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</catalog:sha256>
-        <catalog:storageProfile>managed-private</catalog:storageProfile>
         <catalog:objectKey>downloads/ae45b64e-2a36-556b-94f9-ec98b5dfcfe4/data.csv</catalog:objectKey>
         <catalog:version ili:ref="9a29425f-e544-5ff0-af66-cfce58e20661" />
       </catalog:Distribution>
@@ -197,7 +194,6 @@
         <catalog:availability>available</catalog:availability>
         <catalog:byteSize>42</catalog:byteSize>
         <catalog:sha256>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</catalog:sha256>
-        <catalog:storageProfile>managed-private</catalog:storageProfile>
         <catalog:objectKey>downloads/e74dd53b-cadc-53f0-934c-cd928d597024/data.parquet</catalog:objectKey>
         <catalog:version ili:ref="9a29425f-e544-5ff0-af66-cfce58e20661" />
       </catalog:Distribution>
@@ -206,7 +202,6 @@
         <catalog:fileName>data.csv</catalog:fileName>
         <catalog:mediaType>text/csv</catalog:mediaType>
         <catalog:availability>prepared</catalog:availability>
-        <catalog:storageProfile>managed-private</catalog:storageProfile>
         <catalog:objectKey>downloads/f079601b-ab86-56cc-9c6d-42d5f8b6068e/data.csv</catalog:objectKey>
         <catalog:version ili:ref="42edca4b-4094-5f07-a5c1-6bfcf0d5639b" />
       </catalog:Distribution>
@@ -215,7 +210,6 @@
         <catalog:fileName>data.csv</catalog:fileName>
         <catalog:mediaType>text/csv</catalog:mediaType>
         <catalog:availability>withdrawn</catalog:availability>
-        <catalog:storageProfile>managed-private</catalog:storageProfile>
         <catalog:objectKey>downloads/6c24f2d8-4831-53b1-a8ca-ca4c7b76766f/data.csv</catalog:objectKey>
         <catalog:version ili:ref="3959abec-1fa8-570d-bbdc-63f027b7af1a" />
       </catalog:Distribution>

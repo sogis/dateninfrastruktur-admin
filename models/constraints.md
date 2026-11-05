@@ -1,6 +1,12 @@
 # Modellinvarianten und ausführbare Zuständigkeiten
 
-Zwei neue INTERLIS2.4-Modelle, keine zusätzliche Base-Familie. `Dataset(kind=series)`
+Aktueller MA-G1-Stand: Catalog/Access `20261105`, ein Storagebackend und
+UNIQUE `Distribution.objectKey`; der bekannte MA-F-Vorgänger liegt ausschliesslich
+unter `src/test/resources/upgrade/ma-f/models/`. Die nachstehenden MA-A–C-Spalten
+beschreiben die ursprüngliche Zuständigkeitsaufteilung; ausführbare aktuelle
+Nachweise stehen im Storage-and-Delivery-Auftrag.
+
+Zwei INTERLIS2.4-Modelle, keine zusätzliche Base-Familie. `Dataset(kind=series)`
 ist der einzige Rechteanker. Issue/Version/Distribution sind keine ACL-Ziele.
 Alle fachlichen Objekte besitzen UUIDOID; technische Schlüssel entstehen erst
 in MA-B aus dem tatsächlichen ili2pg-Mapping. Keine Tabellen-/Sequenznamen raten.
@@ -10,7 +16,7 @@ in MA-B aus dem tatsächlichen ili2pg-Mapping. Keine Tabellen-/Sequenznamen rate
 | Pflichtwerte, Domänen und Beziehungen | reale Pflichtattribute/Rollenkardinalitäten | generierte NOT NULL/FK prüfen und ergänzen | DTO-/Inputprüfung |
 | stabile UUID-OID | Topic UUIDOID; deterministische Test-UUIDs | TID-UUID, technische PK getrennt; Mapping real prüfen | UUID einmal erzeugen, niemals umdeuten |
 | Dataset.identifier/Office.identifier/abbreviation/Schema.identifier/Principal(issuer,subject) eindeutig | UNIQUE; negativer Identifierfall | reale Unique-Indizes prüfen | Konflikt verständlich melden |
-| Issue(dataset,issueKey), Version(issue,versionKey)/(issue,sequence), Attribut(schema,name)/(schema,ordinal), Thema/Keyword(dataset,value), Distribution(storageProfile,objectKey) eindeutig | UNIQUE über echte Rollen | reale Indizes ergänzen, falls Mapper nicht vollständig erzeugt | keine stillen Duplikate |
+| Issue(dataset,issueKey), Version(issue,versionKey)/(issue,sequence), Attribut(schema,name)/(schema,ordinal), Thema/Keyword(dataset,value), Distribution(objectKey) eindeutig | UNIQUE über echte Rollen | reale Indizes ergänzen, falls Mapper nicht vollständig erzeugt | keine stillen Duplikate |
 | einzig Dataset AccessLevel; keine gemeinsamen Metadatenkopien auf Child | Strukturprüfung am erzeugten IMD16 | keine zusätzlichen Child-ACL-Spalten/Tabellen | alle verfügbaren Dateien erben Rootrecht |
 | Authority genau ein Scope | echter XOR mit DEFINED, negativer Fall | CHECK office/dataset XOR | aktuelle Zuständigkeit innerhalb Schreibtransaktion |
 | gültige halb offene Intervalle | validFrom < validUntil, negative Probe; Requestende nach Requestzeit | CHECKs für Zeiten, DB-Zeit zur Auswertung | serverseitige Zeit, kein frei gesetztes asOf |

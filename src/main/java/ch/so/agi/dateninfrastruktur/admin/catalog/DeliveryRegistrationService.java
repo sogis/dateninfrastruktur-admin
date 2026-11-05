@@ -11,9 +11,9 @@ import ch.so.agi.dateninfrastruktur.admin.persistence.*;
 /** Operator/backend registration of confirmed deliveries; no loader, upload endpoint or arbitrary URL fetch. */
 public final class DeliveryRegistrationService {
     public record AcceptedVersion(UUID issue,UUID schema,String versionKey,int sequence,Instant acceptedAt,String sourceSha256,String sourceReference){}
-    public record PreparedDistribution(UUID version,UUID distributionId,String format,String fileName,String mediaType,String storageProfile){}
+    public record PreparedDistribution(UUID version,UUID distributionId,String format,String fileName,String mediaType){}
     public record ObjectEvidence(long byteSize,String sha256){}
-    @FunctionalInterface public interface PrivateObjectVerifier {ObjectEvidence verify(String storageProfile,String canonicalKey);}
+    @FunctionalInterface public interface PrivateObjectVerifier {ObjectEvidence verify(String canonicalKey);}
     private final AuditedUnitOfWork unit;private final AuthorityService authority;private final PrivateObjectVerifier verifier;
     private final AggregateWriteGuard guard=new AggregateWriteGuard();private final CommandReceiptRepository receipts=new CommandReceiptRepository();
     public DeliveryRegistrationService(AuditedUnitOfWork unit,AuthorityService authority,PrivateObjectVerifier verifier){this.unit=unit;this.authority=authority;this.verifier=verifier;}
@@ -36,18 +36,18 @@ public final class DeliveryRegistrationService {
         });
     }
     public UUID registerPrepared(ActorContext actor,CommandContext command,UUID dataset,long expected,PreparedDistribution input){
-        if(input.distributionId()==null || !Set.of("csv","xlsx","parquet","other").contains(input.format()) || input.fileName()==null || !input.fileName().matches("[A-Za-z0-9][A-Za-z0-9._-]{0,127}") || input.mediaType()==null || input.mediaType().isBlank() || input.mediaType().length()>255 || input.storageProfile()==null || !input.storageProfile().matches("[A-Za-z0-9_-]{1,80}"))throw BusinessException.invalid("Ungültige Dateiregistrierung.");
+        if(input.distributionId()==null || !Set.of("csv","xlsx","parquet","other").contains(input.format()) || input.fileName()==null || !input.fileName().matches("[A-Za-z0-9][A-Za-z0-9._-]{0,127}") || input.mediaType()==null || input.mediaType().isBlank() || input.mediaType().length()>255)throw BusinessException.invalid("Ungültige Dateiregistrierung.");
         return execute(actor,command,"register_distribution",dataset,expected,input,(ctx,root)->{
             var version=ObjectSelect.query(Dataversion.class).where(Dataversion.T_ILI_TID.eq(input.version())).selectOne(ctx);
             if(version==null || !dataset.equals(version.getIssue1().getDataset1().getTIliTid()) || !"available".equals(version.getAvailability()))throw BusinessException.invalid("Version gehört nicht zum Datensatz oder ist nicht verfügbar.");
-            var row=ctx.newObject(Distribution.class);row.setTIliTid(input.distributionId());row.setVersion1(version);row.setAformat(input.format());row.setFilename(input.fileName());row.setMediatype(input.mediaType());row.setStorageprofile(input.storageProfile());row.setObjectkey("downloads/"+input.distributionId()+"/"+input.fileName());row.setAvailability("prepared");return row.getTIliTid();
+            var row=ctx.newObject(Distribution.class);row.setTIliTid(input.distributionId());row.setVersion1(version);row.setAformat(input.format());row.setFilename(input.fileName());row.setMediatype(input.mediaType());row.setObjectkey("downloads/"+input.distributionId()+"/"+input.fileName());row.setAvailability("prepared");return row.getTIliTid();
         });
     }
     public UUID verifyAndActivate(ActorContext actor,CommandContext command,UUID dataset,long expected,UUID distribution){
         return execute(actor,command,"activate_distribution",dataset,expected,distribution,(ctx,root)->{
             var row=ObjectSelect.query(Distribution.class).where(Distribution.T_ILI_TID.eq(distribution)).selectOne(ctx);
             if(row==null || !dataset.equals(row.getVersion1().getIssue1().getDataset1().getTIliTid()) || !"prepared".equals(row.getAvailability()))throw BusinessException.conflict("Nur vorbereitete Dateien dieses Datensatzes können aktiviert werden.");
-            var evidence=verifier.verify(row.getStorageprofile(),row.getObjectkey());
+            var evidence=verifier.verify(row.getObjectkey());
             if(evidence==null || evidence.byteSize()<0 || evidence.sha256()==null || !evidence.sha256().matches("[0-9a-f]{64}"))throw BusinessException.invalid("Private Datei konnte nicht bestätigt werden.");
             row.setBytesize(evidence.byteSize());row.setSha256(evidence.sha256());row.setAvailability("available");return distribution;
         });

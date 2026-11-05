@@ -9,7 +9,7 @@ from persistence_contract import calculate
 from verify_physical_mapping import verify as verify_mapping
 def verify_existing():
     _,expected=calculate()
-    if sql('SELECT di_ops.runtime_contract();')!='t' or sql('SELECT di_ops.contract_fingerprint();')!=expected:raise RuntimeError('Existing contract differs; explicit reviewed migration required')
+    if sql('SELECT di_ops.runtime_contract() AND di_ops.single_storage_contract();')!='t' or sql('SELECT di_ops.contract_fingerprint();')!=expected:raise RuntimeError('Existing contract differs; explicit reviewed migration required')
     verify_mapping();verify(resolve());print('Existing management contract verified read-only; data/rights/audit retained')
 def setup():
     if not TARGET_MODE:raise RuntimeError('Compose setup requires an explicit PostgreSQL target')
@@ -26,7 +26,7 @@ def setup():
     commands+=['GRANT di_owner,di_audit_owner TO di_migrator;','REVOKE ALL ON DATABASE dateninfrastruktur_management FROM PUBLIC;','GRANT CONNECT ON DATABASE dateninfrastruktur_management TO di_migrator,di_writer,di_authz,di_public,di_audit_reader;']
     sql('BEGIN;'+''.join(commands)+'COMMIT;')
     jar=next((R/'.runtime/tools/ili2pg').glob('ili2pg-*.jar'))
-    args=['-jar',str(jar),'--schemaimport','--dbhost',os.environ['PGHOST'],'--dbport',os.environ['PGPORT'],'--dbdatabase',os.environ['PGDATABASE'],'--dbusr',os.environ['PGUSER'],'--dbpwd',os.environ['PGPASSWORD'],'--dbschema','di_management','--models','SO_AGI_DataInfrastructure_Catalog_20261104;SO_AGI_DataInfrastructure_Access_20261104','--modeldir',str(R/'models'),*json.loads((R/'db/mapping-profile.json').read_text())['options']]
+    args=['-jar',str(jar),'--schemaimport','--dbhost',os.environ['PGHOST'],'--dbport',os.environ['PGPORT'],'--dbdatabase',os.environ['PGDATABASE'],'--dbusr',os.environ['PGUSER'],'--dbpwd',os.environ['PGPASSWORD'],'--dbschema','di_management','--models','SO_AGI_DataInfrastructure_Catalog_20261105;SO_AGI_DataInfrastructure_Access_20261105','--modeldir',str(R/'models'),*json.loads((R/'db/mapping-profile.json').read_text())['options']]
     # Java @argfile keeps the password out of OS process arguments.
     with tempfile.NamedTemporaryFile(mode='w',dir=D,suffix='.args',delete=False) as f:
         f.write('\n'.join('"'+a.replace('\\','\\\\').replace('"','\\"').replace('\n','\\n')+'"' for a in args));path=pathlib.Path(f.name)
@@ -42,8 +42,11 @@ def setup():
             table=ident(policy['table']);sql('CREATE TRIGGER di_aggregate_revision AFTER INSERT OR UPDATE OR DELETE ON di_management.'+table+' FOR EACH ROW EXECUTE FUNCTION di_ops.touch_aggregate();')
     # Use the unchanged accepted migration SQL and fingerprint, without writing source files.
     sql((R/'db/migrations/V006__contract_fingerprint.sql').read_text())
-    from upgrade_contract import apply as upgrade
-    upgrade();_,fingerprint=calculate()
+    for name in ['V007__command_receipts.sql','V008__legacy_origin.sql','V009__principal_identity_migration.sql']:
+        sql('BEGIN;'+(R/'db/migrations'/name).read_text()+'COMMIT;')
+    sql("INSERT INTO di_ops.schema_revision(revision) VALUES('MA-G1-1');")
+    sql((R/'db/storage-contract.sql').read_text())
+    _,fingerprint=calculate()
     sql("INSERT INTO di_ops.contract_fingerprint(singleton,fingerprint) VALUES(true,'"+fingerprint+"');")
     verify_existing();print('Explicit empty management setup completed; no demo data or grants')
 if __name__=='__main__':

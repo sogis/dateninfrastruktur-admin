@@ -10,13 +10,13 @@ import tools.jackson.databind.ObjectMapper;
 /** Local operator only. Streams bytes from one configured private remote; never fetches user URLs. */
 public final class RclonePrivateObjectVerifier implements DeliveryRegistrationService.PrivateObjectVerifier {
     private final Path executable,config;
-    private final String profile,remote;
-    public RclonePrivateObjectVerifier(Path executable,Path config,String profile,String remote){
-        if(!executable.isAbsolute() || !config.isAbsolute() || !profile.matches("[A-Za-z0-9_-]{1,80}") || !remote.matches("[A-Za-z0-9_-]+:[A-Za-z0-9._-]+"))throw new IllegalArgumentException("Invalid fixed private storage configuration");
-        this.executable=executable;this.config=config;this.profile=profile;this.remote=remote;
+    private final String remote="storage:ch.so.daten";
+    public RclonePrivateObjectVerifier(Path executable,Path config){
+        if(!executable.isAbsolute() || !config.isAbsolute())throw new IllegalArgumentException("Invalid fixed private storage configuration");
+        this.executable=executable;this.config=config;
     }
-    public DeliveryRegistrationService.ObjectEvidence verify(String profile,String key){
-        if(!this.profile.equals(profile) || !key.matches("downloads/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/[A-Za-z0-9][A-Za-z0-9._-]{0,127}"))throw new IllegalArgumentException("Unregistered private storage path");
+    public DeliveryRegistrationService.ObjectEvidence verify(String key){
+        if(!key.matches("downloads/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/[A-Za-z0-9][A-Za-z0-9._-]{0,127}"))throw new IllegalArgumentException("Unregistered private storage path");
         long expectedSize=stat(key);
         Process process=null;
         try(var timer=Executors.newSingleThreadScheduledExecutor()){

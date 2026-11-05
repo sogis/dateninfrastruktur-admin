@@ -30,12 +30,12 @@ class ManagedDownloadFixtureIT {
                 f.catalog.transition(f.manager,ManagementFixture.command("publish"),root,f.version("dataset",root),"publish","Synthetischer Pilot");
                 if(kind.equals("open"))f.catalog.changeAccessLevel(f.manager,ManagementFixture.command("change_access_level"),root,f.version("dataset",root),"open","Anonymer Pilotzugang");
                 var issue=ObjectSelect.query(Dataset.class).where(Dataset.T_ILI_TID.eq(root)).selectOne(f.runtime.newContext()).getCurrentissue1().getTIliTid();
-                var delivery=new DeliveryRegistrationService(f.unit,f.authority,(p,k)->{throw new IllegalStateException("No fake verification in fixture");});
+                var delivery=new DeliveryRegistrationService(f.unit,f.authority,k->{throw new IllegalStateException("No fake verification in fixture");});
                 for(int sequence=1;sequence<=2;sequence++){
                     UUID version=delivery.registerAcceptedVersion(f.manager,ManagementFixture.command("register_version"),root,f.version("dataset",root),new DeliveryRegistrationService.AcceptedVersion(issue,null,"pilot-v"+sequence,sequence,Instant.now().minusSeconds(3600L*(3-sequence)),null,"urn:di:synthetic-delivery:"+sequence));
                     for(String format:List.of("csv","xlsx")){
                         UUID id=UUID.randomUUID();String filename="pilot-v"+sequence+"."+format;
-                        delivery.registerPrepared(f.manager,ManagementFixture.command("register_distribution"),root,f.version("dataset",root),new DeliveryRegistrationService.PreparedDistribution(version,id,format,filename,format.equals("csv")?"text/csv":"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet","managed"));
+                        delivery.registerPrepared(f.manager,ManagementFixture.command("register_distribution"),root,f.version("dataset",root),new DeliveryRegistrationService.PreparedDistribution(version,id,format,filename,format.equals("csv")?"text/csv":"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
                         files.add(Map.of("dataset",root.toString(),"kind",kind,"id",id.toString(),"filename",filename,"key","downloads/"+id+"/"+filename,"path","/downloads/"+id+"/"+filename));
                     }
                     new DatasetIssueService(f.unit,f.authority).setCurrentVersion(f.manager,ManagementFixture.command("set_current_version"),root,f.version("dataset",root),issue,version);

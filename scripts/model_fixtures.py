@@ -1,7 +1,7 @@
 """Deterministic synthetic XTF2.4 model fixtures; never production seeding."""
 from pathlib import Path
 import copy, uuid, xml.etree.ElementTree as E
-I='http://www.interlis.ch/xtf/2.4/INTERLIS'; C='SO_AGI_DataInfrastructure_Catalog_20261104'; A='SO_AGI_DataInfrastructure_Access_20261104'
+I='http://www.interlis.ch/xtf/2.4/INTERLIS'; C='SO_AGI_DataInfrastructure_Catalog_20261105'; A='SO_AGI_DataInfrastructure_Access_20261105'
 N={C:'http://www.interlis.ch/xtf/2.4/'+C,A:'http://www.interlis.ch/xtf/2.4/'+A}
 for prefix,uri in [('ili',I),('catalog',N[C]),('access',N[A])]:E.register_namespace(prefix,uri)
 def oid(key):return str(uuid.uuid5(uuid.UUID('8143cc8c-f5e6-41e7-8552-bdcd57be9ae9'),key))
@@ -31,7 +31,7 @@ def fixture():
   add(C,'DataVersion',key,versionKey=key,sequence=1 if key.endswith('v1') else 2,availability=status,acceptedAt='2026-10-01T12:00:00' if status=='available' else None,validationStatus='unknown',issue=ref(issue),schema=ref('schema'))
  for key,version,fmt,status in [('open-csv','open-default-v1','csv','available'),('old-csv','series-2024-v1','csv','available'),('new-csv','series-2025-v1','csv','available'),('new-parquet','series-2025-v1','parquet','available'),('prepared-file','prepared-version','csv','prepared'),('withdrawn-file','withdrawn-version','csv','withdrawn')]:
   filename='data.'+fmt
-  add(C,'Distribution',key,format=fmt,fileName=filename,mediaType='text/csv' if fmt=='csv' else 'application/vnd.apache.parquet',availability=status,byteSize=42 if status=='available' else None,sha256='a'*64 if status=='available' else None,storageProfile='managed-private',objectKey='downloads/'+oid(key)+'/'+filename,version=ref(version))
+  add(C,'Distribution',key,format=fmt,fileName=filename,mediaType='text/csv' if fmt=='csv' else 'application/vnd.apache.parquet',availability=status,byteSize=42 if status=='available' else None,sha256='a'*64 if status=='available' else None,objectKey='downloads/'+oid(key)+'/'+filename,version=ref(version))
  add(C,'DatasetTheme','theme',theme='Bevoelkerung',dataset=ref('series'))
  add(C,'DatasetKeyword','keyword',keyword='Bevölkerung',dataset=ref('series'))
  for key,kind in [('anna','user'),('ben','user'),('claudia','user'),('dora','user'),('bootstrap','service'),('team','group')]:

@@ -81,10 +81,6 @@ tasks.register('operator', JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     mainClass = 'ch.so.agi.dateninfrastruktur.admin.operator.AuthorityBootstrapCommand'
 }
-tasks.register('legacyImport', JavaExec) {
-    classpath = sourceSets.main.runtimeClasspath
-    mainClass = 'ch.so.agi.dateninfrastruktur.admin.legacy.LegacyCatalogImportCommand'
-}
 
 // Explicit test-profile tooling; never part of the web image or normal startup.
 tasks.register('composeTestRuntime', Copy) {
@@ -93,3 +89,7 @@ tasks.register('composeTestRuntime', Copy) {
     into('classes') { from sourceSets.main.output; from sourceSets.test.output }
     into('lib') { from configurations.testRuntimeClasspath }
 }
+
+// Generation remains an explicit development command; normal builds never introspect a DB.
+tasks.named('compileJava') { mustRunAfter tasks.named('cgen') }
+tasks.named('processResources') { mustRunAfter tasks.named('cdbimport'), tasks.named('normalizeCayenneUuid') }

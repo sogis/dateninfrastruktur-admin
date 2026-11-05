@@ -39,11 +39,9 @@ public abstract class _Distribution extends PersistentObject {
     public static final StringProperty<String> AVAILABILITY = PropertyFactory.createString("availability", String.class);
     public static final NumericProperty<Long> BYTESIZE = PropertyFactory.createNumeric("bytesize", Long.class);
     public static final StringProperty<String> FILENAME = PropertyFactory.createString("filename", String.class);
-    public static final StringProperty<String> LEGACYACCESSURL = PropertyFactory.createString("legacyaccessurl", String.class);
     public static final StringProperty<String> MEDIATYPE = PropertyFactory.createString("mediatype", String.class);
     public static final StringProperty<String> OBJECTKEY = PropertyFactory.createString("objectkey", String.class);
     public static final StringProperty<String> SHA256 = PropertyFactory.createString("sha256", String.class);
-    public static final StringProperty<String> STORAGEPROFILE = PropertyFactory.createString("storageprofile", String.class);
     public static final BaseProperty<UUID> T_ILI_TID = PropertyFactory.createBase("tIliTid", UUID.class);
     public static final ListProperty<Catalogaction> CATALOGACTIONS = PropertyFactory.createList("catalogactions", Catalogaction.class);
     public static final EntityProperty<Dataversion> VERSION1 = PropertyFactory.createEntity("version1", Dataversion.class);
@@ -52,11 +50,9 @@ public abstract class _Distribution extends PersistentObject {
     protected String availability;
     protected Long bytesize;
     protected String filename;
-    protected String legacyaccessurl;
     protected String mediatype;
     protected String objectkey;
     protected String sha256;
-    protected String storageprofile;
     protected UUID tIliTid;
 
     protected Object catalogactions;
@@ -102,16 +98,6 @@ public abstract class _Distribution extends PersistentObject {
         return this.filename;
     }
 
-    public void setLegacyaccessurl(String legacyaccessurl) {
-        beforePropertyWrite("legacyaccessurl", this.legacyaccessurl, legacyaccessurl);
-        this.legacyaccessurl = legacyaccessurl;
-    }
-
-    public String getLegacyaccessurl() {
-        beforePropertyRead("legacyaccessurl");
-        return this.legacyaccessurl;
-    }
-
     public void setMediatype(String mediatype) {
         beforePropertyWrite("mediatype", this.mediatype, mediatype);
         this.mediatype = mediatype;
@@ -140,16 +126,6 @@ public abstract class _Distribution extends PersistentObject {
     public String getSha256() {
         beforePropertyRead("sha256");
         return this.sha256;
-    }
-
-    public void setStorageprofile(String storageprofile) {
-        beforePropertyWrite("storageprofile", this.storageprofile, storageprofile);
-        this.storageprofile = storageprofile;
-    }
-
-    public String getStorageprofile() {
-        beforePropertyRead("storageprofile");
-        return this.storageprofile;
     }
 
     public void setTIliTid(UUID tIliTid) {
@@ -198,16 +174,12 @@ public abstract class _Distribution extends PersistentObject {
                 return this.bytesize;
             case "filename":
                 return this.filename;
-            case "legacyaccessurl":
-                return this.legacyaccessurl;
             case "mediatype":
                 return this.mediatype;
             case "objectkey":
                 return this.objectkey;
             case "sha256":
                 return this.sha256;
-            case "storageprofile":
-                return this.storageprofile;
             case "tIliTid":
                 return this.tIliTid;
             case "catalogactions":
@@ -238,9 +210,6 @@ public abstract class _Distribution extends PersistentObject {
             case "filename":
                 this.filename = (String)val;
                 break;
-            case "legacyaccessurl":
-                this.legacyaccessurl = (String)val;
-                break;
             case "mediatype":
                 this.mediatype = (String)val;
                 break;
@@ -249,9 +218,6 @@ public abstract class _Distribution extends PersistentObject {
                 break;
             case "sha256":
                 this.sha256 = (String)val;
-                break;
-            case "storageprofile":
-                this.storageprofile = (String)val;
                 break;
             case "tIliTid":
                 this.tIliTid = (UUID)val;
@@ -282,11 +248,9 @@ public abstract class _Distribution extends PersistentObject {
         out.writeObject(this.availability);
         out.writeObject(this.bytesize);
         out.writeObject(this.filename);
-        out.writeObject(this.legacyaccessurl);
         out.writeObject(this.mediatype);
         out.writeObject(this.objectkey);
         out.writeObject(this.sha256);
-        out.writeObject(this.storageprofile);
         out.writeObject(this.tIliTid);
         out.writeObject(this.catalogactions);
         out.writeObject(this.version1);
@@ -299,11 +263,9 @@ public abstract class _Distribution extends PersistentObject {
         this.availability = (String)in.readObject();
         this.bytesize = (Long)in.readObject();
         this.filename = (String)in.readObject();
-        this.legacyaccessurl = (String)in.readObject();
         this.mediatype = (String)in.readObject();
         this.objectkey = (String)in.readObject();
         this.sha256 = (String)in.readObject();
-        this.storageprofile = (String)in.readObject();
         this.tIliTid = (UUID)in.readObject();
         this.catalogactions = in.readObject();
         this.version1 = in.readObject();

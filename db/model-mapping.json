@@ -1,1015 +1,1003 @@
 {
   "classes": [
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessDecision",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessDecision",
       "sqlname": "accessdecision"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessDecisionDataset",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessDecisionDataset",
       "sqlname": "accessdecisiondataset"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessGrant",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessGrant",
       "sqlname": "accessgrant"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessGrantDataset",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessGrantDataset",
       "sqlname": "accessgrantdataset"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessRequest",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessRequest",
       "sqlname": "accessrequest"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessRequestDataset",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessRequestDataset",
       "sqlname": "accessrequestdataset"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.ActionActor",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.ActionActor",
       "sqlname": "actionactor"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.ActionDistribution",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.ActionDistribution",
       "sqlname": "actiondistribution"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.ActionVersion",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.ActionVersion",
       "sqlname": "actionversion"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityActor",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityActor",
       "sqlname": "authorityactor"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityAssignment",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityAssignment",
       "sqlname": "authorityassignment"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityDataset",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityDataset",
       "sqlname": "authoritydataset"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityOffice",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityOffice",
       "sqlname": "authorityoffice"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityPrincipal",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityPrincipal",
       "sqlname": "authorityprincipal"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.CatalogAction",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.CatalogAction",
       "sqlname": "catalogaction"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.CatalogActionDataset",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.CatalogActionDataset",
       "sqlname": "catalogactiondataset"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.DecisionActor",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.DecisionActor",
       "sqlname": "decisionactor"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.DecisionBeneficiary",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.DecisionBeneficiary",
       "sqlname": "decisionbeneficiary"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.DecisionRequest",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.DecisionRequest",
       "sqlname": "decisionrequest"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.DecisionSupersedes",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.DecisionSupersedes",
       "sqlname": "decisionsupersedes"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.GrantBeneficiary",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.GrantBeneficiary",
       "sqlname": "grantbeneficiary"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.GrantDecision",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.GrantDecision",
       "sqlname": "grantdecision"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.GrantRevocation",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.GrantRevocation",
       "sqlname": "grantrevocation"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.GroupMembership",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.GroupMembership",
       "sqlname": "groupmembership"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.MembershipGroup",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.MembershipGroup",
       "sqlname": "membershipgroup"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.MembershipMember",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.MembershipMember",
       "sqlname": "membershipmember"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.MembershipRevoker",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.MembershipRevoker",
       "sqlname": "membershiprevoker"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.Principal",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.Principal",
       "sqlname": "principal"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.RequestApplicant",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.RequestApplicant",
       "sqlname": "requestapplicant"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.AttributeDefinition",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.AttributeDefinition",
       "sqlname": "attributedefinition"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.AttributeSchema",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.AttributeSchema",
       "sqlname": "attributeschema"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.CurrentIssue",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CurrentIssue",
       "sqlname": "currentissue"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.CurrentVersion",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CurrentVersion",
       "sqlname": "currentversion"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataSchema",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataSchema",
       "sqlname": "dataschema"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset",
       "sqlname": "dataset"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetIssue",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetIssue",
       "sqlname": "datasetissue"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetKeyword",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetKeyword",
       "sqlname": "datasetkeyword"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetOwner",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetOwner",
       "sqlname": "datasetowner"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetPublisher",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetPublisher",
       "sqlname": "datasetpublisher"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetTheme",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetTheme",
       "sqlname": "datasettheme"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataVersion",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataVersion",
       "sqlname": "dataversion"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Distribution",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Distribution",
       "sqlname": "distribution"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DistributionVersion",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DistributionVersion",
       "sqlname": "distributionversion"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.IssueDataset",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.IssueDataset",
       "sqlname": "issuedataset"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.KeywordDataset",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.KeywordDataset",
       "sqlname": "keyworddataset"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Office",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Office",
       "sqlname": "office"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.ThemeDataset",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.ThemeDataset",
       "sqlname": "themedataset"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.VersionIssue",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.VersionIssue",
       "sqlname": "versionissue"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.VersionSchema",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.VersionSchema",
       "sqlname": "versionschema"
     }
   ],
   "attributes": [
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessDecision.commandId",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessDecision.commandId",
       "sqlname": "commandid",
       "colowner": "accessdecision",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessDecisionDataset.dataset",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessDecisionDataset.dataset",
       "sqlname": "dataset",
       "colowner": "accessdecision",
       "target": "dataset"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessDecision.decidedAt",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessDecision.decidedAt",
       "sqlname": "decidedat",
       "colowner": "accessdecision",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessDecision.kind",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessDecision.kind",
       "sqlname": "akind",
       "colowner": "accessdecision",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessDecision.reason",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessDecision.reason",
       "sqlname": "reason",
       "colowner": "accessdecision",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessGrantDataset.dataset",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessGrantDataset.dataset",
       "sqlname": "dataset",
       "colowner": "accessgrant",
       "target": "dataset"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessGrant.permission",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessGrant.permission",
       "sqlname": "permission",
       "colowner": "accessgrant",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessGrant.revokedAt",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessGrant.revokedAt",
       "sqlname": "revokedat",
       "colowner": "accessgrant",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessGrant.validFrom",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessGrant.validFrom",
       "sqlname": "validfrom",
       "colowner": "accessgrant",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessGrant.validUntil",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessGrant.validUntil",
       "sqlname": "validuntil",
       "colowner": "accessgrant",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessRequestDataset.dataset",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessRequestDataset.dataset",
       "sqlname": "dataset",
       "colowner": "accessrequest",
       "target": "dataset"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessRequest.reason",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessRequest.reason",
       "sqlname": "reason",
       "colowner": "accessrequest",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessRequest.requestedAt",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessRequest.requestedAt",
       "sqlname": "requestedat",
       "colowner": "accessrequest",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessRequest.requestedValidUntil",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessRequest.requestedValidUntil",
       "sqlname": "requestedvaliduntil",
       "colowner": "accessrequest",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessRequest.status",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessRequest.status",
       "sqlname": "astatus",
       "colowner": "accessrequest",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.ActionActor.actor",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.ActionActor.actor",
       "sqlname": "actor",
       "colowner": "catalogaction",
       "target": "principal"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.ActionDistribution.affectedDistribution",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.ActionDistribution.affectedDistribution",
       "sqlname": "affecteddistribution",
       "colowner": "catalogaction",
       "target": "distribution"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.ActionVersion.affectedVersion",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.ActionVersion.affectedVersion",
       "sqlname": "affectedversion",
       "colowner": "catalogaction",
       "target": "dataversion"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityActor.assignedBy",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityActor.assignedBy",
       "sqlname": "assignedby",
       "colowner": "authorityassignment",
       "target": "principal"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityAssignment.capability",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityAssignment.capability",
       "sqlname": "capability",
       "colowner": "authorityassignment",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityAssignment.reason",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityAssignment.reason",
       "sqlname": "reason",
       "colowner": "authorityassignment",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityAssignment.revokedAt",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityAssignment.revokedAt",
       "sqlname": "revokedat",
       "colowner": "authorityassignment",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityAssignment.validFrom",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityAssignment.validFrom",
       "sqlname": "validfrom",
       "colowner": "authorityassignment",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityAssignment.validUntil",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityAssignment.validUntil",
       "sqlname": "validuntil",
       "colowner": "authorityassignment",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityDataset.dataset",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityDataset.dataset",
       "sqlname": "dataset",
       "colowner": "authorityassignment",
       "target": "dataset"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityOffice.office",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityOffice.office",
       "sqlname": "office",
       "colowner": "authorityassignment",
       "target": "office"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityPrincipal.principal",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityPrincipal.principal",
       "sqlname": "principal",
       "colowner": "authorityassignment",
       "target": "principal"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.CatalogAction.actionCode",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.CatalogAction.actionCode",
       "sqlname": "actioncode",
       "colowner": "catalogaction",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.CatalogAction.commandId",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.CatalogAction.commandId",
       "sqlname": "commandid",
       "colowner": "catalogaction",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.CatalogActionDataset.dataset",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.CatalogActionDataset.dataset",
       "sqlname": "dataset",
       "colowner": "catalogaction",
       "target": "dataset"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.CatalogAction.performedAt",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.CatalogAction.performedAt",
       "sqlname": "performedat",
       "colowner": "catalogaction",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.CatalogAction.reason",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.CatalogAction.reason",
       "sqlname": "reason",
       "colowner": "catalogaction",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.DecisionActor.actor",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.DecisionActor.actor",
       "sqlname": "actor",
       "colowner": "accessdecision",
       "target": "principal"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.DecisionBeneficiary.beneficiary",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.DecisionBeneficiary.beneficiary",
       "sqlname": "beneficiary",
       "colowner": "accessdecision",
       "target": "principal"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.DecisionRequest.request",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.DecisionRequest.request",
       "sqlname": "request",
       "colowner": "accessdecision",
       "target": "accessrequest"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.DecisionSupersedes.supersedes",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.DecisionSupersedes.supersedes",
       "sqlname": "supersedes",
       "colowner": "accessdecision",
       "target": "accessdecision"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.GrantBeneficiary.beneficiary",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.GrantBeneficiary.beneficiary",
       "sqlname": "beneficiary",
       "colowner": "accessgrant",
       "target": "principal"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.GrantDecision.grantingDecision",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.GrantDecision.grantingDecision",
       "sqlname": "grantingdecision",
       "colowner": "accessgrant",
       "target": "accessdecision"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.GrantRevocation.revocationDecision",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.GrantRevocation.revocationDecision",
       "sqlname": "revocationdecision",
       "colowner": "accessgrant",
       "target": "accessdecision"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.GroupMembership.reason",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.GroupMembership.reason",
       "sqlname": "reason",
       "colowner": "groupmembership",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.GroupMembership.revokedAt",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.GroupMembership.revokedAt",
       "sqlname": "revokedat",
       "colowner": "groupmembership",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.GroupMembership.validFrom",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.GroupMembership.validFrom",
       "sqlname": "validfrom",
       "colowner": "groupmembership",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.GroupMembership.validUntil",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.GroupMembership.validUntil",
       "sqlname": "validuntil",
       "colowner": "groupmembership",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.MembershipGroup.group",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.MembershipGroup.group",
       "sqlname": "agroup",
       "colowner": "groupmembership",
       "target": "principal"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.MembershipMember.member",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.MembershipMember.member",
       "sqlname": "amember",
       "colowner": "groupmembership",
       "target": "principal"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.MembershipRevoker.revokedBy",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.MembershipRevoker.revokedBy",
       "sqlname": "revokedby",
       "colowner": "groupmembership",
       "target": "principal"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.Principal.active",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.Principal.active",
       "sqlname": "aactive",
       "colowner": "principal",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.Principal.displayName",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.Principal.displayName",
       "sqlname": "displayname",
       "colowner": "principal",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.Principal.issuer",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.Principal.issuer",
       "sqlname": "aissuer",
       "colowner": "principal",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.Principal.kind",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.Principal.kind",
       "sqlname": "akind",
       "colowner": "principal",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.Principal.provisionedAt",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.Principal.provisionedAt",
       "sqlname": "provisionedat",
       "colowner": "principal",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.Principal.subject",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.Principal.subject",
       "sqlname": "asubject",
       "colowner": "principal",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Access_20261104.Access.RequestApplicant.applicant",
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.RequestApplicant.applicant",
       "sqlname": "applicant",
       "colowner": "accessrequest",
       "target": "principal"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.AttributeDefinition.codeList",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.AttributeDefinition.codeList",
       "sqlname": "codelist",
       "colowner": "attributedefinition",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.AttributeDefinition.dataType",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.AttributeDefinition.dataType",
       "sqlname": "datatype",
       "colowner": "attributedefinition",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.AttributeDefinition.description",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.AttributeDefinition.description",
       "sqlname": "adescription",
       "colowner": "attributedefinition",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.AttributeDefinition.mandatory",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.AttributeDefinition.mandatory",
       "sqlname": "mandatory",
       "colowner": "attributedefinition",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.AttributeDefinition.name",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.AttributeDefinition.name",
       "sqlname": "aname",
       "colowner": "attributedefinition",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.AttributeDefinition.ordinal",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.AttributeDefinition.ordinal",
       "sqlname": "ordinal",
       "colowner": "attributedefinition",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.AttributeDefinition.unit",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.AttributeDefinition.unit",
       "sqlname": "unit",
       "colowner": "attributedefinition",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.AttributeSchema.schema",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.AttributeSchema.schema",
       "sqlname": "aschema",
       "colowner": "attributedefinition",
       "target": "dataschema"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.CurrentIssue.currentIssue",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CurrentIssue.currentIssue",
       "sqlname": "currentissue",
       "colowner": "dataset",
       "target": "datasetissue"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.CurrentVersion.currentVersion",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CurrentVersion.currentVersion",
       "sqlname": "currentversion",
       "colowner": "datasetissue",
       "target": "dataversion"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataSchema.description",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataSchema.description",
       "sqlname": "adescription",
       "colowner": "dataschema",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataSchema.identifier",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataSchema.identifier",
       "sqlname": "identifier",
       "colowner": "dataschema",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataSchema.modelName",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataSchema.modelName",
       "sqlname": "modelname",
       "colowner": "dataschema",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataSchema.modelSha256",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataSchema.modelSha256",
       "sqlname": "modelsha256",
       "colowner": "dataschema",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataSchema.modelUri",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataSchema.modelUri",
       "sqlname": "modeluri",
       "colowner": "dataschema",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataSchema.modelVersion",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataSchema.modelVersion",
       "sqlname": "modelversion",
       "colowner": "dataschema",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.accessLevel",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.accessLevel",
       "sqlname": "accesslevel",
       "colowner": "dataset",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.auxiliaryData",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.auxiliaryData",
       "sqlname": "auxiliarydata",
       "colowner": "dataset",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.contactEmail",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.contactEmail",
       "sqlname": "contactemail",
       "colowner": "dataset",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.contactName",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.contactName",
       "sqlname": "contactname",
       "colowner": "dataset",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.contactPhone",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.contactPhone",
       "sqlname": "contactphone",
       "colowner": "dataset",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.contactUnit",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.contactUnit",
       "sqlname": "contactunit",
       "colowner": "dataset",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.contactUrl",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.contactUrl",
       "sqlname": "contacturl",
       "colowner": "dataset",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.dataAvailableFrom",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.dataAvailableFrom",
       "sqlname": "dataavailablefrom",
       "colowner": "dataset",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.description",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.description",
       "sqlname": "adescription",
       "colowner": "dataset",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.frequency",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.frequency",
       "sqlname": "frequency",
       "colowner": "dataset",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.furtherUses",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.furtherUses",
       "sqlname": "furtheruses",
       "colowner": "dataset",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.identifier",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.identifier",
       "sqlname": "identifier",
       "colowner": "dataset",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.issued",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.issued",
       "sqlname": "issued",
       "colowner": "dataset",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetIssue.endDate",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetIssue.endDate",
       "sqlname": "enddate",
       "colowner": "datasetissue",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetIssue.issued",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetIssue.issued",
       "sqlname": "issued",
       "colowner": "datasetissue",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetIssue.issueKey",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetIssue.issueKey",
       "sqlname": "issuekey",
       "colowner": "datasetissue",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetIssue.label",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetIssue.label",
       "sqlname": "label",
       "colowner": "datasetissue",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetIssue.modified",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetIssue.modified",
       "sqlname": "modified",
       "colowner": "datasetissue",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetIssue.note",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetIssue.note",
       "sqlname": "note",
       "colowner": "datasetissue",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetIssue.publicationStatus",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetIssue.publicationStatus",
       "sqlname": "publicationstatus",
       "colowner": "datasetissue",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetIssue.referenceDate",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetIssue.referenceDate",
       "sqlname": "referencedate",
       "colowner": "datasetissue",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetIssue.startDate",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetIssue.startDate",
       "sqlname": "startdate",
       "colowner": "datasetissue",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetKeyword.keyword",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetKeyword.keyword",
       "sqlname": "keyword",
       "colowner": "datasetkeyword",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.kind",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.kind",
       "sqlname": "akind",
       "colowner": "dataset",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.licenseUri",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.licenseUri",
       "sqlname": "licenseuri",
       "colowner": "dataset",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.modified",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.modified",
       "sqlname": "modified",
       "colowner": "dataset",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.origin",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.origin",
       "sqlname": "origin",
       "colowner": "dataset",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetOwner.ownerOffice",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetOwner.ownerOffice",
       "sqlname": "owneroffice",
       "colowner": "dataset",
       "target": "office"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.publicationStatus",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.publicationStatus",
       "sqlname": "publicationstatus",
       "colowner": "dataset",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetPublisher.publisherOffice",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetPublisher.publisherOffice",
       "sqlname": "publisheroffice",
       "colowner": "dataset",
       "target": "office"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.surveyMethod",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.surveyMethod",
       "sqlname": "surveymethod",
       "colowner": "dataset",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetTheme.theme",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetTheme.theme",
       "sqlname": "theme",
       "colowner": "datasettheme",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.title",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.title",
       "sqlname": "title",
       "colowner": "dataset",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataVersion.acceptedAt",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataVersion.acceptedAt",
       "sqlname": "acceptedat",
       "colowner": "dataversion",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataVersion.attributeCount",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataVersion.attributeCount",
       "sqlname": "attributecount",
       "colowner": "dataversion",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataVersion.availability",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataVersion.availability",
       "sqlname": "availability",
       "colowner": "dataversion",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataVersion.objectCount",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataVersion.objectCount",
       "sqlname": "objectcount",
       "colowner": "dataversion",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataVersion.sequence",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataVersion.sequence",
       "sqlname": "asequence",
       "colowner": "dataversion",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataVersion.sourceReference",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataVersion.sourceReference",
       "sqlname": "sourcereference",
       "colowner": "dataversion",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataVersion.sourceSha256",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataVersion.sourceSha256",
       "sqlname": "sourcesha256",
       "colowner": "dataversion",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataVersion.validationAt",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataVersion.validationAt",
       "sqlname": "validationat",
       "colowner": "dataversion",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataVersion.validationErrors",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataVersion.validationErrors",
       "sqlname": "validationerrors",
       "colowner": "dataversion",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataVersion.validationReportKey",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataVersion.validationReportKey",
       "sqlname": "validationreportkey",
       "colowner": "dataversion",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataVersion.validationStatus",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataVersion.validationStatus",
       "sqlname": "validationstatus",
       "colowner": "dataversion",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataVersion.versionKey",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataVersion.versionKey",
       "sqlname": "versionkey",
       "colowner": "dataversion",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Distribution.availability",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Distribution.availability",
       "sqlname": "availability",
       "colowner": "distribution",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Distribution.byteSize",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Distribution.byteSize",
       "sqlname": "bytesize",
       "colowner": "distribution",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Distribution.fileName",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Distribution.fileName",
       "sqlname": "filename",
       "colowner": "distribution",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Distribution.format",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Distribution.format",
       "sqlname": "aformat",
       "colowner": "distribution",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Distribution.legacyAccessUrl",
-      "sqlname": "legacyaccessurl",
-      "colowner": "distribution",
-      "target": null
-    },
-    {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Distribution.mediaType",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Distribution.mediaType",
       "sqlname": "mediatype",
       "colowner": "distribution",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Distribution.objectKey",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Distribution.objectKey",
       "sqlname": "objectkey",
       "colowner": "distribution",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Distribution.sha256",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Distribution.sha256",
       "sqlname": "sha256",
       "colowner": "distribution",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Distribution.storageProfile",
-      "sqlname": "storageprofile",
-      "colowner": "distribution",
-      "target": null
-    },
-    {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DistributionVersion.version",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DistributionVersion.version",
       "sqlname": "version",
       "colowner": "distribution",
       "target": "dataversion"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.IssueDataset.dataset",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.IssueDataset.dataset",
       "sqlname": "dataset",
       "colowner": "datasetissue",
       "target": "dataset"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.KeywordDataset.dataset",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.KeywordDataset.dataset",
       "sqlname": "dataset",
       "colowner": "datasetkeyword",
       "target": "dataset"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Office.abbreviation",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Office.abbreviation",
       "sqlname": "abbreviation",
       "colowner": "office",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Office.active",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Office.active",
       "sqlname": "aactive",
       "colowner": "office",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Office.email",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Office.email",
       "sqlname": "email",
       "colowner": "office",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Office.identifier",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Office.identifier",
       "sqlname": "identifier",
       "colowner": "office",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Office.name",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Office.name",
       "sqlname": "aname",
       "colowner": "office",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Office.phone",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Office.phone",
       "sqlname": "phone",
       "colowner": "office",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Office.website",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Office.website",
       "sqlname": "website",
       "colowner": "office",
       "target": null
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.ThemeDataset.dataset",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.ThemeDataset.dataset",
       "sqlname": "dataset",
       "colowner": "datasettheme",
       "target": "dataset"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.VersionIssue.issue",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.VersionIssue.issue",
       "sqlname": "issue",
       "colowner": "dataversion",
       "target": "datasetissue"
     },
     {
-      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.VersionSchema.schema",
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.VersionSchema.schema",
       "sqlname": "aschema",
       "colowner": "dataversion",
       "target": "dataschema"
@@ -2236,23 +2224,9 @@
     },
     {
       "table_name": "distribution",
-      "column_name": "storageprofile",
-      "data_type": "character varying",
-      "is_nullable": "NO",
-      "column_default": null
-    },
-    {
-      "table_name": "distribution",
       "column_name": "objectkey",
       "data_type": "character varying",
       "is_nullable": "NO",
-      "column_default": null
-    },
-    {
-      "table_name": "distribution",
-      "column_name": "legacyaccessurl",
-      "data_type": "character varying",
-      "is_nullable": "YES",
       "column_default": null
     },
     {
@@ -2790,2292 +2764,2272 @@
   ],
   "meta": [
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105",
       "attr_name": "ili2db.ili.lang",
       "attr_value": "en"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access",
       "attr_name": "ili2db.ili.topicClasses",
       "attr_value": "accessdecision accessgrant accessrequest authorityassignment catalogaction groupmembership principal"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessDecision",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessDecision",
       "attr_name": "di.audit",
       "attr_value": "full"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessDecision.commandId",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessDecision.commandId",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessDecision.commandId",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessDecision.commandId",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessDecisionDataset",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessDecisionDataset",
       "attr_name": "di.audit",
       "attr_value": "full"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessDecisionDataset.accessdecisions",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessDecisionDataset.accessdecisions",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "*"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessDecisionDataset.accessdecisions",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessDecisionDataset.accessdecisions",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessDecisionDataset.accessdecisions",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessDecisionDataset.accessdecisions",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessDecisionDataset.dataset",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessDecisionDataset.dataset",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessDecisionDataset.dataset",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessDecisionDataset.dataset",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessDecisionDataset.dataset",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessDecisionDataset.dataset",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessDecision.decidedAt",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessDecision.decidedAt",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessDecision.decidedAt",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessDecision.decidedAt",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessDecision.kind",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessDecision.kind",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessDecision.kind",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessDecision.kind",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessDecision.reason",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessDecision.reason",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessDecision.reason",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessDecision.reason",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessGrant",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessGrant",
       "attr_name": "di.audit",
       "attr_value": "full"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessGrantDataset",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessGrantDataset",
       "attr_name": "di.audit",
       "attr_value": "full"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessGrantDataset.accessgrants",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessGrantDataset.accessgrants",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "*"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessGrantDataset.accessgrants",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessGrantDataset.accessgrants",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessGrantDataset.accessgrants",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessGrantDataset.accessgrants",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessGrantDataset.dataset",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessGrantDataset.dataset",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessGrantDataset.dataset",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessGrantDataset.dataset",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessGrantDataset.dataset",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessGrantDataset.dataset",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessGrant.permission",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessGrant.permission",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessGrant.permission",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessGrant.permission",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessGrant.revokedAt",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessGrant.revokedAt",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessGrant.revokedAt",
-      "attr_name": "ili2db.ili.attrCardinalityMin",
-      "attr_value": "0"
-    },
-    {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessGrant.validFrom",
-      "attr_name": "ili2db.ili.attrCardinalityMax",
-      "attr_value": "1"
-    },
-    {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessGrant.validFrom",
-      "attr_name": "ili2db.ili.attrCardinalityMin",
-      "attr_value": "1"
-    },
-    {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessGrant.validUntil",
-      "attr_name": "ili2db.ili.attrCardinalityMax",
-      "attr_value": "1"
-    },
-    {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessGrant.validUntil",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessGrant.revokedAt",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessRequest",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessGrant.validFrom",
+      "attr_name": "ili2db.ili.attrCardinalityMax",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessGrant.validFrom",
+      "attr_name": "ili2db.ili.attrCardinalityMin",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessGrant.validUntil",
+      "attr_name": "ili2db.ili.attrCardinalityMax",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessGrant.validUntil",
+      "attr_name": "ili2db.ili.attrCardinalityMin",
+      "attr_value": "0"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessRequest",
       "attr_name": "di.audit",
       "attr_value": "full"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessRequestDataset",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessRequestDataset",
       "attr_name": "di.audit",
       "attr_value": "full"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessRequestDataset.accessrequests",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessRequestDataset.accessrequests",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "*"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessRequestDataset.accessrequests",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessRequestDataset.accessrequests",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessRequestDataset.accessrequests",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessRequestDataset.accessrequests",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessRequestDataset.dataset",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessRequestDataset.dataset",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessRequestDataset.dataset",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessRequestDataset.dataset",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessRequestDataset.dataset",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessRequestDataset.dataset",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessRequest.reason",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessRequest.reason",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessRequest.reason",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessRequest.reason",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessRequest.requestedAt",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessRequest.requestedAt",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessRequest.requestedAt",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessRequest.requestedAt",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessRequest.requestedValidUntil",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessRequest.requestedValidUntil",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessRequest.requestedValidUntil",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessRequest.requestedValidUntil",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessRequest.status",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessRequest.status",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AccessRequest.status",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AccessRequest.status",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.ActionActor",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.ActionActor",
       "attr_name": "di.audit",
       "attr_value": "full"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.ActionActor.actor",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.ActionActor.actor",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.ActionActor.actor",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.ActionActor.actor",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.ActionActor.actor",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.ActionActor.actor",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.ActionActor.catalogActions",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.ActionActor.catalogActions",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "*"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.ActionActor.catalogActions",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.ActionActor.catalogActions",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.ActionActor.catalogActions",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.ActionActor.catalogActions",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.ActionDistribution",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.ActionDistribution",
       "attr_name": "di.audit",
       "attr_value": "full"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.ActionDistribution.affectedDistribution",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.ActionDistribution.affectedDistribution",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.ActionDistribution.affectedDistribution",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.ActionDistribution.affectedDistribution",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.ActionDistribution.affectedDistribution",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.ActionDistribution.affectedDistribution",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.ActionDistribution.distributionActions",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.ActionDistribution.distributionActions",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "*"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.ActionDistribution.distributionActions",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.ActionDistribution.distributionActions",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.ActionDistribution.distributionActions",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.ActionDistribution.distributionActions",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.ActionVersion",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.ActionVersion",
       "attr_name": "di.audit",
       "attr_value": "full"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.ActionVersion.affectedVersion",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.ActionVersion.affectedVersion",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.ActionVersion.affectedVersion",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.ActionVersion.affectedVersion",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.ActionVersion.affectedVersion",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.ActionVersion.affectedVersion",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.ActionVersion.versionActions",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.ActionVersion.versionActions",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "*"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.ActionVersion.versionActions",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.ActionVersion.versionActions",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.ActionVersion.versionActions",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.ActionVersion.versionActions",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityActor",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityActor",
       "attr_name": "di.audit",
       "attr_value": "full"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityActor.assignedAuthorities",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityActor.assignedAuthorities",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "*"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityActor.assignedAuthorities",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityActor.assignedAuthorities",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityActor.assignedAuthorities",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityActor.assignedAuthorities",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityActor.assignedBy",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityActor.assignedBy",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityActor.assignedBy",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityActor.assignedBy",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityActor.assignedBy",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityActor.assignedBy",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityAssignment",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityAssignment",
       "attr_name": "di.audit",
       "attr_value": "full"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityAssignment.capability",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityAssignment.capability",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityAssignment.capability",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityAssignment.capability",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityAssignment.reason",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityAssignment.reason",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityAssignment.reason",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityAssignment.reason",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityAssignment.revokedAt",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityAssignment.revokedAt",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityAssignment.revokedAt",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityAssignment.revokedAt",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityAssignment.validFrom",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityAssignment.validFrom",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityAssignment.validFrom",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityAssignment.validFrom",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityAssignment.validUntil",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityAssignment.validUntil",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityAssignment.validUntil",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityAssignment.validUntil",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityDataset",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityDataset",
       "attr_name": "di.audit",
       "attr_value": "full"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityDataset.dataset",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityDataset.dataset",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityDataset.dataset",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityDataset.dataset",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityDataset.dataset",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityDataset.dataset",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityDataset.datasetAuthorities",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityDataset.datasetAuthorities",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "*"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityDataset.datasetAuthorities",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityDataset.datasetAuthorities",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityDataset.datasetAuthorities",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityDataset.datasetAuthorities",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityOffice",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityOffice",
       "attr_name": "di.audit",
       "attr_value": "full"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityOffice.office",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityOffice.office",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityOffice.office",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityOffice.office",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityOffice.office",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityOffice.office",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityOffice.officeAuthorities",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityOffice.officeAuthorities",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "*"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityOffice.officeAuthorities",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityOffice.officeAuthorities",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityOffice.officeAuthorities",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityOffice.officeAuthorities",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityPrincipal",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityPrincipal",
       "attr_name": "di.audit",
       "attr_value": "full"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityPrincipal.authorities",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityPrincipal.authorities",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "*"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityPrincipal.authorities",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityPrincipal.authorities",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityPrincipal.authorities",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityPrincipal.authorities",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityPrincipal.principal",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityPrincipal.principal",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityPrincipal.principal",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityPrincipal.principal",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.AuthorityPrincipal.principal",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityPrincipal.principal",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.CatalogAction",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.CatalogAction",
       "attr_name": "di.audit",
       "attr_value": "full"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.CatalogAction.actionCode",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.CatalogAction.actionCode",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.CatalogAction.actionCode",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.CatalogAction.actionCode",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.CatalogAction.commandId",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.CatalogAction.commandId",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.CatalogAction.commandId",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.CatalogAction.commandId",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.CatalogActionDataset",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.CatalogActionDataset",
       "attr_name": "di.audit",
       "attr_value": "full"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.CatalogActionDataset.catalogactions",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.CatalogActionDataset.catalogactions",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "*"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.CatalogActionDataset.catalogactions",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.CatalogActionDataset.catalogactions",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.CatalogActionDataset.catalogactions",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.CatalogActionDataset.catalogactions",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.CatalogActionDataset.dataset",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.CatalogActionDataset.dataset",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.CatalogActionDataset.dataset",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.CatalogActionDataset.dataset",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.CatalogActionDataset.dataset",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.CatalogActionDataset.dataset",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.CatalogAction.performedAt",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.CatalogAction.performedAt",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.CatalogAction.performedAt",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.CatalogAction.performedAt",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.CatalogAction.reason",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.CatalogAction.reason",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.CatalogAction.reason",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.CatalogAction.reason",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.DecisionActor",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.DecisionActor",
       "attr_name": "di.audit",
       "attr_value": "full"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.DecisionActor.actor",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.DecisionActor.actor",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.DecisionActor.actor",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.DecisionActor.actor",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.DecisionActor.actor",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.DecisionActor.actor",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.DecisionActor.decisionsBy",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.DecisionActor.decisionsBy",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "*"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.DecisionActor.decisionsBy",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.DecisionActor.decisionsBy",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.DecisionActor.decisionsBy",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.DecisionActor.decisionsBy",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.DecisionBeneficiary",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.DecisionBeneficiary",
       "attr_name": "di.audit",
       "attr_value": "full"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.DecisionBeneficiary.beneficiary",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.DecisionBeneficiary.beneficiary",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.DecisionBeneficiary.beneficiary",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.DecisionBeneficiary.beneficiary",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.DecisionBeneficiary.beneficiary",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.DecisionBeneficiary.beneficiary",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.DecisionBeneficiary.decisionsFor",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.DecisionBeneficiary.decisionsFor",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "*"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.DecisionBeneficiary.decisionsFor",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.DecisionBeneficiary.decisionsFor",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.DecisionBeneficiary.decisionsFor",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.DecisionBeneficiary.decisionsFor",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.DecisionRequest",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.DecisionRequest",
       "attr_name": "di.audit",
       "attr_value": "full"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.DecisionRequest.decisions",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.DecisionRequest.decisions",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "*"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.DecisionRequest.decisions",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.DecisionRequest.decisions",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.DecisionRequest.decisions",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.DecisionRequest.decisions",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.DecisionRequest.request",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.DecisionRequest.request",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.DecisionRequest.request",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.DecisionRequest.request",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.DecisionRequest.request",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.DecisionRequest.request",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.DecisionSupersedes",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.DecisionSupersedes",
       "attr_name": "di.audit",
       "attr_value": "full"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.DecisionSupersedes.supersededBy",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.DecisionSupersedes.supersededBy",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "*"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.DecisionSupersedes.supersededBy",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.DecisionSupersedes.supersededBy",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.DecisionSupersedes.supersededBy",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.DecisionSupersedes.supersededBy",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.DecisionSupersedes.supersedes",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.DecisionSupersedes.supersedes",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.DecisionSupersedes.supersedes",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.DecisionSupersedes.supersedes",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.DecisionSupersedes.supersedes",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.DecisionSupersedes.supersedes",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.GrantBeneficiary",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.GrantBeneficiary",
       "attr_name": "di.audit",
       "attr_value": "full"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.GrantBeneficiary.beneficiary",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.GrantBeneficiary.beneficiary",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.GrantBeneficiary.beneficiary",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.GrantBeneficiary.beneficiary",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.GrantBeneficiary.beneficiary",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.GrantBeneficiary.beneficiary",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.GrantBeneficiary.grants",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.GrantBeneficiary.grants",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "*"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.GrantBeneficiary.grants",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.GrantBeneficiary.grants",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.GrantBeneficiary.grants",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.GrantBeneficiary.grants",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.GrantDecision",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.GrantDecision",
       "attr_name": "di.audit",
       "attr_value": "full"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.GrantDecision.grantingDecision",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.GrantDecision.grantingDecision",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.GrantDecision.grantingDecision",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.GrantDecision.grantingDecision",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.GrantDecision.grantingDecision",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.GrantDecision.grantingDecision",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.GrantDecision.issuedGrants",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.GrantDecision.issuedGrants",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "*"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.GrantDecision.issuedGrants",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.GrantDecision.issuedGrants",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.GrantDecision.issuedGrants",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.GrantDecision.issuedGrants",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.GrantRevocation",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.GrantRevocation",
       "attr_name": "di.audit",
       "attr_value": "full"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.GrantRevocation.revocationDecision",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.GrantRevocation.revocationDecision",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.GrantRevocation.revocationDecision",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.GrantRevocation.revocationDecision",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.GrantRevocation.revocationDecision",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.GrantRevocation.revocationDecision",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.GrantRevocation.revokedGrants",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.GrantRevocation.revokedGrants",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "*"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.GrantRevocation.revokedGrants",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.GrantRevocation.revokedGrants",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.GrantRevocation.revokedGrants",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.GrantRevocation.revokedGrants",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.GroupMembership",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.GroupMembership",
       "attr_name": "di.audit",
       "attr_value": "full"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.GroupMembership.reason",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.GroupMembership.reason",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.GroupMembership.reason",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.GroupMembership.reason",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.GroupMembership.revokedAt",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.GroupMembership.revokedAt",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.GroupMembership.revokedAt",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.GroupMembership.revokedAt",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.GroupMembership.validFrom",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.GroupMembership.validFrom",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.GroupMembership.validFrom",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.GroupMembership.validFrom",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.GroupMembership.validUntil",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.GroupMembership.validUntil",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.GroupMembership.validUntil",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.GroupMembership.validUntil",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.MembershipGroup",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.MembershipGroup",
       "attr_name": "di.audit",
       "attr_value": "full"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.MembershipGroup.group",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.MembershipGroup.group",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.MembershipGroup.group",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.MembershipGroup.group",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.MembershipGroup.group",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.MembershipGroup.group",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.MembershipGroup.membershipsAsGroup",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.MembershipGroup.membershipsAsGroup",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "*"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.MembershipGroup.membershipsAsGroup",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.MembershipGroup.membershipsAsGroup",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.MembershipGroup.membershipsAsGroup",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.MembershipGroup.membershipsAsGroup",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.MembershipMember",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.MembershipMember",
       "attr_name": "di.audit",
       "attr_value": "full"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.MembershipMember.member",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.MembershipMember.member",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.MembershipMember.member",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.MembershipMember.member",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.MembershipMember.member",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.MembershipMember.member",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.MembershipMember.membershipsAsMember",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.MembershipMember.membershipsAsMember",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "*"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.MembershipMember.membershipsAsMember",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.MembershipMember.membershipsAsMember",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.MembershipMember.membershipsAsMember",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.MembershipMember.membershipsAsMember",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.MembershipRevoker",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.MembershipRevoker",
       "attr_name": "di.audit",
       "attr_value": "full"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.MembershipRevoker.revokedBy",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.MembershipRevoker.revokedBy",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.MembershipRevoker.revokedBy",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.MembershipRevoker.revokedBy",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.MembershipRevoker.revokedBy",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.MembershipRevoker.revokedBy",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.MembershipRevoker.revokedMemberships",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.MembershipRevoker.revokedMemberships",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "*"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.MembershipRevoker.revokedMemberships",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.MembershipRevoker.revokedMemberships",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.MembershipRevoker.revokedMemberships",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.MembershipRevoker.revokedMemberships",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.Principal",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.Principal",
       "attr_name": "di.audit",
       "attr_value": "full"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.Principal.active",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.Principal.active",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.Principal.active",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.Principal.active",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.Principal.displayName",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.Principal.displayName",
       "attr_name": "di.audit.redact",
       "attr_value": "true"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.Principal.displayName",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.Principal.displayName",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.Principal.displayName",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.Principal.displayName",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.Principal.issuer",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.Principal.issuer",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.Principal.issuer",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.Principal.issuer",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.Principal.kind",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.Principal.kind",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.Principal.kind",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.Principal.kind",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.Principal.provisionedAt",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.Principal.provisionedAt",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.Principal.provisionedAt",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.Principal.provisionedAt",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.Principal.subject",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.Principal.subject",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.Principal.subject",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.Principal.subject",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.RequestApplicant",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.RequestApplicant",
       "attr_name": "di.audit",
       "attr_value": "full"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.RequestApplicant.applicant",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.RequestApplicant.applicant",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.RequestApplicant.applicant",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.RequestApplicant.applicant",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.RequestApplicant.applicant",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.RequestApplicant.applicant",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.RequestApplicant.requests",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.RequestApplicant.requests",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "*"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.RequestApplicant.requests",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.RequestApplicant.requests",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Access_20261104.Access.RequestApplicant.requests",
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.RequestApplicant.requests",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105",
       "attr_name": "ili2db.ili.lang",
       "attr_value": "en"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog",
       "attr_name": "ili2db.ili.topicClasses",
       "attr_value": "attributedefinition dataschema dataset datasetissue datasetkeyword datasettheme dataversion distribution office"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.AttributeDefinition",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.AttributeDefinition",
       "attr_name": "di.audit",
       "attr_value": "full"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.AttributeDefinition.codeList",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.AttributeDefinition.codeList",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.AttributeDefinition.codeList",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.AttributeDefinition.codeList",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.AttributeDefinition.dataType",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.AttributeDefinition.dataType",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.AttributeDefinition.dataType",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.AttributeDefinition.dataType",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.AttributeDefinition.description",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.AttributeDefinition.description",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.AttributeDefinition.description",
-      "attr_name": "ili2db.ili.attrCardinalityMin",
-      "attr_value": "0"
-    },
-    {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.AttributeDefinition.mandatory",
-      "attr_name": "ili2db.ili.attrCardinalityMax",
-      "attr_value": "1"
-    },
-    {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.AttributeDefinition.mandatory",
-      "attr_name": "ili2db.ili.attrCardinalityMin",
-      "attr_value": "1"
-    },
-    {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.AttributeDefinition.name",
-      "attr_name": "ili2db.ili.attrCardinalityMax",
-      "attr_value": "1"
-    },
-    {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.AttributeDefinition.name",
-      "attr_name": "ili2db.ili.attrCardinalityMin",
-      "attr_value": "1"
-    },
-    {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.AttributeDefinition.ordinal",
-      "attr_name": "ili2db.ili.attrCardinalityMax",
-      "attr_value": "1"
-    },
-    {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.AttributeDefinition.ordinal",
-      "attr_name": "ili2db.ili.attrCardinalityMin",
-      "attr_value": "1"
-    },
-    {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.AttributeDefinition.unit",
-      "attr_name": "ili2db.ili.attrCardinalityMax",
-      "attr_value": "1"
-    },
-    {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.AttributeDefinition.unit",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.AttributeDefinition.description",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.AttributeSchema",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.AttributeDefinition.mandatory",
+      "attr_name": "ili2db.ili.attrCardinalityMax",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.AttributeDefinition.mandatory",
+      "attr_name": "ili2db.ili.attrCardinalityMin",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.AttributeDefinition.name",
+      "attr_name": "ili2db.ili.attrCardinalityMax",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.AttributeDefinition.name",
+      "attr_name": "ili2db.ili.attrCardinalityMin",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.AttributeDefinition.ordinal",
+      "attr_name": "ili2db.ili.attrCardinalityMax",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.AttributeDefinition.ordinal",
+      "attr_name": "ili2db.ili.attrCardinalityMin",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.AttributeDefinition.unit",
+      "attr_name": "ili2db.ili.attrCardinalityMax",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.AttributeDefinition.unit",
+      "attr_name": "ili2db.ili.attrCardinalityMin",
+      "attr_value": "0"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.AttributeSchema",
       "attr_name": "di.audit",
       "attr_value": "full"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.AttributeSchema.attributes",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.AttributeSchema.attributes",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "*"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.AttributeSchema.attributes",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.AttributeSchema.attributes",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.AttributeSchema.attributes",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.AttributeSchema.attributes",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.AttributeSchema.schema",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.AttributeSchema.schema",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.AttributeSchema.schema",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.AttributeSchema.schema",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.AttributeSchema.schema",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.AttributeSchema.schema",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.CurrentIssue",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CurrentIssue",
       "attr_name": "di.audit",
       "attr_value": "full"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.CurrentIssue.currentForDatasets",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CurrentIssue.currentForDatasets",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "*"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.CurrentIssue.currentForDatasets",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CurrentIssue.currentForDatasets",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.CurrentIssue.currentForDatasets",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CurrentIssue.currentForDatasets",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.CurrentIssue.currentIssue",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CurrentIssue.currentIssue",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.CurrentIssue.currentIssue",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CurrentIssue.currentIssue",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.CurrentIssue.currentIssue",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CurrentIssue.currentIssue",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.CurrentVersion",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CurrentVersion",
       "attr_name": "di.audit",
       "attr_value": "full"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.CurrentVersion.currentForIssues",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CurrentVersion.currentForIssues",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "*"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.CurrentVersion.currentForIssues",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CurrentVersion.currentForIssues",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.CurrentVersion.currentForIssues",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CurrentVersion.currentForIssues",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.CurrentVersion.currentVersion",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CurrentVersion.currentVersion",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.CurrentVersion.currentVersion",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CurrentVersion.currentVersion",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.CurrentVersion.currentVersion",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CurrentVersion.currentVersion",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataSchema",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataSchema",
       "attr_name": "di.audit",
       "attr_value": "full"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataSchema.description",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataSchema.description",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataSchema.description",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataSchema.description",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataSchema.identifier",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataSchema.identifier",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataSchema.identifier",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataSchema.identifier",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataSchema.modelName",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataSchema.modelName",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataSchema.modelName",
-      "attr_name": "ili2db.ili.attrCardinalityMin",
-      "attr_value": "0"
-    },
-    {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataSchema.modelSha256",
-      "attr_name": "ili2db.ili.attrCardinalityMax",
-      "attr_value": "1"
-    },
-    {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataSchema.modelSha256",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataSchema.modelName",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataSchema.modelUri",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataSchema.modelSha256",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataSchema.modelUri",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataSchema.modelSha256",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataSchema.modelVersion",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataSchema.modelUri",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataSchema.modelVersion",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataSchema.modelUri",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataSchema.modelVersion",
+      "attr_name": "ili2db.ili.attrCardinalityMax",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataSchema.modelVersion",
+      "attr_name": "ili2db.ili.attrCardinalityMin",
+      "attr_value": "0"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset",
       "attr_name": "di.audit",
       "attr_value": "full"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.accessLevel",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.accessLevel",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.accessLevel",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.accessLevel",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.auxiliaryData",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.auxiliaryData",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.auxiliaryData",
-      "attr_name": "ili2db.ili.attrCardinalityMin",
-      "attr_value": "0"
-    },
-    {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.contactEmail",
-      "attr_name": "ili2db.ili.attrCardinalityMax",
-      "attr_value": "1"
-    },
-    {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.contactEmail",
-      "attr_name": "ili2db.ili.attrCardinalityMin",
-      "attr_value": "1"
-    },
-    {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.contactName",
-      "attr_name": "ili2db.ili.attrCardinalityMax",
-      "attr_value": "1"
-    },
-    {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.contactName",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.auxiliaryData",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.contactPhone",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.contactEmail",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.contactPhone",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.contactEmail",
+      "attr_name": "ili2db.ili.attrCardinalityMin",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.contactName",
+      "attr_name": "ili2db.ili.attrCardinalityMax",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.contactName",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.contactUnit",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.contactPhone",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.contactUnit",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.contactPhone",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.contactUrl",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.contactUnit",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.contactUrl",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.contactUnit",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.dataAvailableFrom",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.contactUrl",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.dataAvailableFrom",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.contactUrl",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.description",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.dataAvailableFrom",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.description",
-      "attr_name": "ili2db.ili.attrCardinalityMin",
-      "attr_value": "1"
-    },
-    {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.frequency",
-      "attr_name": "ili2db.ili.attrCardinalityMax",
-      "attr_value": "1"
-    },
-    {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.frequency",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.dataAvailableFrom",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.furtherUses",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.description",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.furtherUses",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.description",
+      "attr_name": "ili2db.ili.attrCardinalityMin",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.frequency",
+      "attr_name": "ili2db.ili.attrCardinalityMax",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.frequency",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.identifier",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.furtherUses",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.identifier",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.furtherUses",
+      "attr_name": "ili2db.ili.attrCardinalityMin",
+      "attr_value": "0"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.identifier",
+      "attr_name": "ili2db.ili.attrCardinalityMax",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.identifier",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetIssue",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetIssue",
       "attr_name": "di.audit",
       "attr_value": "full"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.issued",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.issued",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.issued",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.issued",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetIssue.endDate",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetIssue.endDate",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetIssue.endDate",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetIssue.endDate",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetIssue.issued",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetIssue.issued",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetIssue.issued",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetIssue.issued",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetIssue.issueKey",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetIssue.issueKey",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetIssue.issueKey",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetIssue.issueKey",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetIssue.label",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetIssue.label",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetIssue.label",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetIssue.label",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetIssue.modified",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetIssue.modified",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetIssue.modified",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetIssue.modified",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetIssue.note",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetIssue.note",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetIssue.note",
-      "attr_name": "ili2db.ili.attrCardinalityMin",
-      "attr_value": "0"
-    },
-    {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetIssue.publicationStatus",
-      "attr_name": "ili2db.ili.attrCardinalityMax",
-      "attr_value": "1"
-    },
-    {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetIssue.publicationStatus",
-      "attr_name": "ili2db.ili.attrCardinalityMin",
-      "attr_value": "1"
-    },
-    {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetIssue.referenceDate",
-      "attr_name": "ili2db.ili.attrCardinalityMax",
-      "attr_value": "1"
-    },
-    {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetIssue.referenceDate",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetIssue.note",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetIssue.startDate",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetIssue.publicationStatus",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetIssue.startDate",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetIssue.publicationStatus",
+      "attr_name": "ili2db.ili.attrCardinalityMin",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetIssue.referenceDate",
+      "attr_name": "ili2db.ili.attrCardinalityMax",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetIssue.referenceDate",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetKeyword",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetIssue.startDate",
+      "attr_name": "ili2db.ili.attrCardinalityMax",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetIssue.startDate",
+      "attr_name": "ili2db.ili.attrCardinalityMin",
+      "attr_value": "0"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetKeyword",
       "attr_name": "di.audit",
       "attr_value": "full"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetKeyword.keyword",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetKeyword.keyword",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetKeyword.keyword",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetKeyword.keyword",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.kind",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.kind",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.kind",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.kind",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.licenseUri",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.licenseUri",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.licenseUri",
-      "attr_name": "ili2db.ili.attrCardinalityMin",
-      "attr_value": "0"
-    },
-    {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.modified",
-      "attr_name": "ili2db.ili.attrCardinalityMax",
-      "attr_value": "1"
-    },
-    {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.modified",
-      "attr_name": "ili2db.ili.attrCardinalityMin",
-      "attr_value": "1"
-    },
-    {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.origin",
-      "attr_name": "ili2db.ili.attrCardinalityMax",
-      "attr_value": "1"
-    },
-    {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.origin",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.licenseUri",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetOwner",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.modified",
+      "attr_name": "ili2db.ili.attrCardinalityMax",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.modified",
+      "attr_name": "ili2db.ili.attrCardinalityMin",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.origin",
+      "attr_name": "ili2db.ili.attrCardinalityMax",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.origin",
+      "attr_name": "ili2db.ili.attrCardinalityMin",
+      "attr_value": "0"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetOwner",
       "attr_name": "di.audit",
       "attr_value": "full"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetOwner.ownedDatasets",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetOwner.ownedDatasets",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "*"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetOwner.ownedDatasets",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetOwner.ownedDatasets",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetOwner.ownedDatasets",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetOwner.ownedDatasets",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetOwner.ownerOffice",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetOwner.ownerOffice",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetOwner.ownerOffice",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetOwner.ownerOffice",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetOwner.ownerOffice",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetOwner.ownerOffice",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.publicationStatus",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.publicationStatus",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.publicationStatus",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.publicationStatus",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetPublisher",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetPublisher",
       "attr_name": "di.audit",
       "attr_value": "full"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetPublisher.publishedDatasets",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetPublisher.publishedDatasets",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "*"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetPublisher.publishedDatasets",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetPublisher.publishedDatasets",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetPublisher.publishedDatasets",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetPublisher.publishedDatasets",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetPublisher.publisherOffice",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetPublisher.publisherOffice",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetPublisher.publisherOffice",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetPublisher.publisherOffice",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetPublisher.publisherOffice",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetPublisher.publisherOffice",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.surveyMethod",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.surveyMethod",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.surveyMethod",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.surveyMethod",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetTheme",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetTheme",
       "attr_name": "di.audit",
       "attr_value": "full"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetTheme.theme",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetTheme.theme",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DatasetTheme.theme",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DatasetTheme.theme",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.title",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.title",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Dataset.title",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Dataset.title",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataVersion",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataVersion",
       "attr_name": "di.audit",
       "attr_value": "full"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataVersion.acceptedAt",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataVersion.acceptedAt",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataVersion.acceptedAt",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataVersion.acceptedAt",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataVersion.attributeCount",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataVersion.attributeCount",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataVersion.attributeCount",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataVersion.attributeCount",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataVersion.availability",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataVersion.availability",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataVersion.availability",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataVersion.availability",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataVersion.objectCount",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataVersion.objectCount",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataVersion.objectCount",
-      "attr_name": "ili2db.ili.attrCardinalityMin",
-      "attr_value": "0"
-    },
-    {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataVersion.sequence",
-      "attr_name": "ili2db.ili.attrCardinalityMax",
-      "attr_value": "1"
-    },
-    {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataVersion.sequence",
-      "attr_name": "ili2db.ili.attrCardinalityMin",
-      "attr_value": "1"
-    },
-    {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataVersion.sourceReference",
-      "attr_name": "ili2db.ili.attrCardinalityMax",
-      "attr_value": "1"
-    },
-    {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataVersion.sourceReference",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataVersion.objectCount",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataVersion.sourceSha256",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataVersion.sequence",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataVersion.sourceSha256",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataVersion.sequence",
+      "attr_name": "ili2db.ili.attrCardinalityMin",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataVersion.sourceReference",
+      "attr_name": "ili2db.ili.attrCardinalityMax",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataVersion.sourceReference",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataVersion.validationAt",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataVersion.sourceSha256",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataVersion.validationAt",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataVersion.sourceSha256",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataVersion.validationErrors",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataVersion.validationAt",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataVersion.validationErrors",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataVersion.validationAt",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataVersion.validationReportKey",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataVersion.validationErrors",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataVersion.validationReportKey",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataVersion.validationErrors",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataVersion.validationStatus",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataVersion.validationReportKey",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataVersion.validationStatus",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataVersion.validationReportKey",
       "attr_name": "ili2db.ili.attrCardinalityMin",
-      "attr_value": "1"
+      "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataVersion.versionKey",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataVersion.validationStatus",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DataVersion.versionKey",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataVersion.validationStatus",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Distribution",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataVersion.versionKey",
+      "attr_name": "ili2db.ili.attrCardinalityMax",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataVersion.versionKey",
+      "attr_name": "ili2db.ili.attrCardinalityMin",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Distribution",
       "attr_name": "di.audit",
       "attr_value": "full"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Distribution.availability",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Distribution.availability",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Distribution.availability",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Distribution.availability",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Distribution.byteSize",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Distribution.byteSize",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Distribution.byteSize",
-      "attr_name": "ili2db.ili.attrCardinalityMin",
-      "attr_value": "0"
-    },
-    {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Distribution.fileName",
-      "attr_name": "ili2db.ili.attrCardinalityMax",
-      "attr_value": "1"
-    },
-    {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Distribution.fileName",
-      "attr_name": "ili2db.ili.attrCardinalityMin",
-      "attr_value": "1"
-    },
-    {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Distribution.format",
-      "attr_name": "ili2db.ili.attrCardinalityMax",
-      "attr_value": "1"
-    },
-    {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Distribution.format",
-      "attr_name": "ili2db.ili.attrCardinalityMin",
-      "attr_value": "1"
-    },
-    {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Distribution.legacyAccessUrl",
-      "attr_name": "ili2db.ili.attrCardinalityMax",
-      "attr_value": "1"
-    },
-    {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Distribution.legacyAccessUrl",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Distribution.byteSize",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Distribution.mediaType",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Distribution.fileName",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Distribution.mediaType",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Distribution.fileName",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Distribution.objectKey",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Distribution.format",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Distribution.objectKey",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Distribution.format",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Distribution.sha256",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Distribution.mediaType",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Distribution.sha256",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Distribution.mediaType",
+      "attr_name": "ili2db.ili.attrCardinalityMin",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Distribution.objectKey",
+      "attr_name": "ili2db.ili.attrCardinalityMax",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Distribution.objectKey",
+      "attr_name": "ili2db.ili.attrCardinalityMin",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Distribution.sha256",
+      "attr_name": "ili2db.ili.attrCardinalityMax",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Distribution.sha256",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Distribution.storageProfile",
-      "attr_name": "ili2db.ili.attrCardinalityMax",
-      "attr_value": "1"
-    },
-    {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Distribution.storageProfile",
-      "attr_name": "ili2db.ili.attrCardinalityMin",
-      "attr_value": "1"
-    },
-    {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DistributionVersion",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DistributionVersion",
       "attr_name": "di.audit",
       "attr_value": "full"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DistributionVersion.distributions",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DistributionVersion.distributions",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "*"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DistributionVersion.distributions",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DistributionVersion.distributions",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DistributionVersion.distributions",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DistributionVersion.distributions",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DistributionVersion.version",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DistributionVersion.version",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DistributionVersion.version",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DistributionVersion.version",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.DistributionVersion.version",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DistributionVersion.version",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.IssueDataset",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.IssueDataset",
       "attr_name": "di.audit",
       "attr_value": "full"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.IssueDataset.dataset",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.IssueDataset.dataset",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.IssueDataset.dataset",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.IssueDataset.dataset",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.IssueDataset.dataset",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.IssueDataset.dataset",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.IssueDataset.issues",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.IssueDataset.issues",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "*"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.IssueDataset.issues",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.IssueDataset.issues",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.IssueDataset.issues",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.IssueDataset.issues",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.KeywordDataset",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.KeywordDataset",
       "attr_name": "di.audit",
       "attr_value": "full"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.KeywordDataset.dataset",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.KeywordDataset.dataset",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.KeywordDataset.dataset",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.KeywordDataset.dataset",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.KeywordDataset.dataset",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.KeywordDataset.dataset",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.KeywordDataset.keywords",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.KeywordDataset.keywords",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "*"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.KeywordDataset.keywords",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.KeywordDataset.keywords",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.KeywordDataset.keywords",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.KeywordDataset.keywords",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Office",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Office",
       "attr_name": "di.audit",
       "attr_value": "full"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Office.abbreviation",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Office.abbreviation",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Office.abbreviation",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Office.abbreviation",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Office.active",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Office.active",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Office.active",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Office.active",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Office.email",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Office.email",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Office.email",
-      "attr_name": "ili2db.ili.attrCardinalityMin",
-      "attr_value": "0"
-    },
-    {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Office.identifier",
-      "attr_name": "ili2db.ili.attrCardinalityMax",
-      "attr_value": "1"
-    },
-    {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Office.identifier",
-      "attr_name": "ili2db.ili.attrCardinalityMin",
-      "attr_value": "1"
-    },
-    {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Office.name",
-      "attr_name": "ili2db.ili.attrCardinalityMax",
-      "attr_value": "1"
-    },
-    {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Office.name",
-      "attr_name": "ili2db.ili.attrCardinalityMin",
-      "attr_value": "1"
-    },
-    {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Office.phone",
-      "attr_name": "ili2db.ili.attrCardinalityMax",
-      "attr_value": "1"
-    },
-    {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Office.phone",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Office.email",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Office.website",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Office.identifier",
       "attr_name": "ili2db.ili.attrCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.Office.website",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Office.identifier",
+      "attr_name": "ili2db.ili.attrCardinalityMin",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Office.name",
+      "attr_name": "ili2db.ili.attrCardinalityMax",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Office.name",
+      "attr_name": "ili2db.ili.attrCardinalityMin",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Office.phone",
+      "attr_name": "ili2db.ili.attrCardinalityMax",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Office.phone",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.ThemeDataset",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Office.website",
+      "attr_name": "ili2db.ili.attrCardinalityMax",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.Office.website",
+      "attr_name": "ili2db.ili.attrCardinalityMin",
+      "attr_value": "0"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.ThemeDataset",
       "attr_name": "di.audit",
       "attr_value": "full"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.ThemeDataset.dataset",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.ThemeDataset.dataset",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.ThemeDataset.dataset",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.ThemeDataset.dataset",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.ThemeDataset.dataset",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.ThemeDataset.dataset",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.ThemeDataset.themes",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.ThemeDataset.themes",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "*"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.ThemeDataset.themes",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.ThemeDataset.themes",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.ThemeDataset.themes",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.ThemeDataset.themes",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.VersionIssue",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.VersionIssue",
       "attr_name": "di.audit",
       "attr_value": "full"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.VersionIssue.issue",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.VersionIssue.issue",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.VersionIssue.issue",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.VersionIssue.issue",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.VersionIssue.issue",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.VersionIssue.issue",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.VersionIssue.versions",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.VersionIssue.versions",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "*"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.VersionIssue.versions",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.VersionIssue.versions",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.VersionIssue.versions",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.VersionIssue.versions",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.VersionSchema",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.VersionSchema",
       "attr_name": "di.audit",
       "attr_value": "full"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.VersionSchema.schema",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.VersionSchema.schema",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "1"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.VersionSchema.schema",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.VersionSchema.schema",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.VersionSchema.schema",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.VersionSchema.schema",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.VersionSchema.usingVersions",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.VersionSchema.usingVersions",
       "attr_name": "ili2db.ili.assocCardinalityMax",
       "attr_value": "*"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.VersionSchema.usingVersions",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.VersionSchema.usingVersions",
       "attr_name": "ili2db.ili.assocCardinalityMin",
       "attr_value": "0"
     },
     {
-      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261104.Catalog.VersionSchema.usingVersions",
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.VersionSchema.usingVersions",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     }

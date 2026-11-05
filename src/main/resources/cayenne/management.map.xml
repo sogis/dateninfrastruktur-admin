@@ -209,12 +209,10 @@
 		<db-attribute name="availability" type="VARCHAR" isMandatory="true" length="255" />
 		<db-attribute name="bytesize" type="BIGINT" length="19" />
 		<db-attribute name="filename" type="VARCHAR" isMandatory="true" length="128" />
-		<db-attribute name="legacyaccessurl" type="VARCHAR" length="1023" />
 		<db-attribute name="mediatype" type="VARCHAR" isMandatory="true" length="255" />
 		<db-attribute name="objectkey" type="VARCHAR" isMandatory="true" length="1024" />
 		<db-attribute name="row_version" type="BIGINT" isMandatory="true" length="19" />
 		<db-attribute name="sha256" type="VARCHAR" length="64" />
-		<db-attribute name="storageprofile" type="VARCHAR" isMandatory="true" length="80" />
 		<db-attribute name="t_createdate" type="TIMESTAMP" isMandatory="true" length="29" />
 		<db-attribute name="t_id" type="BIGINT" isPrimaryKey="true" isMandatory="true" length="19" />
 		<db-attribute name="t_ili_tid" type="OTHER" isMandatory="true" length="2147483647" />
@@ -384,11 +382,9 @@
 		<obj-attribute name="availability" type="java.lang.String" db-attribute-path="availability" />
 		<obj-attribute name="bytesize" type="java.lang.Long" db-attribute-path="bytesize" />
 		<obj-attribute name="filename" type="java.lang.String" db-attribute-path="filename" />
-		<obj-attribute name="legacyaccessurl" type="java.lang.String" db-attribute-path="legacyaccessurl" />
 		<obj-attribute name="mediatype" type="java.lang.String" db-attribute-path="mediatype" />
 		<obj-attribute name="objectkey" type="java.lang.String" db-attribute-path="objectkey" />
 		<obj-attribute name="sha256" type="java.lang.String" db-attribute-path="sha256" />
-		<obj-attribute name="storageprofile" type="java.lang.String" db-attribute-path="storageprofile" />
 		<obj-attribute name="tIliTid" type="java.util.UUID" db-attribute-path="t_ili_tid" />
 	</obj-entity>
 	<obj-entity name="Groupmembership" className="ch.so.agi.dateninfrastruktur.admin.model.Groupmembership" dbEntityName="groupmembership">

@@ -30,6 +30,8 @@ WORKDIR /opt/admin
 COPY --from=jvm-build /workspace/build/libs/dateninfrastruktur-admin.jar /opt/admin/app.jar
 COPY --from=stack_source services/migration /opt/stack-tools/migration
 COPY --from=stack_source services/garage/setup-compose.py /opt/stack-tools/setup_garage.py
+# One-shot G1 cutover module; removed from the active tool image after verified local cutover.
+COPY --from=stack_source services/garage/cutover-g1.py /opt/stack-tools/cutover_g1.py
 COPY --from=stack_source services/postgres/initialize-compose.py /opt/stack-tools/initialize_postgres.py
 COPY scripts ./scripts
 COPY db ./db

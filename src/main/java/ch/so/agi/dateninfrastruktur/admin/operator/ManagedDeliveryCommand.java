@@ -14,7 +14,7 @@ public final class ManagedDeliveryCommand {
             ds.setJdbcUrl(required("DI_MANAGEMENT_WRITER_JDBCURL"));ds.setUsername("di_writer");ds.setPassword(required("DI_MANAGEMENT_WRITER_PASSWORD"));ds.setMaximumPoolSize(1);
             RuntimeContractVerifier.require(ds);var runtime=ManagementRuntime.create(ds);
             try{
-                var verifier=new RclonePrivateObjectVerifier(Path.of(required("DI_RCLONE_EXECUTABLE")),Path.of(required("DI_RCLONE_CONFIG")),required("DI_PRIVATE_STORAGE_PROFILE"),required("DI_PRIVATE_STORAGE_REMOTE"));
+                var verifier=new RclonePrivateObjectVerifier(Path.of(required("DI_RCLONE_EXECUTABLE")),Path.of(required("DI_RCLONE_CONFIG")));
                 var service=new DeliveryRegistrationService(new AuditedUnitOfWork(runtime),new AuthorityService(runtime),verifier);
                 service.verifyAndActivate(new ActorContext(required("DI_OPERATOR_ISSUER"),required("DI_OPERATOR_SUBJECT"),"service",null),new CommandContext(UUID.randomUUID(),UUID.randomUUID(),"activate_distribution","Explicit verified private delivery"),UUID.fromString(args[1]),Long.parseLong(args[2]),UUID.fromString(args[3]));
                 System.out.println("Private object verified and distribution activated.");
