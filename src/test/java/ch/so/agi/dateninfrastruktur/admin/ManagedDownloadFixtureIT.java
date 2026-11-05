@@ -16,14 +16,17 @@ class ManagedDownloadFixtureIT {
         try(var f=new ManagementFixture(issuer,OidcLoginIT.CLAUDIA,OidcLoginIT.ANNA,OidcLoginIT.BEN)){
             var operator=new ActorContext("urn:di:operator","managed-delivery","service",null);
             f.unit.execute(operator,ManagementFixture.command("operator.bootstrap"),ctx->{
-                var p=ctx.newObject(Principal.class);p.setTIliTid(UUID.randomUUID());p.setAissuer(operator.issuer());p.setAsubject(operator.subject());p.setAkind("service");p.setAactive(true);p.setProvisionedat(CayenneSql.now(ctx));
+                var p=ObjectSelect.query(Principal.class).where(Principal.AISSUER.eq(operator.issuer()).andExp(Principal.ASUBJECT.eq(operator.subject()))).selectOne(ctx);
+                if(p==null){p=ctx.newObject(Principal.class);p.setTIliTid(UUID.randomUUID());p.setAissuer(operator.issuer());p.setAsubject(operator.subject());p.setAkind("service");p.setAactive(true);p.setProvisionedat(CayenneSql.now(ctx));}
                 var office=ObjectSelect.query(Office.class).where(Office.T_ILI_TID.eq(f.office)).selectOne(ctx);
                 for(String cap:List.of("manage_metadata","publish")){var a=ctx.newObject(Authorityassignment.class);a.setTIliTid(UUID.randomUUID());a.setPrincipal1(p);a.setAssignedby1(p);a.setOffice1(office);a.setCapability(cap);a.setReason("Explicit synthetic private delivery operator");a.setValidfrom(CayenneSql.now(ctx));}return null;
             });
             var registration=ManagementFixture.command("operator.known_identity");f.unit.execute(f.ben,registration,ctx->{new ch.so.agi.dateninfrastruktur.admin.identity.PrincipalRepository().findOrRegisterVerifiedUser(ctx,f.ben,registration);return null;});
-            var data=new LinkedHashMap<String,Object>();var files=new ArrayList<Map<String,String>>();
+            String prefix=System.getenv().getOrDefault("DI_TEST_DATASET_PREFIX","ma-e");
+            if(!prefix.matches("[a-z][a-z0-9-]{3,60}"))throw new IllegalArgumentException("Explicit safe fixture namespace required");
+            var data=new LinkedHashMap<String,Object>();var files=new ArrayList<Map<String,String>>();data.put("prefix",prefix);
             for(String kind:List.of("open","restricted")){
-                UUID root=f.catalog.createDraft(f.manager,ManagementFixture.command("create_draft"),new CatalogCommandService.Create(f.office,"ma-e-"+kind,"standalone",ManagementFixture.metadata("MA-E Pilot "+kind)));
+                UUID root=f.catalog.createDraft(f.manager,ManagementFixture.command("create_draft"),new CatalogCommandService.Create(f.office,prefix+"-"+kind,"standalone",ManagementFixture.metadata(prefix.equals("ma-e")?"MA-E Pilot "+kind:prefix+" "+kind)));
                 f.catalog.transition(f.manager,ManagementFixture.command("publish"),root,f.version("dataset",root),"publish","Synthetischer Pilot");
                 if(kind.equals("open"))f.catalog.changeAccessLevel(f.manager,ManagementFixture.command("change_access_level"),root,f.version("dataset",root),"open","Anonymer Pilotzugang");
                 var issue=ObjectSelect.query(Dataset.class).where(Dataset.T_ILI_TID.eq(root)).selectOne(f.runtime.newContext()).getCurrentissue1().getTIliTid();
