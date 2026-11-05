@@ -16,11 +16,12 @@ cd ../dateninfrastruktur-dev-stack
 
 Bestehende Daten benötigen zuerst die kontrollierte Migration, keinen leeren
 Neuaufbau. Siehe [Betrieb](../dateninfrastruktur-dev-stack/docs/operations.md),
-[Übernahme/Rückfall](../dateninfrastruktur-dev-stack/docs/migration-ma-f.md) und
+[Lokaler MA-G-Cutover](../dateninfrastruktur-dev-stack/docs/implementation/storage-and-delivery/LOCAL_CUTOVER.md) und
 [aktuellen Abnahmestand](../dateninfrastruktur-dev-stack/docs/implementation/storage-and-delivery/WORK_QUEUE.md).
 Konfiguration und Secrets liegen nur im aktiven STACK/.runtime-Bereich.
-`setup.py`, `managed_setup.py`, `managed_runtime.py`, `identity_runtime.py` und
-`run.py` delegieren; sie erzeugen keine eigenen Container oder Host-JVM-Instanzen.
+Der Stack enthält den einzigen Betriebsweg. Das Toolimage führt explizites
+Schema-Setup und die Prüfung des aktuellen Vertrags aus; es enthält keinen
+einmaligen Altstand-Upgradebefehl.
 
 Schema-/Auditwerkzeuge benötigen einen expliziten PostgreSQL-Toolkontext und laufen
 über Compose. Bei Bestand werden Vertrag, Mapping und Audit nur geprüft.

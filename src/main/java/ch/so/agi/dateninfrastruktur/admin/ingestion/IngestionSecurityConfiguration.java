@@ -19,7 +19,7 @@ import org.springframework.security.web.context.SecurityContextHolderFilter;
 import org.springframework.web.filter.OncePerRequestFilter;
 import ch.so.agi.dateninfrastruktur.admin.security.ManagementJwtDecoder;
 
-@Configuration @ConditionalOnProperty(name="di.ingestion.enabled",havingValue="true")
+@Configuration @ConditionalOnProperty(name="di.web.enabled",havingValue="true",matchIfMissing=true)
 public class IngestionSecurityConfiguration {
     private static void problem(HttpServletResponse response,int status,String code)throws IOException{
         response.setStatus(status);response.setContentType("application/problem+json");response.getWriter().write("{\"status\":"+status+",\"code\":\""+code+"\"}");

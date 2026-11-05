@@ -1,13 +1,12 @@
 package ch.so.agi.dateninfrastruktur.admin.ingestion;
 import java.util.*;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
 @RestController @RequestMapping("/internal/ingestion")
-@ConditionalOnProperty(name="di.ingestion.enabled",havingValue="true")
+
 public final class IngestionUserController {
     public record Mutation(long expectedStatusVersion,String reason){}
     public record Created(UUID submissionId){}

@@ -2,13 +2,12 @@ package ch.so.agi.dateninfrastruktur.admin.ingestion;
 import java.nio.charset.StandardCharsets;
 import org.springframework.context.annotation.*;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.apache.cayenne.runtime.CayenneRuntime;
 import ch.so.agi.dateninfrastruktur.admin.access.AuthorityService;
 import ch.so.agi.dateninfrastruktur.admin.persistence.AuditedUnitOfWork;
 import ch.so.agi.dateninfrastruktur.admin.catalog.DeliveryRegistrationService;
 
-@Configuration @ConditionalOnProperty(name="di.ingestion.enabled",havingValue="true")
+@Configuration
 public class IngestionConfiguration {
     @Bean CsvDefinitionRegistry csvDefinitions(){return new CsvDefinitionRegistry();}
     @Bean DeliveryConfigurationQuery deliveryConfigurations(CsvDefinitionRegistry registry){return new DeliveryConfigurationQuery(registry);}

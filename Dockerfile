@@ -34,11 +34,11 @@ COPY scripts/interlis_tools.py scripts/management_db.py scripts/database_target.
 COPY db/toolchain.json ./db/
 RUN mkdir -p /runtime/tools && python3 -c "import sys;sys.path.insert(0,'scripts');from interlis_tools import ensure;ensure()"
 COPY --from=jvm-build /workspace/build/libs/dateninfrastruktur-admin.jar /opt/admin/app.jar
-COPY --from=stack_source services/migration /opt/stack-tools/migration
 COPY --from=stack_source services/garage/setup-compose.py /opt/stack-tools/setup_garage.py
 COPY --from=stack_source services/postgres/initialize-compose.py /opt/stack-tools/initialize_postgres.py
-COPY scripts ./scripts
-COPY db ./db
+COPY scripts/apply_constraints.py scripts/audit_setup.py scripts/persistence_contract.py scripts/setup_explicit.py scripts/verify_physical_mapping.py ./scripts/
+COPY db/*.sql db/audit-policy.json db/mapping-profile.json db/model-mapping.json db/reference-ma-g2-metadata.json db/persistence-contract.properties ./db/
+COPY db/migrations ./db/migrations
 COPY models ./models
 COPY src/main/resources/cayenne ./src/main/resources/cayenne
 ENTRYPOINT ["python3","/opt/admin/scripts/setup_explicit.py"]

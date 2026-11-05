@@ -2,7 +2,6 @@ package ch.so.agi.dateninfrastruktur.admin.web;
 import java.time.Instant;
 import java.util.*;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,7 +11,7 @@ import ch.so.agi.dateninfrastruktur.admin.ingestion.*;
 import ch.so.agi.dateninfrastruktur.admin.security.*;
 import ch.so.agi.dateninfrastruktur.admin.web.UiPage.*;
 
-@Controller @ConditionalOnProperty(name="di.ingestion.enabled",havingValue="true")
+@Controller
 public final class DeliveryManagementController {
     private final ch.so.agi.dateninfrastruktur.admin.access.AuthorityService authority;private final DeliveryManagementQuery query;private final SubmitterAdministrationService managers;private final DeliveryConfigurationService configurations;private final CsvDefinitionRegistry definitions;
     public DeliveryManagementController(DeliveryManagementQuery query,SubmitterAdministrationService managers,DeliveryConfigurationService configurations,CsvDefinitionRegistry definitions,ch.so.agi.dateninfrastruktur.admin.access.AuthorityService authority){this.authority=authority;this.query=query;this.managers=managers;this.configurations=configurations;this.definitions=definitions;}
