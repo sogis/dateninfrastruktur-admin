@@ -49,10 +49,12 @@ public final class DeliveryG4FixtureCommand {
                 var series=f.catalog.createDraft(f.manager,ManagementFixture.command("create_draft"),
                     new CatalogCommandService.Create(f.office,identifier,"series",ManagementFixture.metadata("G5 Reihenprobe")));
                 f.catalog.changeAccessLevel(f.manager,ManagementFixture.command("change_access_level"),series,f.version("dataset",series),"open","Isolierte G5-Reihe");
-                f.catalog.transition(f.manager,ManagementFixture.command("publish"),series,f.version("dataset",series),"publish","Isolierte G5-Reihe");
                 var issueCommands=new DatasetIssueService(f.unit,f.authority);
-                issueCommands.createIssue(f.manager,ManagementFixture.command("create_issue"),series,f.version("dataset",series),"2025","G5 Ausgabe 2025");
+                var historical=issueCommands.createIssue(f.manager,ManagementFixture.command("create_issue"),series,f.version("dataset",series),"2025","G5 Ausgabe 2025");
                 var current=issueCommands.createIssue(f.manager,ManagementFixture.command("create_issue"),series,f.version("dataset",series),"2026","G5 Ausgabe 2026");
+                f.catalog.transition(f.manager,ManagementFixture.command("publish"),series,f.version("dataset",series),"publish","Isolierte G5-Reihe");
+                issueCommands.updateIssueMetadata(f.manager,ManagementFixture.command("update_issue"),series,f.version("dataset",series),historical,"G5 Ausgabe 2025","Isolierte historische Ausgabe","published");
+                issueCommands.updateIssueMetadata(f.manager,ManagementFixture.command("update_issue"),series,f.version("dataset",series),current,"G5 Ausgabe 2026","Isolierte aktuelle Ausgabe","published");
                 issueCommands.setCurrentIssue(f.manager,ManagementFixture.command("set_current_issue"),series,f.version("dataset",series),current);
                 datasets.put("seriesIdentifier",identifier);
             }
