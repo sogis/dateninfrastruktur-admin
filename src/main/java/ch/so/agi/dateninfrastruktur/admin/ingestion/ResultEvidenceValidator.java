@@ -20,7 +20,7 @@ public final class ResultEvidenceValidator {
         require(e!=null && e.schemaVersion()==1 && Objects.equals(e.database(),plan.clickhouse().candidateDatabase()) && Objects.equals(e.table(),plan.clickhouse().candidateTable()) && Objects.equals(e.schemaDigest(),plan.fullSchemaDigest()) && e.rowCount()==snapshot.rowCount() && Objects.equals(e.dataSha256(),snapshot.dataSha256()),"ARTIFACT_CONFLICT");
     }
     public void artifacts(CsvExecutionPlanFactory.Plan plan,ValidationEvidence snapshot,ArtifactsEvidence e){
-        require(e!=null && e.schemaVersion()==1 && hash(e.runnerSha256()) && hash(e.repositorySha256()) && hash(e.imageSha256()) && e.artifacts().size()==3,"ARTIFACT_CONFLICT");
+        require(e!=null && e.schemaVersion()==1 && plan.runner()!=null && Objects.equals(e.runnerSha256(),plan.runner().runnerSha256()) && Objects.equals(e.repositorySha256(),plan.runner().repositorySha256()) && Objects.equals(e.imageSha256(),plan.runner().imageSha256()) && e.artifacts().size()==3,"ARTIFACT_CONFLICT");
         var seen=new HashSet<UUID>();
         for(var artifact:e.artifacts()){
             require(artifact!=null && seen.add(artifact.distributionId()) && artifact.byteSize()>0 && artifact.byteSize()<=10737418240L && hash(artifact.sha256()) && Objects.equals(artifact.snapshotDigest(),snapshot.dataSha256()),"ARTIFACT_CONFLICT");

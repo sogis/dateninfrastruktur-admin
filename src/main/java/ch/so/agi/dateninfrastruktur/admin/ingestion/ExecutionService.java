@@ -12,7 +12,7 @@ import ch.so.agi.dateninfrastruktur.admin.persistence.*;
 
 /** One winning run per dispatch. All effects remain isolated by execution UUID. */
 public final class ExecutionService {
-    public record Claim(UUID dispatchId,String jenkinsInstance,String jobName,String runId){}
+    public record Claim(UUID dispatchId,String jenkinsInstance,String jobName,String runId,CsvExecutionPlanFactory.Runner runner){}
     public record Binding(long fence,String leaseSecret){}
     public record Claimed(UUID executionId,long fence,String leaseSecret,String planDigest,CsvExecutionPlanFactory.Plan plan){}
     public record Heartbeat(Instant leaseExpiresAt){}
@@ -26,6 +26,7 @@ public final class ExecutionService {
     public Claimed claim(ActorContext actor,CommandContext command,Claim request){
         action(command,"ingestion.claim");
         if(request.dispatchId()==null || !instance.equals(request.jenkinsInstance()) || !DispatchService.JOB.equals(request.jobName()) || request.runId()==null || !request.runId().matches("[0-9]{1,20}"))throw IngestionProblem.forbidden();
+        if(request.runner()==null || !request.runner().valid())throw IngestionProblem.invalid("INVALID_INPUT");
         var claimed=unit.execute(actor,command,context->{
             long runner=runners.require(context,actor);
             var dispatch=dispatch(context,request.dispatchId());var initial=repository.find(context,SubmissionRepository.uuid(dispatch,"submission_id"),false);
@@ -35,7 +36,7 @@ public final class ExecutionService {
             var old=CayenneSql.rows(context,"SELECT * FROM di_ingest.execution WHERE dispatch_id=CAST(#bind($id) AS uuid) FOR UPDATE",Map.of("id",request.dispatchId().toString()));
             if(!old.isEmpty()){
                 var row=old.getFirst();if(runner!=SubmissionRepository.number(row,"runner_principal") || !request.runId().equals(row.get("jenkins_run_id")) || !"ACTIVE".equals(row.get("state")))throw IngestionProblem.conflict("STALE_EXECUTION");
-                var binding=new Binding(SubmissionRepository.number(row,"fence"),lease(row));requireCurrent(context,actor,row,binding,true);requireOriginal(context,sub);return claimed(row);
+                var binding=new Binding(SubmissionRepository.number(row,"fence"),lease(row));requireCurrent(context,actor,row,binding,true);requireOriginal(context,sub);if(!request.runner().equals(plan(row).runner()))throw IngestionProblem.conflict("IDEMPOTENCY_CONFLICT");return claimed(row);
             }
             if(!Set.of("RESERVED","QUEUED").contains(dispatch.get("state")) || !"QUEUED".equals(sub.get("status")))throw IngestionProblem.conflict("INVALID_STATE");
             var slot=CayenneSql.rows(context,"SELECT * FROM di_ingest.dataset_execution_slot WHERE dataset_id=#bind($dataset) FOR UPDATE",Map.of("dataset",SubmissionRepository.number(sub,"dataset_id")));
@@ -45,7 +46,7 @@ public final class ExecutionService {
                 finishDispatch(context,request.dispatchId(),SubmissionRepository.uuid(sub,"id"));repository.event(context,SubmissionRepository.uuid(sub,"id"),null,"REJECTED_AUTHORIZATION","Ausführung nach aktueller Rechteprüfung verweigert.");return null;
             }
             UUID id=UUID.randomUUID();long fence=((Number)CayenneSql.rows(context,"SELECT coalesce(max(fence),0)+1 AS fence FROM di_ingest.execution WHERE submission_id=CAST(#bind($id) AS uuid)",Map.of("id",sub.get("id").toString())).getFirst().get("fence")).longValue();
-            var plan=plans.create(context,sub,id,fence);String digest=CanonicalJson.digest(plan);
+            var plan=plans.create(context,sub,id,fence,request.runner());String digest=CanonicalJson.digest(plan);
             var p=new HashMap<String,Object>();p.put("id",id.toString());p.put("sub",sub.get("id").toString());p.put("dispatch",request.dispatchId().toString());p.put("attempt",dispatch.get("attempt_number"));p.put("fence",fence);p.put("runner",runner);p.put("run",request.runId());p.put("plan",CanonicalJson.encode(plan));p.put("digest",digest);
             String secret=lease(id,request.dispatchId(),runner,request.runId(),fence);p.put("secret",CanonicalJson.sha256(secret.getBytes(StandardCharsets.UTF_8)));
             SubmissionRepository.execute(context,"""
@@ -102,6 +103,25 @@ public final class ExecutionService {
             repository.transition(context,SubmissionRepository.uuid(sub,"id"),sub.get("status").toString(),next,code,"Verarbeitung ohne fachliche Annahme beendet.");
             SubmissionRepository.execute(context,"UPDATE di_ingest.execution SET state='FAILED',finished_at=clock_timestamp() WHERE id=CAST(#bind($id) AS uuid)",Map.of("id",id.toString()));
             finishDispatch(context,SubmissionRepository.uuid(row,"dispatch_id"),SubmissionRepository.uuid(sub,"id"));repository.event(context,SubmissionRepository.uuid(sub,"id"),id,next,"Verarbeitung ohne Annahme beendet; keine Rohfehler gespeichert.");return null;});
+    }
+    /** Recovery after the owning Jenkins confirms that this exact claimed run has ended. */
+    public void interrupted(ActorContext actor,CommandContext command,UUID dispatchId,String runId){
+        action(command,"ingestion.interrupted");
+        if(runId==null || !runId.matches("[1-9][0-9]{0,9}"))throw IngestionProblem.invalid("INVALID_INPUT");
+        unit.execute(actor,command,context->{
+            long principal=runners.require(context,actor);var dispatch=dispatch(context,dispatchId);
+            if(principal!=SubmissionRepository.number(dispatch,"reserved_by") || !instance.equals(dispatch.get("jenkins_instance")))throw IngestionProblem.forbidden();
+            var rows=CayenneSql.rows(context,"SELECT id FROM di_ingest.execution WHERE dispatch_id=CAST(#bind($id) AS uuid)",Map.of("id",dispatchId.toString()));
+            if(rows.size()!=1)throw IngestionProblem.conflict("STALE_EXECUTION");
+            UUID id=SubmissionRepository.uuid(rows.getFirst(),"id");var row=lock(context,id);
+            if(!runId.equals(row.get("jenkins_run_id")) || principal!=SubmissionRepository.number(row,"runner_principal"))throw IngestionProblem.conflict("STALE_EXECUTION");
+            if(!"ACTIVE".equals(row.get("state")))return null; // Never downgrade a completed or cancelled execution.
+            var sub=repository.find(context,SubmissionRepository.uuid(row,"submission_id"),false);UUID submission=SubmissionRepository.uuid(sub,"id");
+            if(!Set.of("VALIDATING","STAGING","READY_TO_COMMIT").contains(sub.get("status")))throw IngestionProblem.conflict("STALE_EXECUTION");
+            repository.transition(context,submission,sub.get("status").toString(),"FAILED_RETRYABLE","DEPENDENCY_UNAVAILABLE","Technischer Lauf vor der Annahme beendet.");
+            SubmissionRepository.execute(context,"UPDATE di_ingest.execution SET state='FAILED',finished_at=clock_timestamp() WHERE id=CAST(#bind($id) AS uuid)",Map.of("id",id.toString()));
+            finishDispatch(context,dispatchId,submission);repository.event(context,submission,id,"FAILED_RETRYABLE","Beendeten technischen Lauf abgeglichen; Ausführung gesperrt.");return null;
+        });
     }
     Map<String,Object> lock(ObjectContext context,UUID id){var initial=execution(context,id);var sub=repository.find(context,SubmissionRepository.uuid(initial,"submission_id"),false);repository.lockDataset(context,SubmissionRepository.uuid(sub,"dataset_uuid"));repository.find(context,SubmissionRepository.uuid(sub,"id"),true);return CayenneSql.rows(context,"SELECT * FROM di_ingest.execution WHERE id=CAST(#bind($id) AS uuid) FOR UPDATE",Map.of("id",id.toString())).getFirst();}
     void requireCurrent(ObjectContext context,ActorContext actor,Map<String,Object> row,Binding binding,boolean active){

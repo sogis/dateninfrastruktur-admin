@@ -10,7 +10,7 @@ public final class SubmissionRepository {
     public static void execute(ObjectContext context,String sql,Map<String,?> params){SQLExec.query(sql).params(params).execute(context);}
     public Map<String,Object> find(ObjectContext context,UUID id,boolean lock){
         var rows=CayenneSql.rows(context,"""
-            SELECT s.*,d.t_ili_tid AS dataset_uuid,i.t_ili_tid AS issue_uuid,p.t_ili_tid AS submitted_by_uuid
+            SELECT s.*,d.t_ili_tid AS dataset_uuid,d.title AS dataset_title,i.t_ili_tid AS issue_uuid,p.t_ili_tid AS submitted_by_uuid
             FROM di_ingest.submission s JOIN di_management.dataset d ON d.t_id=s.dataset_id
             JOIN di_management.datasetissue i ON i.t_id=s.issue_id JOIN di_management.principal p ON p.t_id=s.submitted_by
             WHERE s.id=CAST(#bind($id) AS uuid)

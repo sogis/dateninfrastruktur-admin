@@ -11,6 +11,7 @@ import tools.jackson.databind.JsonNode;
 @ConditionalOnProperty(name="di.ingestion.enabled",havingValue="true")
 public final class IngestionExecutionController {
     public record Queued(String queueId){}
+    public record Interrupted(String runId){}
     public record Checkpoint(ExecutionService.Binding binding,String checkpoint,JsonNode evidence){}
     public record Complete(ExecutionService.Binding binding,ResultEvidenceValidator.Manifest manifest){}
     public record Fail(ExecutionService.Binding binding,String code){}
@@ -18,7 +19,13 @@ public final class IngestionExecutionController {
     public IngestionExecutionController(DispatchService dispatches,ExecutionService executions,PublicationService publications){this.dispatches=dispatches;this.executions=executions;this.publications=publications;}
     @PostMapping("/dispatch/reserve") ResponseEntity<?> reserve(JwtAuthenticationToken jwt,HttpServletRequest request){var value=dispatches.reserve(IngestionHttp.actor(jwt,true),IngestionHttp.command(request,"ingestion.reserve"),IngestionHttp.body(request,DispatchService.Request.class));return value==null?ResponseEntity.noContent().build():ResponseEntity.ok(value);}
     @PostMapping("/dispatch/{id}/queued") Object queued(JwtAuthenticationToken jwt,@PathVariable UUID id,HttpServletRequest request){return dispatches.queued(IngestionHttp.actor(jwt,true),IngestionHttp.command(request,"ingestion.queued"),id,IngestionHttp.body(request,Queued.class).queueId());}
+    @PostMapping("/dispatch/spool/{id}/maintenance") Object maintainSpool(JwtAuthenticationToken jwt,@PathVariable UUID id,HttpServletRequest request){
+        return dispatches.maintainSpool(IngestionHttp.actor(jwt,true),IngestionHttp.command(request,"ingestion.spool_maintenance"),id);
+    }
     @GetMapping("/dispatch/reconciliation") Object reconciliation(JwtAuthenticationToken jwt){return dispatches.reconcile(IngestionHttp.actor(jwt,true));}
+    @PostMapping("/executions/dispatch/{id}/interrupted") ResponseEntity<Void> interrupted(JwtAuthenticationToken jwt,@PathVariable UUID id,HttpServletRequest request){
+        executions.interrupted(IngestionHttp.actor(jwt,true),IngestionHttp.command(request,"ingestion.interrupted"),id,IngestionHttp.body(request,Interrupted.class).runId());return ResponseEntity.noContent().build();
+    }
     @PostMapping("/executions/claim") Object claim(JwtAuthenticationToken jwt,HttpServletRequest request){return executions.claim(IngestionHttp.actor(jwt,true),IngestionHttp.command(request,"ingestion.claim"),IngestionHttp.body(request,ExecutionService.Claim.class));}
     @PostMapping("/executions/{id}/heartbeat") Object heartbeat(JwtAuthenticationToken jwt,@PathVariable UUID id,HttpServletRequest request){return executions.heartbeat(IngestionHttp.actor(jwt,true),IngestionHttp.command(request,"ingestion.heartbeat"),id,IngestionHttp.body(request,ExecutionService.Binding.class));}
     @PostMapping("/executions/{id}/checkpoint") ResponseEntity<Void> checkpoint(JwtAuthenticationToken jwt,@PathVariable UUID id,HttpServletRequest request){

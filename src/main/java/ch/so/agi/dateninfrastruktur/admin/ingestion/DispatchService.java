@@ -9,7 +9,7 @@ import org.apache.cayenne.ObjectContext;
 public final class DispatchService {
     public static final String JOB="di-csv-ingest";
     public record Request(UUID submissionId){}
-    public record Reserved(UUID dispatchId,UUID submissionId,String jobName,String state,String queueId){}
+    public record Reserved(UUID dispatchId,UUID submissionId,String jobName,String state,String queueId,String runId){}
     private final AuditedUnitOfWork unit;private final SubmissionAuthorizationService users;private final IngestionRunnerAuthorization runners;private final String instance;
     private final SubmissionRepository repository=new SubmissionRepository();
     public DispatchService(AuditedUnitOfWork unit,SubmissionAuthorizationService users,IngestionRunnerAuthorization runners,String instance){
@@ -60,7 +60,7 @@ public final class DispatchService {
                     """,p);
                 SubmissionRepository.execute(context,"UPDATE di_ingest.submission SET base_version_id=CAST(#bind($base) AS uuid),status='QUEUED',status_version=status_version+1 WHERE id=CAST(#bind($id) AS uuid)",p);
                 repository.event(context,id,null,"DISPATCH_RESERVED","Dauerhafter Dispatch und exklusiver Datensatzslot reserviert.");
-                return new Reserved(dispatch,id,JOB,"RESERVED",null);
+                return new Reserved(dispatch,id,JOB,"RESERVED",null,null);
             }
             return null;
         });
@@ -76,6 +76,29 @@ public final class DispatchService {
             return result(dispatch(context,dispatch,false));
         });
     }
+    public record SpoolDecision(UUID submissionId,boolean remove){}
+    public SpoolDecision maintainSpool(ActorContext runner,CommandContext command,UUID id){
+        if(!"ingestion.spool_maintenance".equals(command.actionCode()))throw IngestionProblem.invalid("INVALID_INPUT");
+        return unit.execute(runner,command,context->{
+            runners.require(context,runner);
+            var initial=repository.find(context,id,false);repository.lockDataset(context,SubmissionRepository.uuid(initial,"dataset_uuid"));
+            var row=repository.find(context,id,true);String state=row.get("status").toString();var params=Map.of("id",id.toString());
+            if("UPLOADING".equals(state)){
+                var expired=CayenneSql.rows(context,"SELECT id FROM di_ingest.submission WHERE id=CAST(#bind($id) AS uuid) AND created_at<clock_timestamp()-interval '24 hours'",params);
+                if(!expired.isEmpty()){
+                    repository.transition(context,id,"UPLOADING","UPLOAD_FAILED","DEPENDENCY_UNAVAILABLE","Die Eingangsdatei wurde nicht rechtzeitig versiegelt.");
+                    repository.event(context,id,null,"UPLOAD_FAILED","Unvollständigen Upload nach 24 Stunden geschlossen.");
+                }
+                return new SpoolDecision(id,false);
+            }
+            if(!Set.of("UPLOAD_FAILED","CANCELLED","REJECTED_VALIDATION","REJECTED_AUTHORIZATION","CONFLICT").contains(state))return new SpoolDecision(id,false);
+            var old=CayenneSql.rows(context,"""
+                SELECT 1 FROM (SELECT occurred_at FROM di_ingest.event WHERE submission_id=CAST(#bind($id) AS uuid)
+                  ORDER BY id DESC LIMIT 1) e WHERE e.occurred_at<clock_timestamp()-interval '7 days'
+                """,params);
+            return new SpoolDecision(id,!old.isEmpty());
+        });
+    }
     public List<Reserved> reconcile(ActorContext runner){
         // A read-only query; no hidden lease expiry or queue mutation on GET.
         return unitRead(runner);
@@ -84,12 +107,18 @@ public final class DispatchService {
         // Transaction context is deliberately explicit. No Fach mutation/audit event.
         return unit.read(context->{
             long principal=runners.require(context,runner);
-            return CayenneSql.rows(context,"SELECT * FROM di_ingest.dispatch WHERE reserved_by=#bind($runner) AND jenkins_instance=#bind($instance) AND state IN ('RESERVED','QUEUED') ORDER BY created_at LIMIT 100",Map.of("runner",principal,"instance",instance)).stream().map(DispatchService::result).toList();
+            return CayenneSql.rows(context,"""
+                SELECT d.*,e.jenkins_run_id FROM di_ingest.dispatch d
+                LEFT JOIN di_ingest.execution e ON e.dispatch_id=d.id AND e.state='ACTIVE'
+                WHERE d.reserved_by=#bind($runner) AND d.jenkins_instance=#bind($instance)
+                  AND (d.state IN ('RESERVED','QUEUED') OR (d.state='CLAIMED' AND e.id IS NOT NULL))
+                ORDER BY d.created_at LIMIT 100
+                """,Map.of("runner",principal,"instance",instance)).stream().map(DispatchService::result).toList();
         });
     }
     Map<String,Object> dispatch(ObjectContext context,UUID id,boolean lock){
         var rows=CayenneSql.rows(context,"SELECT * FROM di_ingest.dispatch WHERE id=CAST(#bind($id) AS uuid)"+(lock?" FOR UPDATE":""),Map.of("id",id.toString()));
         if(rows.size()!=1)throw IngestionProblem.forbidden();return rows.getFirst();
     }
-    private static Reserved result(Map<String,Object> row){return new Reserved(SubmissionRepository.uuid(row,"id"),SubmissionRepository.uuid(row,"submission_id"),JOB,row.get("state").toString(),row.get("queue_id")==null?null:row.get("queue_id").toString());}
+    private static Reserved result(Map<String,Object> row){return new Reserved(SubmissionRepository.uuid(row,"id"),SubmissionRepository.uuid(row,"submission_id"),JOB,row.get("state").toString(),row.get("queue_id")==null?null:row.get("queue_id").toString(),Objects.toString(row.get("jenkins_run_id"),null));}
 }

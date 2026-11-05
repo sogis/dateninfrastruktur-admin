@@ -8,7 +8,7 @@ import ch.so.agi.dateninfrastruktur.admin.access.AuthorityService;
 
 /** Safe provenance API. read_data alone never opens submission history. */
 public final class SubmissionQueryService {
-    public record Status(UUID submissionId,UUID datasetId,UUID issueId,String state,long statusVersion,String originalName,Long inputSize,String mode,UUID publishedVersionId,String errorCode,String message){}
+    public record Status(UUID submissionId,UUID datasetId,UUID issueId,String state,long statusVersion,String originalName,Long inputSize,String mode,UUID publishedVersionId,String errorCode,String message,String datasetTitle,String createdAt){}
     public record Report(UUID submissionId,String state,String errorCode,String message,List<Step> steps){}
     public record Step(String checkpoint){}
     private final AuditedUnitOfWork unit;private final SubmissionAuthorizationService users;
@@ -34,5 +34,6 @@ public final class SubmissionQueryService {
     }
     private Map<String,Object> visible(ObjectContext context,ActorContext actor,UUID id){long principal=users.requireUser(context,actor);var row=repository.find(context,id,false);if(principal!=SubmissionRepository.number(row,"submitted_by") && !users.canManage(context,actor,SubmissionRepository.uuid(row,"dataset_uuid")))throw IngestionProblem.forbidden();return row;}
     private static String text(Map<String,Object> row,String key){return row.get(key)==null?null:row.get(key).toString();}
-    private static Status status(Map<String,Object> row){return new Status(SubmissionRepository.uuid(row,"id"),SubmissionRepository.uuid(row,"dataset_uuid"),SubmissionRepository.uuid(row,"issue_uuid"),text(row,"status"),SubmissionRepository.number(row,"status_version"),text(row,"original_name"),row.get("input_size")==null?null:SubmissionRepository.number(row,"input_size"),text(row,"mode"),SubmissionRepository.uuid(row,"published_version_id"),text(row,"last_error_code"),text(row,"safe_message"));}
+    private static String utc(Object time){if(time instanceof java.util.Date date)return date.toInstant().toString();if(time instanceof java.time.OffsetDateTime date)return date.toInstant().toString();return time.toString();}
+    private static Status status(Map<String,Object> row){return new Status(SubmissionRepository.uuid(row,"id"),SubmissionRepository.uuid(row,"dataset_uuid"),SubmissionRepository.uuid(row,"issue_uuid"),text(row,"status"),SubmissionRepository.number(row,"status_version"),text(row,"original_name"),row.get("input_size")==null?null:SubmissionRepository.number(row,"input_size"),text(row,"mode"),SubmissionRepository.uuid(row,"published_version_id"),text(row,"last_error_code"),text(row,"safe_message"),text(row,"dataset_title"),utc(row.get("created_at")));}
 }

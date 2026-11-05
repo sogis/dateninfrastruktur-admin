@@ -10,10 +10,13 @@ public final class CsvExecutionPlanFactory {
     public record Output(UUID distributionId,String format,String objectKey,String fileName,String mediaType){}
     public record ClickHouse(String candidateDatabase,String candidateTable,String publicationName){}
     public record BaseSnapshot(UUID versionId,String csvObjectKey,String csvSha256,long csvSize,String dataSha256,long rowCount){}
-    public record Plan(int schemaVersion,UUID submissionId,UUID executionId,long fence,UUID initiatorPrincipalId,UUID datasetId,UUID issueId,UUID reservedVersionId,String mode,UUID baseVersionId,String definitionKey,String definitionSha256,List<CsvDefinitionRegistry.FileHash> modelFiles,String modelSetSha256,String qualifiedTableName,CsvDefinitionRegistry.Dialect csvDialect,List<CsvDefinitionRegistry.Column> orderedColumns,List<String> rowKeyDefinition,String fullSchemaDigest,Input input,List<Output> outputs,ClickHouse clickhouse,CsvDefinitionRegistry.Limits limits,BaseSnapshot baseSnapshot){
+    public record Runner(String runnerSha256,String repositorySha256,String imageSha256){
+        boolean valid(){return ResultEvidenceValidator.hash(runnerSha256)&&ResultEvidenceValidator.hash(repositorySha256)&&ResultEvidenceValidator.hash(imageSha256);}
+    }
+    public record Plan(int schemaVersion,UUID submissionId,UUID executionId,long fence,UUID initiatorPrincipalId,UUID datasetId,UUID issueId,UUID reservedVersionId,String mode,UUID baseVersionId,String definitionKey,String definitionSha256,List<CsvDefinitionRegistry.FileHash> modelFiles,String modelSetSha256,String qualifiedTableName,CsvDefinitionRegistry.Dialect csvDialect,List<CsvDefinitionRegistry.Column> orderedColumns,List<String> rowKeyDefinition,String fullSchemaDigest,Input input,List<Output> outputs,ClickHouse clickhouse,CsvDefinitionRegistry.Limits limits,BaseSnapshot baseSnapshot,Runner runner){
         public Plan{modelFiles=List.copyOf(modelFiles);orderedColumns=List.copyOf(orderedColumns);rowKeyDefinition=List.copyOf(rowKeyDefinition);outputs=List.copyOf(outputs);}
     }
-    public Plan create(ObjectContext context,Map<String,Object> row,UUID execution,long fence){
+    public Plan create(ObjectContext context,Map<String,Object> row,UUID execution,long fence,Runner runner){
         var snapshot=CanonicalJson.JSON.readValue(row.get("configuration_snapshot").toString(),DeliveryConfigurationQuery.Configuration.class);var definition=snapshot.definition();
         UUID submission=SubmissionRepository.uuid(row,"id"),dataset=SubmissionRepository.uuid(row,"dataset_uuid"),issue=SubmissionRepository.uuid(row,"issue_uuid"),version=SubmissionRepository.uuid(row,"reserved_version_id");
         var outputs=new ArrayList<Output>();
@@ -38,6 +41,6 @@ public final class CsvExecutionPlanFactory {
         }
         String candidate="v_"+version.toString().replace("-","")+"_"+execution.toString().replace("-","");
         String publication="ds_"+dataset.toString().replace("-","")+"_i_"+issue.toString().replace("-","")+"_current";
-        return new Plan(1,submission,execution,fence,SubmissionRepository.uuid(row,"submitted_by_uuid"),dataset,issue,version,row.get("mode").toString(),baseVersion,snapshot.definitionKey(),snapshot.definitionSha256(),definition.modelFiles(),snapshot.modelSetSha256(),definition.qualifiedTableName(),definition.dialect(),definition.columns(),definition.businessKey(),snapshot.fullSchemaDigest(),new Input(SubmissionRepository.number(row,"input_size"),row.get("input_sha256").toString(),row.get("private_spool_reference").toString()),outputs,new ClickHouse("di_data",candidate,publication),definition.limits(),base);
+        return new Plan(1,submission,execution,fence,SubmissionRepository.uuid(row,"submitted_by_uuid"),dataset,issue,version,row.get("mode").toString(),baseVersion,snapshot.definitionKey(),snapshot.definitionSha256(),definition.modelFiles(),snapshot.modelSetSha256(),definition.qualifiedTableName(),definition.dialect(),definition.columns(),definition.businessKey(),snapshot.fullSchemaDigest(),new Input(SubmissionRepository.number(row,"input_size"),row.get("input_sha256").toString(),row.get("private_spool_reference").toString()),outputs,new ClickHouse("di_data",candidate,publication),definition.limits(),base,runner);
     }
 }

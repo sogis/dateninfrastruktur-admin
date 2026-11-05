@@ -15,7 +15,8 @@ import ch.so.agi.dateninfrastruktur.admin.catalog.DeliveryRegistrationService;
 
 /** Real PG/Cayenne process contract. Evidence here is explicitly synthetic trusted-runner attestation. */
 public final class IngestionG2IT {
-    static final java.util.concurrent.atomic.AtomicLong RUNS=new java.util.concurrent.atomic.AtomicLong(System.nanoTime());
+    static final CsvExecutionPlanFactory.Runner RUNNER=new CsvExecutionPlanFactory.Runner("4".repeat(64),"5".repeat(64),"6".repeat(64));
+    static final java.util.concurrent.atomic.AtomicLong RUNS=new java.util.concurrent.atomic.AtomicLong(100);
     static CommandContext command(String action){return ManagementFixture.command(action);}
     static final class Fixture implements AutoCloseable {
         final ManagementFixture f=new ManagementFixture();final CsvDefinitionRegistry registry=new CsvDefinitionRegistry();
@@ -46,7 +47,7 @@ public final class IngestionG2IT {
         }
         long version(String table,UUID id){if(!Set.of("dataset","authorityassignment","office").contains(table))throw new IllegalArgumentException();return f.unit.read(ctx->((Number)CayenneSql.rows(ctx,"SELECT row_version FROM di_management."+table+" WHERE t_ili_tid=CAST(#bind($id) AS uuid)",Map.of("id",id.toString())).getFirst().get("row_version")).longValue());}
         UUID ready(){String digest=f.unit.read(ctx->configs.resolve(ctx,dataset).digest());var id=submissions.create(f.anna,command("ingestion.create"),new SubmissionService.Create(dataset,issue,"replace",digest,"Prüfung"));String hash="1".repeat(64),name="daten.csv",spool="uploads/"+id+"/input.csv";submissions.seal(f.anna,command("ingestion.seal"),id,new SubmissionService.Seal(42,hash,name,spool,proof.sign(id,42,hash,name,spool)));return id;}
-        ExecutionService.Claimed claim(UUID id){var dispatch=dispatches.reserve(runner,command("ingestion.reserve"),new DispatchService.Request(id));return executions.claim(runner,command("ingestion.claim"),new ExecutionService.Claim(dispatch.dispatchId(),instance,DispatchService.JOB,Long.toString(RUNS.incrementAndGet())));}
+        ExecutionService.Claimed claim(UUID id){var dispatch=dispatches.reserve(runner,command("ingestion.reserve"),new DispatchService.Request(id));return executions.claim(runner,command("ingestion.claim"),new ExecutionService.Claim(dispatch.dispatchId(),instance,DispatchService.JOB,Long.toString(RUNS.incrementAndGet()),RUNNER));}
         ExecutionService.Binding binding(ExecutionService.Claimed claim){return new ExecutionService.Binding(claim.fence(),claim.leaseSecret());}
         ResultEvidenceValidator.Manifest evidence(ExecutionService.Claimed claim){
             var p=claim.plan();String data="2".repeat(64);var input=new ResultEvidenceValidator.InputEvidence(1,p.input().size(),p.input().sha256());var valid=new ResultEvidenceValidator.ValidationEvidence(1,p.definitionSha256(),p.modelSetSha256(),"1.15.0",true,2,data);
@@ -64,7 +65,7 @@ public final class IngestionG2IT {
             var id=x.ready();assertThrows(IngestionProblem.class,()->x.queries.detail(x.f.ben,id));assertEquals("READY",x.queries.detail(x.f.anna,id).state());assertEquals("READY",x.queries.detail(x.f.manager,id).state());
             var request=new DispatchService.Request(id);var command=command("ingestion.reserve");var dispatch=x.dispatches.reserve(x.runner,command,request);assertEquals(dispatch,x.dispatches.reserve(x.runner,command,request));
             try(var pool=Executors.newVirtualThreadPerTaskExecutor()){
-                var start=new CountDownLatch(1);List<Future<ExecutionService.Claimed>> calls=new ArrayList<>();for(String run:List.of("1","2"))calls.add(pool.submit(()->{start.await();return x.executions.claim(x.runner,command("ingestion.claim"),new ExecutionService.Claim(dispatch.dispatchId(),x.instance,DispatchService.JOB,run));}));start.countDown();int won=0,denied=0;ExecutionService.Claimed winner=null;
+                var start=new CountDownLatch(1);List<Future<ExecutionService.Claimed>> calls=new ArrayList<>();for(String run:List.of("1","2"))calls.add(pool.submit(()->{start.await();return x.executions.claim(x.runner,command("ingestion.claim"),new ExecutionService.Claim(dispatch.dispatchId(),x.instance,DispatchService.JOB,run,RUNNER));}));start.countDown();int won=0,denied=0;ExecutionService.Claimed winner=null;
                 for(var call:calls)try{winner=call.get(20,TimeUnit.SECONDS);won++;}catch(ExecutionException rejected){assertInstanceOf(IngestionProblem.class,rejected.getCause());denied++;}assertEquals(1,won);assertEquals(1,denied);
                 var claimed=winner;assertNotNull(claimed);var binding=x.binding(claimed);assertThrows(IngestionProblem.class,()->x.executions.heartbeat(x.f.anna,command("ingestion.heartbeat"),claimed.executionId(),binding));assertThrows(IngestionProblem.class,()->x.executions.heartbeat(x.runner,command("ingestion.heartbeat"),claimed.executionId(),new ExecutionService.Binding(claimed.fence()+1,claimed.leaseSecret())));
                 assertThrows(IngestionProblem.class,()->x.executions.checkpoint(x.runner,command("ingestion.checkpoint"),claimed.executionId(),binding,"CANDIDATE_VERIFIED",x.evidence(claimed).candidate()));
@@ -84,12 +85,35 @@ public final class IngestionG2IT {
         var command=command("ingestion.seal");assertEquals(id,x.submissions.seal(x.f.anna,command,id,seal));assertEquals(id,x.submissions.seal(x.f.anna,command,id,seal));
         String changed="2".repeat(64);assertThrows(IngestionProblem.class,()->x.submissions.seal(x.f.anna,command("ingestion.seal"),id,new SubmissionService.Seal(42,changed,name,spool,x.proof.sign(id,42,changed,name,spool))));assertEquals("READY",x.queries.detail(x.f.anna,id).state());
     }}
+    @Test void exactRunRecoveryAndImmutableRunnerEvidence(){try(var x=new Fixture()){
+        var id=x.ready();var reserved=x.dispatches.reserve(x.runner,command("ingestion.reserve"),new DispatchService.Request(id));
+        assertThrows(IngestionProblem.class,()->x.executions.claim(x.runner,command("ingestion.claim"),new ExecutionService.Claim(reserved.dispatchId(),x.instance,DispatchService.JOB,"17",null)));
+        var request=new ExecutionService.Claim(reserved.dispatchId(),x.instance,DispatchService.JOB,"17",RUNNER);
+        var claim=x.executions.claim(x.runner,command("ingestion.claim"),request);
+        assertEquals(claim,x.executions.claim(x.runner,command("ingestion.claim"),request));
+        var other=new CsvExecutionPlanFactory.Runner(RUNNER.runnerSha256(),RUNNER.repositorySha256(),"9".repeat(64));
+        assertThrows(IngestionProblem.class,()->x.executions.claim(x.runner,command("ingestion.claim"),new ExecutionService.Claim(reserved.dispatchId(),x.instance,DispatchService.JOB,"17",other)));
+        var observed=x.dispatches.reconcile(x.runner).stream().filter(d->d.dispatchId().equals(reserved.dispatchId())).findFirst().orElseThrow();assertEquals("17",observed.runId());
+        var evidence=x.evidence(claim);
+        var wrong=new ResultEvidenceValidator.ArtifactsEvidence(1,evidence.outputs().artifacts(),RUNNER.runnerSha256(),RUNNER.repositorySha256(),other.imageSha256());
+        assertThrows(IngestionProblem.class,()->new ResultEvidenceValidator().artifacts(claim.plan(),evidence.snapshot(),wrong));
+        assertThrows(IngestionProblem.class,()->x.executions.interrupted(x.f.anna,command("ingestion.interrupted"),reserved.dispatchId(),"17"));
+        assertThrows(IngestionProblem.class,()->x.executions.interrupted(x.runner,command("ingestion.interrupted"),reserved.dispatchId(),"18"));
+        x.executions.interrupted(x.runner,command("ingestion.interrupted"),reserved.dispatchId(),"17");
+        x.executions.interrupted(x.runner,command("ingestion.interrupted"),reserved.dispatchId(),"17");
+        assertEquals("FAILED_RETRYABLE",x.queries.detail(x.f.anna,id).state());
+        assertThrows(IngestionProblem.class,()->x.executions.heartbeat(x.runner,command("ingestion.heartbeat"),claim.executionId(),x.binding(claim)));
+        assertTrue(x.dispatches.reconcile(x.runner).stream().noneMatch(d->d.dispatchId().equals(reserved.dispatchId())));
+    }}
     @Test void atomicAcceptanceAndLostAcknowledgement(){try(var x=new Fixture()){
         var id=x.ready();var claim=x.claim(id);var waiting=x.ready();var manifest=x.validated(claim);var command=command("ingestion.complete");var accepted=x.publications.complete(x.runner,command,claim.executionId(),x.binding(claim),manifest);assertEquals("COMMITTED",accepted.state());assertEquals(accepted,x.publications.complete(x.runner,command("ingestion.complete"),claim.executionId(),x.binding(claim),manifest));
         var target=new ch.so.agi.dateninfrastruktur.admin.authorization.DownloadPathResolver.DownloadTarget(claim.plan().outputs().getFirst().distributionId(),"data.csv","GET");assertEquals(403,new ch.so.agi.dateninfrastruktur.admin.authorization.JdbcAuthorizationRepository(x.f.authz).evaluate(Optional.of(x.f.anna),target).status());
         assertEquals(3,x.f.count("SELECT count(*) FROM di_management.distribution d JOIN di_management.dataversion v ON v.t_id=d.version WHERE v.t_ili_tid=?",accepted.versionId()));assertEquals(1,x.f.count("SELECT count(*) FROM di_management.catalogaction a JOIN di_management.dataversion v ON v.t_id=a.affectedversion WHERE v.t_ili_tid=? AND a.actioncode='accept_delivery' AND a.initiator IS NOT NULL",accepted.versionId()));
         assertEquals(1,x.f.count("SELECT count(*) FROM di_management.datasetissue i JOIN di_management.dataversion v ON v.t_id=i.currentversion WHERE v.t_ili_tid=?",accepted.versionId()));
         assertTrue(x.f.count("SELECT count(*) FROM audit.row_change WHERE object_oid=CAST(? AS text)",accepted.versionId())>0);
+        var dispatch=x.f.unit.read(ctx->SubmissionRepository.uuid(CayenneSql.rows(ctx,"SELECT dispatch_id FROM di_ingest.execution WHERE id=CAST(#bind($id) AS uuid)",Map.of("id",claim.executionId().toString())).getFirst(),"dispatch_id"));
+        var run=x.f.unit.read(ctx->CayenneSql.rows(ctx,"SELECT jenkins_run_id FROM di_ingest.execution WHERE id=CAST(#bind($id) AS uuid)",Map.of("id",claim.executionId().toString())).getFirst().get("jenkins_run_id").toString());
+        x.executions.interrupted(x.runner,command("ingestion.interrupted"),dispatch,run);
         x.revoke();assertEquals(accepted,x.publications.complete(x.runner,command("ingestion.complete"),claim.executionId(),x.binding(claim),manifest));assertThrows(IngestionProblem.class,()->x.executions.fail(x.runner,command("ingestion.fail"),claim.executionId(),x.binding(claim),"DEPENDENCY_UNAVAILABLE"));assertEquals("COMMITTED",x.queries.detail(x.f.anna,id).state());assertEquals("DATASET_BUSY",assertThrows(IngestionProblem.class,()->x.dispatches.reserve(x.runner,command("ingestion.reserve"),new DispatchService.Request(waiting))).code());
     }}
     @Test void committedRevocationBlocksAcceptance(){try(var x=new Fixture()){
@@ -141,6 +165,6 @@ public final class IngestionG2IT {
     }}
     public static void main(String[] args)throws Exception{
         if(!"true".equals(System.getenv("DI_COMPOSE_TEST_FIXTURE")))throw new IllegalStateException("Isolated explicit fixture only");
-        var tests=new IngestionG2IT();tests.officeGroupMembershipExpiryAndDelegation();System.out.println("PASS G22/G23 office, group, future scope, validity, inactive principal, least-privilege bootstrap/delegation");tests.submissionKeyAndSealBindExactInput();tests.idempotencyScopeAndExclusiveClaim();System.out.println("PASS G22/G25/G26 scope, idempotency, one claim, retry/cancel fencing");tests.atomicAcceptanceAndLostAcknowledgement();System.out.println("PASS G27/G29 atomic audited acceptance and lost-ACK receipt, no committed downgrade");tests.committedRevocationBlocksAcceptance();tests.disabledOriginalPrincipalCannotFinalize();tests.guardOrdersConcurrentRevocation();System.out.println("PASS G27 both concurrent guard orders and committed revocation");tests.flushedAcceptanceRollsBackAndDoesNotLeakActor();System.out.println("PASS G28 rollback after flush, one physical audited transaction, clean pool");
+        var tests=new IngestionG2IT();tests.officeGroupMembershipExpiryAndDelegation();System.out.println("PASS G22/G23 office, group, future scope, validity, inactive principal, least-privilege bootstrap/delegation");tests.submissionKeyAndSealBindExactInput();tests.idempotencyScopeAndExclusiveClaim();System.out.println("PASS G22/G25/G26 scope, idempotency, one claim, retry/cancel fencing");tests.exactRunRecoveryAndImmutableRunnerEvidence();System.out.println("PASS G35 exact-run recovery and immutable runner evidence");tests.atomicAcceptanceAndLostAcknowledgement();System.out.println("PASS G27/G29 atomic audited acceptance and lost-ACK receipt, no committed downgrade");tests.committedRevocationBlocksAcceptance();tests.disabledOriginalPrincipalCannotFinalize();tests.guardOrdersConcurrentRevocation();System.out.println("PASS G27 both concurrent guard orders and committed revocation");tests.flushedAcceptanceRollsBackAndDoesNotLeakActor();System.out.println("PASS G28 rollback after flush, one physical audited transaction, clean pool");
     }
 }

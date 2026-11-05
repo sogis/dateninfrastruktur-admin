@@ -18,6 +18,7 @@ public final class SubmissionAuthorizationService {
     public long requireUser(ObjectContext context,ActorContext actor){
         if(!"user".equals(actor.kind()))throw IngestionProblem.forbidden();
         var rows=CayenneSql.rows(context,"SELECT t_id,aactive,akind FROM di_management.principal WHERE aissuer=#bind($issuer) AND asubject=#bind($subject)",Map.of("issuer",actor.issuer(),"subject",actor.subject()));
+        if(rows.isEmpty())throw new IngestionProblem(403,"PRINCIPAL_UNKNOWN","Die verifizierte Identität ist in der Dateninfrastruktur noch nicht bekannt.");
         if(rows.size()!=1 || !"user".equals(rows.getFirst().get("akind")))throw IngestionProblem.forbidden();
         if(!Boolean.TRUE.equals(rows.getFirst().get("aactive")))throw new IngestionProblem(403,"PRINCIPAL_INACTIVE","Diese Identität ist nicht aktiv.");
         return ((Number)rows.getFirst().get("t_id")).longValue();

@@ -34,6 +34,16 @@ public final class SubmissionService {
             repository.event(context,id,null,"CREATED","Auftrag angelegt; Eingangsdatei noch nicht versiegelt.");return id;
         });
     }
+    public record UploadPermit(UUID submissionId,long maxBytes){}
+    /** Fresh, read-only owner/grant/contract check before Jenkins consumes a multipart body. */
+    public UploadPermit uploadPermit(ActorContext actor,UUID id){return unit.read(context->{
+        long user=authorization.requireUser(context,actor);var row=repository.find(context,id,false);
+        if(SubmissionRepository.number(row,"submitted_by")!=user)throw IngestionProblem.forbidden();
+        var allowed=authorization.requireSubmit(context,actor,SubmissionRepository.uuid(row,"dataset_uuid"),SubmissionRepository.uuid(row,"issue_uuid"));
+        if(!allowed.configuration().digest().equals(row.get("configuration_digest")))throw IngestionProblem.conflict("CONFIGURATION_CHANGED");
+        if(!"UPLOADING".equals(row.get("status")))throw IngestionProblem.conflict("INVALID_STATE");
+        return new UploadPermit(id,Math.min(maxBytes,allowed.configuration().definition().limits().maxBytes()));
+    });}
     public UUID seal(ActorContext actor,CommandContext command,UUID id,Seal input){
         if(!"ingestion.seal".equals(command.actionCode()) || input.inputSha256()==null || !input.inputSha256().matches("[0-9a-f]{64}") || input.originalName()==null || input.originalName().length()>255 || !input.originalName().matches("[^/\\\\\\p{Cntrl}]{1,255}\\.[cC][sS][vV]") || !("uploads/"+id+"/input.csv").equals(input.privateSpoolReference()))throw IngestionProblem.invalid("INPUT_MISMATCH");
         if(input.inputSize()<=0 || input.inputSize()>maxBytes)throw new IngestionProblem(413,"INPUT_TOO_LARGE","Die Eingangsdatei überschreitet die Uploadgrenze.");
