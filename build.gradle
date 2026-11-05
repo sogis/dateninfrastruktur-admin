@@ -93,3 +93,11 @@ tasks.register('composeTestRuntime', Copy) {
 // Generation remains an explicit development command; normal builds never introspect a DB.
 tasks.named('compileJava') { mustRunAfter tasks.named('cgen') }
 tasks.named('processResources') { mustRunAfter tasks.named('cdbimport'), tasks.named('normalizeCayenneUuid') }
+
+// One trusted technical contract source in TOPICS; package it, never retype its columns.
+tasks.named('processResources') {
+    from(System.getenv('DI_CSV_BUNDLE_ROOT') ?: '../dateninfrastruktur-themenrepo') {
+        include 'contracts/**', 'models/*.ili'
+        into 'ingestion'
+    }
+}

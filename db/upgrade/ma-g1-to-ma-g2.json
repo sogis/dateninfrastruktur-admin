@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "fromFingerprint": "354516ea5327fc60361b24a43717c1873effa3133fa2c98439e1601a84cb75ee",
+  "fromRevision": "MA-G1-1",
+  "toRevision": "MA-G2-1",
+  "sourceMappingSha256": "d9d7c9f44b3434f15bc53787adcb02c273aa8cb6dbcda0710870f146877fae70"
+}

@@ -28,7 +28,7 @@
     "--setupPgExt"
   ],
   "models": {
-    "SO_AGI_DataInfrastructure_Access_20261105.ili": "6473e97bc6ce8f7ac34f1aaffc9f0b067b25b7e7f56fd92b8c412640e69e1055",
-    "SO_AGI_DataInfrastructure_Catalog_20261105.ili": "8592f322a761fb00cb0e104bc01a29d241479cada4ec91926e8cde8929fe8ac1"
+    "SO_AGI_DataInfrastructure_Access_20261105.ili": "ff9833c33250544676c5f9d9af1376b70d5c4afe024802cce34c3e313ce47aa7",
+    "SO_AGI_DataInfrastructure_Catalog_20261105.ili": "a4f2462ea94bfd347d32712a2b27217d82357f001b093a6d80f77ba03cf40aa4"
   }
 }

@@ -22,6 +22,7 @@ import ch.so.agi.dateninfrastruktur.admin.model.Accessgrant;
 import ch.so.agi.dateninfrastruktur.admin.model.Accessrequest;
 import ch.so.agi.dateninfrastruktur.admin.model.Authorityassignment;
 import ch.so.agi.dateninfrastruktur.admin.model.Catalogaction;
+import ch.so.agi.dateninfrastruktur.admin.model.Csvdeliveryconfiguration;
 import ch.so.agi.dateninfrastruktur.admin.model.Dataset;
 import ch.so.agi.dateninfrastruktur.admin.model.Datasetissue;
 import ch.so.agi.dateninfrastruktur.admin.model.Datasetkeyword;
@@ -69,6 +70,7 @@ public abstract class _Dataset extends PersistentObject {
     public static final ListProperty<Accessrequest> ACCESSREQUESTS = PropertyFactory.createList("accessrequests", Accessrequest.class);
     public static final ListProperty<Authorityassignment> AUTHORITYASSIGNMENTS = PropertyFactory.createList("authorityassignments", Authorityassignment.class);
     public static final ListProperty<Catalogaction> CATALOGACTIONS = PropertyFactory.createList("catalogactions", Catalogaction.class);
+    public static final ListProperty<Csvdeliveryconfiguration> CSVDELIVERYCONFIGURATIONS = PropertyFactory.createList("csvdeliveryconfigurations", Csvdeliveryconfiguration.class);
     public static final EntityProperty<Datasetissue> CURRENTISSUE1 = PropertyFactory.createEntity("currentissue1", Datasetissue.class);
     public static final ListProperty<Datasetissue> DATASETISSUES = PropertyFactory.createList("datasetissues", Datasetissue.class);
     public static final ListProperty<Datasetkeyword> DATASETKEYWORDS = PropertyFactory.createList("datasetkeywords", Datasetkeyword.class);
@@ -103,6 +105,7 @@ public abstract class _Dataset extends PersistentObject {
     protected Object accessrequests;
     protected Object authorityassignments;
     protected Object catalogactions;
+    protected Object csvdeliveryconfigurations;
     protected Object currentissue1;
     protected Object datasetissues;
     protected Object datasetkeywords;
@@ -385,6 +388,19 @@ public abstract class _Dataset extends PersistentObject {
         return (List<Catalogaction>)readProperty("catalogactions");
     }
 
+    public void addToCsvdeliveryconfigurations(Csvdeliveryconfiguration obj) {
+        addToManyTarget("csvdeliveryconfigurations", obj, true);
+    }
+
+    public void removeFromCsvdeliveryconfigurations(Csvdeliveryconfiguration obj) {
+        removeToManyTarget("csvdeliveryconfigurations", obj, true);
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Csvdeliveryconfiguration> getCsvdeliveryconfigurations() {
+        return (List<Csvdeliveryconfiguration>)readProperty("csvdeliveryconfigurations");
+    }
+
     public void setCurrentissue1(Datasetissue currentissue1) {
         setToOneTarget("currentissue1", currentissue1, true);
     }
@@ -507,6 +523,8 @@ public abstract class _Dataset extends PersistentObject {
                 return this.authorityassignments;
             case "catalogactions":
                 return this.catalogactions;
+            case "csvdeliveryconfigurations":
+                return this.csvdeliveryconfigurations;
             case "currentissue1":
                 return this.currentissue1;
             case "datasetissues":
@@ -609,6 +627,9 @@ public abstract class _Dataset extends PersistentObject {
             case "catalogactions":
                 this.catalogactions = val;
                 break;
+            case "csvdeliveryconfigurations":
+                this.csvdeliveryconfigurations = val;
+                break;
             case "currentissue1":
                 this.currentissue1 = val;
                 break;
@@ -669,6 +690,7 @@ public abstract class _Dataset extends PersistentObject {
         out.writeObject(this.accessrequests);
         out.writeObject(this.authorityassignments);
         out.writeObject(this.catalogactions);
+        out.writeObject(this.csvdeliveryconfigurations);
         out.writeObject(this.currentissue1);
         out.writeObject(this.datasetissues);
         out.writeObject(this.datasetkeywords);
@@ -706,6 +728,7 @@ public abstract class _Dataset extends PersistentObject {
         this.accessrequests = in.readObject();
         this.authorityassignments = in.readObject();
         this.catalogactions = in.readObject();
+        this.csvdeliveryconfigurations = in.readObject();
         this.currentissue1 = in.readObject();
         this.datasetissues = in.readObject();
         this.datasetkeywords = in.readObject();

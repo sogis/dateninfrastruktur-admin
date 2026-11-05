@@ -9,7 +9,8 @@ import ch.so.agi.dateninfrastruktur.admin.audit.*;
 import ch.so.agi.dateninfrastruktur.admin.catalog.*;
 import ch.so.agi.dateninfrastruktur.admin.model.*;
 import ch.so.agi.dateninfrastruktur.admin.persistence.*;
-/** Explicit synthetic pilot seed; never invoked by normal start/restart. */
+/** Test-only historical unknown/prepared delivery import for predecessor migration tests.
+ * No product registration/activation API exists; never invoked by normal start. */
 class ManagedDownloadFixtureIT {
     @Test void seedPreparedPrivateDeliveries()throws Exception{
         String issuer=System.getenv("DI_TEST_PILOT_ISSUER");if(issuer==null)throw new IllegalStateException("Explicit pilot issuer required");
@@ -30,12 +31,12 @@ class ManagedDownloadFixtureIT {
                 f.catalog.transition(f.manager,ManagementFixture.command("publish"),root,f.version("dataset",root),"publish","Synthetischer Pilot");
                 if(kind.equals("open"))f.catalog.changeAccessLevel(f.manager,ManagementFixture.command("change_access_level"),root,f.version("dataset",root),"open","Anonymer Pilotzugang");
                 var issue=ObjectSelect.query(Dataset.class).where(Dataset.T_ILI_TID.eq(root)).selectOne(f.runtime.newContext()).getCurrentissue1().getTIliTid();
-                var delivery=new DeliveryRegistrationService(f.unit,f.authority,k->{throw new IllegalStateException("No fake verification in fixture");});
                 for(int sequence=1;sequence<=2;sequence++){
-                    UUID version=delivery.registerAcceptedVersion(f.manager,ManagementFixture.command("register_version"),root,f.version("dataset",root),new DeliveryRegistrationService.AcceptedVersion(issue,null,"pilot-v"+sequence,sequence,Instant.now().minusSeconds(3600L*(3-sequence)),null,"urn:di:synthetic-delivery:"+sequence));
+                    final int number=sequence;
+                    UUID version=f.unit.execute(f.manager,ManagementFixture.command("test.import_history"),ctx->{var row=ctx.newObject(Dataversion.class);row.setTIliTid(UUID.randomUUID());row.setIssue1(ObjectSelect.query(Datasetissue.class).where(Datasetissue.T_ILI_TID.eq(issue)).selectOne(ctx));row.setVersionkey("pilot-v"+number);row.setAsequence(number);row.setAcceptedat(UtcTime.toDatabase(Instant.now().minusSeconds(3600L*(3-number))));row.setSourcereference("urn:di:synthetic-historical-delivery:"+number);row.setValidationstatus("unknown");row.setAvailability("available");return row.getTIliTid();});
                     for(String format:List.of("csv","xlsx")){
                         UUID id=UUID.randomUUID();String filename="pilot-v"+sequence+"."+format;
-                        delivery.registerPrepared(f.manager,ManagementFixture.command("register_distribution"),root,f.version("dataset",root),new DeliveryRegistrationService.PreparedDistribution(version,id,format,filename,format.equals("csv")?"text/csv":"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+                        f.unit.execute(f.manager,ManagementFixture.command("test.import_history"),ctx->{var row=ctx.newObject(Distribution.class);row.setTIliTid(id);row.setVersion1(ObjectSelect.query(Dataversion.class).where(Dataversion.T_ILI_TID.eq(version)).selectOne(ctx));row.setAformat(format);row.setFilename(filename);row.setMediatype(format.equals("csv")?"text/csv":"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");row.setObjectkey("downloads/"+id+"/"+filename);row.setAvailability("prepared");return null;});
                         files.add(Map.of("dataset",root.toString(),"kind",kind,"id",id.toString(),"filename",filename,"key","downloads/"+id+"/"+filename,"path","/downloads/"+id+"/"+filename));
                     }
                     new DatasetIssueService(f.unit,f.authority).setCurrentVersion(f.manager,ManagementFixture.command("set_current_version"),root,f.version("dataset",root),issue,version);

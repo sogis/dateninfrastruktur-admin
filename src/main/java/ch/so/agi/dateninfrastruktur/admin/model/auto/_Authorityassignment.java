@@ -37,6 +37,7 @@ public abstract class _Authorityassignment extends PersistentObject {
 
     public static final StringProperty<String> CAPABILITY = PropertyFactory.createString("capability", String.class);
     public static final StringProperty<String> REASON = PropertyFactory.createString("reason", String.class);
+    public static final StringProperty<String> REVOCATIONREASON = PropertyFactory.createString("revocationreason", String.class);
     public static final DateProperty<LocalDateTime> REVOKEDAT = PropertyFactory.createDate("revokedat", LocalDateTime.class);
     public static final BaseProperty<UUID> T_ILI_TID = PropertyFactory.createBase("tIliTid", UUID.class);
     public static final DateProperty<LocalDateTime> VALIDFROM = PropertyFactory.createDate("validfrom", LocalDateTime.class);
@@ -45,9 +46,11 @@ public abstract class _Authorityassignment extends PersistentObject {
     public static final EntityProperty<Dataset> DATASET1 = PropertyFactory.createEntity("dataset1", Dataset.class);
     public static final EntityProperty<Office> OFFICE1 = PropertyFactory.createEntity("office1", Office.class);
     public static final EntityProperty<Principal> PRINCIPAL1 = PropertyFactory.createEntity("principal1", Principal.class);
+    public static final EntityProperty<Principal> REVOKEDBY1 = PropertyFactory.createEntity("revokedby1", Principal.class);
 
     protected String capability;
     protected String reason;
+    protected String revocationreason;
     protected LocalDateTime revokedat;
     protected UUID tIliTid;
     protected LocalDateTime validfrom;
@@ -57,6 +60,7 @@ public abstract class _Authorityassignment extends PersistentObject {
     protected Object dataset1;
     protected Object office1;
     protected Object principal1;
+    protected Object revokedby1;
 
     public void setCapability(String capability) {
         beforePropertyWrite("capability", this.capability, capability);
@@ -76,6 +80,16 @@ public abstract class _Authorityassignment extends PersistentObject {
     public String getReason() {
         beforePropertyRead("reason");
         return this.reason;
+    }
+
+    public void setRevocationreason(String revocationreason) {
+        beforePropertyWrite("revocationreason", this.revocationreason, revocationreason);
+        this.revocationreason = revocationreason;
+    }
+
+    public String getRevocationreason() {
+        beforePropertyRead("revocationreason");
+        return this.revocationreason;
     }
 
     public void setRevokedat(LocalDateTime revokedat) {
@@ -150,6 +164,14 @@ public abstract class _Authorityassignment extends PersistentObject {
         return (Principal)readProperty("principal1");
     }
 
+    public void setRevokedby1(Principal revokedby1) {
+        setToOneTarget("revokedby1", revokedby1, true);
+    }
+
+    public Principal getRevokedby1() {
+        return (Principal)readProperty("revokedby1");
+    }
+
     @Override
     public Object readPropertyDirectly(String propName) {
         if(propName == null) {
@@ -161,6 +183,8 @@ public abstract class _Authorityassignment extends PersistentObject {
                 return this.capability;
             case "reason":
                 return this.reason;
+            case "revocationreason":
+                return this.revocationreason;
             case "revokedat":
                 return this.revokedat;
             case "tIliTid":
@@ -177,6 +201,8 @@ public abstract class _Authorityassignment extends PersistentObject {
                 return this.office1;
             case "principal1":
                 return this.principal1;
+            case "revokedby1":
+                return this.revokedby1;
             default:
                 return super.readPropertyDirectly(propName);
         }
@@ -194,6 +220,9 @@ public abstract class _Authorityassignment extends PersistentObject {
                 break;
             case "reason":
                 this.reason = (String)val;
+                break;
+            case "revocationreason":
+                this.revocationreason = (String)val;
                 break;
             case "revokedat":
                 this.revokedat = (LocalDateTime)val;
@@ -219,6 +248,9 @@ public abstract class _Authorityassignment extends PersistentObject {
             case "principal1":
                 this.principal1 = val;
                 break;
+            case "revokedby1":
+                this.revokedby1 = val;
+                break;
             default:
                 super.writePropertyDirectly(propName, val);
         }
@@ -237,6 +269,7 @@ public abstract class _Authorityassignment extends PersistentObject {
         super.writeState(out);
         out.writeObject(this.capability);
         out.writeObject(this.reason);
+        out.writeObject(this.revocationreason);
         out.writeObject(this.revokedat);
         out.writeObject(this.tIliTid);
         out.writeObject(this.validfrom);
@@ -245,6 +278,7 @@ public abstract class _Authorityassignment extends PersistentObject {
         out.writeObject(this.dataset1);
         out.writeObject(this.office1);
         out.writeObject(this.principal1);
+        out.writeObject(this.revokedby1);
     }
 
     @Override
@@ -252,6 +286,7 @@ public abstract class _Authorityassignment extends PersistentObject {
         super.readState(in);
         this.capability = (String)in.readObject();
         this.reason = (String)in.readObject();
+        this.revocationreason = (String)in.readObject();
         this.revokedat = (LocalDateTime)in.readObject();
         this.tIliTid = (UUID)in.readObject();
         this.validfrom = (LocalDateTime)in.readObject();
@@ -260,6 +295,7 @@ public abstract class _Authorityassignment extends PersistentObject {
         this.dataset1 = in.readObject();
         this.office1 = in.readObject();
         this.principal1 = in.readObject();
+        this.revokedby1 = in.readObject();
     }
 
 }

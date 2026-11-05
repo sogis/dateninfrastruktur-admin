@@ -31,7 +31,8 @@ MODEL SO_AGI_DataInfrastructure_Access_20261105 (en)
 
     !!@ di.audit=full
     CLASS AuthorityAssignment =
-      capability : MANDATORY (manage_metadata, publish, manage_access);
+      capability : MANDATORY (manage_metadata, publish, manage_access, submit_data, manage_submitters);
+      revocationReason : MTEXT;
       validFrom : MANDATORY EventTime;
       validUntil : EventTime;
       revokedAt : EventTime;
@@ -69,7 +70,7 @@ MODEL SO_AGI_DataInfrastructure_Access_20261105 (en)
     !!@ di.audit=full
     CLASS CatalogAction =
       performedAt : MANDATORY EventTime;
-      actionCode : MANDATORY (publish, archive, change_access_level, withdraw_version, withdraw_distribution);
+      actionCode : MANDATORY (publish, archive, change_access_level, withdraw_version, withdraw_distribution, accept_delivery);
       reason : MANDATORY MTEXT;
       commandId : MANDATORY INTERLIS.UUIDOID;
       UNIQUE commandId;
@@ -104,6 +105,12 @@ MODEL SO_AGI_DataInfrastructure_Access_20261105 (en)
       assignedBy -- {1} Principal;
       assignedAuthorities -- {0..*} AuthorityAssignment;
     END AuthorityActor;
+
+    !!@ di.audit=full
+    ASSOCIATION AuthorityRevoker =
+      revokedBy -- {0..1} Principal;
+      revokedAuthorities -- {0..*} AuthorityAssignment;
+    END AuthorityRevoker;
 
     !!@ di.audit=full
     ASSOCIATION AuthorityOffice =
@@ -172,6 +179,12 @@ MODEL SO_AGI_DataInfrastructure_Access_20261105 (en)
     END ActionActor;
 
     !!@ di.audit=full
+    ASSOCIATION ActionInitiator =
+      initiator -- {0..1} Principal;
+      initiatedCatalogActions -- {0..*} CatalogAction;
+    END ActionInitiator;
+
+    !!@ di.audit=full
     ASSOCIATION ActionVersion =
       affectedVersion (EXTERNAL) -- {0..1} SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.DataVersion;
       versionActions -- {0..*} CatalogAction;
@@ -208,6 +221,7 @@ MODEL SO_AGI_DataInfrastructure_Access_20261105 (en)
     END CatalogActionDataset;
 
     CONSTRAINTS OF AuthorityAssignment =
+      MANDATORY CONSTRAINT (DEFINED(revokedAt) AND DEFINED(revokedBy) AND DEFINED(revocationReason)) OR NOT (DEFINED(revokedAt) OR DEFINED(revokedBy) OR DEFINED(revocationReason));
       MANDATORY CONSTRAINT (DEFINED(office) OR DEFINED(dataset)) AND NOT (DEFINED(office) AND DEFINED(dataset));
     END;
     CONSTRAINTS OF GroupMembership =

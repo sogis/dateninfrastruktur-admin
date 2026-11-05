@@ -10,6 +10,7 @@ public final class ManagementExceptionHandler {
     @ExceptionHandler(Exception.class) ResponseEntity<Error> error(Exception error){
         Throwable cause=error;
         for(int i=0;i<10 && cause!=null;i++,cause=cause.getCause()){
+            if(cause instanceof ch.so.agi.dateninfrastruktur.admin.ingestion.IngestionProblem problem)return ResponseEntity.status(problem.status()).body(new Error(problem.code(),problem.getMessage()));
             if(cause instanceof BusinessException business)return ResponseEntity.status(business.status()).body(new Error(business.code(),business.getMessage()));
             if(cause instanceof AggregateWriteGuard.StaleAggregateException)return ResponseEntity.status(409).body(new Error("STALE_VERSION","Der Eintrag wurde inzwischen verändert. Bitte neu laden."));
             if(cause instanceof AggregateWriteGuard.MissingAggregateException)return ResponseEntity.status(404).body(new Error("NOT_FOUND","Der Eintrag wurde nicht gefunden."));

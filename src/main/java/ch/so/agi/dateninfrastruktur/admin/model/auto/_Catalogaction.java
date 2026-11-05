@@ -45,6 +45,7 @@ public abstract class _Catalogaction extends PersistentObject {
     public static final EntityProperty<Distribution> AFFECTEDDISTRIBUTION1 = PropertyFactory.createEntity("affecteddistribution1", Distribution.class);
     public static final EntityProperty<Dataversion> AFFECTEDVERSION1 = PropertyFactory.createEntity("affectedversion1", Dataversion.class);
     public static final EntityProperty<Dataset> DATASET1 = PropertyFactory.createEntity("dataset1", Dataset.class);
+    public static final EntityProperty<Principal> INITIATOR1 = PropertyFactory.createEntity("initiator1", Principal.class);
 
     protected String actioncode;
     protected UUID commandid;
@@ -56,6 +57,7 @@ public abstract class _Catalogaction extends PersistentObject {
     protected Object affecteddistribution1;
     protected Object affectedversion1;
     protected Object dataset1;
+    protected Object initiator1;
 
     public void setActioncode(String actioncode) {
         beforePropertyWrite("actioncode", this.actioncode, actioncode);
@@ -139,6 +141,14 @@ public abstract class _Catalogaction extends PersistentObject {
         return (Dataset)readProperty("dataset1");
     }
 
+    public void setInitiator1(Principal initiator1) {
+        setToOneTarget("initiator1", initiator1, true);
+    }
+
+    public Principal getInitiator1() {
+        return (Principal)readProperty("initiator1");
+    }
+
     @Override
     public Object readPropertyDirectly(String propName) {
         if(propName == null) {
@@ -164,6 +174,8 @@ public abstract class _Catalogaction extends PersistentObject {
                 return this.affectedversion1;
             case "dataset1":
                 return this.dataset1;
+            case "initiator1":
+                return this.initiator1;
             default:
                 return super.readPropertyDirectly(propName);
         }
@@ -203,6 +215,9 @@ public abstract class _Catalogaction extends PersistentObject {
             case "dataset1":
                 this.dataset1 = val;
                 break;
+            case "initiator1":
+                this.initiator1 = val;
+                break;
             default:
                 super.writePropertyDirectly(propName, val);
         }
@@ -228,6 +243,7 @@ public abstract class _Catalogaction extends PersistentObject {
         out.writeObject(this.affecteddistribution1);
         out.writeObject(this.affectedversion1);
         out.writeObject(this.dataset1);
+        out.writeObject(this.initiator1);
     }
 
     @Override
@@ -242,6 +258,7 @@ public abstract class _Catalogaction extends PersistentObject {
         this.affecteddistribution1 = in.readObject();
         this.affectedversion1 = in.readObject();
         this.dataset1 = in.readObject();
+        this.initiator1 = in.readObject();
     }
 
 }

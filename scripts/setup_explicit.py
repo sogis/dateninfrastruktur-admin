@@ -9,7 +9,7 @@ from persistence_contract import calculate
 from verify_physical_mapping import verify as verify_mapping
 def verify_existing():
     _,expected=calculate()
-    if sql('SELECT di_ops.runtime_contract() AND di_ops.single_storage_contract();')!='t' or sql('SELECT di_ops.contract_fingerprint();')!=expected:raise RuntimeError('Existing contract differs; explicit reviewed migration required')
+    if sql('SELECT di_ops.runtime_contract() AND di_ops.single_storage_contract() AND di_ops.ingestion_contract();')!='t' or sql('SELECT di_ops.contract_fingerprint();')!=expected:raise RuntimeError('Existing contract differs; explicit reviewed migration required')
     verify_mapping();verify(resolve());print('Existing management contract verified read-only; data/rights/audit retained')
 def setup():
     if not TARGET_MODE:raise RuntimeError('Compose setup requires an explicit PostgreSQL target')
@@ -46,6 +46,7 @@ def setup():
         sql('BEGIN;'+(R/'db/migrations'/name).read_text()+'COMMIT;')
     sql("INSERT INTO di_ops.schema_revision(revision) VALUES('MA-G1-1');")
     sql((R/'db/storage-contract.sql').read_text())
+    sql('BEGIN;'+(R/'db/migrations/V012__ingestion_state.sql').read_text()+(R/'db/ingestion-model-contract.sql').read_text()+(R/'db/ingestion-contract.sql').read_text()+'COMMIT;')
     _,fingerprint=calculate()
     sql("INSERT INTO di_ops.contract_fingerprint(singleton,fingerprint) VALUES(true,'"+fingerprint+"');")
     verify_existing();print('Explicit empty management setup completed; no demo data or grants')

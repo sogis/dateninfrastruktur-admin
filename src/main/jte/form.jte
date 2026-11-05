@@ -14,6 +14,8 @@
 <label>${field.label()}
 @if(field.type().equals("textarea"))
 <textarea name="${field.name()}" rows="6" maxlength="100000">${field.value()}</textarea>
+@elseif(field.type().equals("checkbox"))
+<input type="checkbox" name="${field.name()}" value="true" checked="${field.value().equals("true")}">
 @elseif(field.type().equals("select"))
 <select name="${field.name()}">
 @for(var option : field.options())

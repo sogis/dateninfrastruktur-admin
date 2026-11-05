@@ -51,12 +51,13 @@ public final class AuthorityService {
         });
         if(!permitted)throw BusinessException.forbidden();
     }
-    public record Capabilities(boolean metadata,boolean publish,boolean access){}
+    public record Capabilities(boolean metadata,boolean publish,boolean access,boolean submit,boolean submitters){}
     public Capabilities describe(ActorContext actor,UUID dataset){
         return runtime.performInTransaction(()->{
             var context=runtime.newContext();
             return new Capabilities(allowed(context,actor,dataset,"manage_metadata"),
-                allowed(context,actor,dataset,"publish"),allowed(context,actor,dataset,"manage_access"));
+                allowed(context,actor,dataset,"publish"),allowed(context,actor,dataset,"manage_access"),
+                allowed(context,actor,dataset,"submit_data"),allowed(context,actor,dataset,"manage_submitters"));
         });
     }
 }

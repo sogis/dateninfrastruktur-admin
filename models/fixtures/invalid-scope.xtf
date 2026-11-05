@@ -104,8 +104,20 @@
       </catalog:DatasetIssue>
       <catalog:DataSchema ili:tid="db0da740-22df-5a44-bacd-0d3593479fda">
         <catalog:identifier>demo-schema</catalog:identifier>
+        <catalog:modelName>SO_Demo_20261105</catalog:modelName>
+        <catalog:modelVersion>2026-11-05</catalog:modelVersion>
+        <catalog:modelSha256>bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb</catalog:modelSha256>
         <catalog:description>Definition mit Unicode ü</catalog:description>
       </catalog:DataSchema>
+      <catalog:CsvDeliveryConfiguration ili:tid="3ed34114-3fd2-584e-853f-13b56e704df7">
+        <catalog:enabled>false</catalog:enabled>
+        <catalog:automaticPublication>false</catalog:automaticPublication>
+        <catalog:definitionKey>demo</catalog:definitionKey>
+        <catalog:definitionSha256>cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc</catalog:definitionSha256>
+        <catalog:allowedModes>replace_and_append</catalog:allowedModes>
+        <catalog:dataset ili:ref="e3757b5c-1633-5c3c-b491-b242bb407cb7" />
+        <catalog:schema ili:ref="db0da740-22df-5a44-bacd-0d3593479fda" />
+      </catalog:CsvDeliveryConfiguration>
       <catalog:AttributeDefinition ili:tid="249745e4-8f41-5411-9ae5-62f3cda81239">
         <catalog:name>anzahl</catalog:name>
         <catalog:dataType>INTEGER</catalog:dataType>
@@ -301,6 +313,33 @@
         <access:principal ili:ref="49c8b974-0a28-586d-adec-afeb77eafa92" />
         <access:assignedBy ili:ref="ad054d23-8b6a-5efe-b2d2-7519ab560941" />
         <access:office ili:ref="5eb77e10-616f-5a7f-b732-13384462ef52" />
+      </access:AuthorityAssignment>
+      <access:AuthorityAssignment ili:tid="7ba6fd5f-2c4b-550f-89f4-f2c23d1c6f92">
+        <access:capability>submit_data</access:capability>
+        <access:validFrom>2026-01-01T00:00:00</access:validFrom>
+        <access:reason>Bootstrap Testzuständigkeit</access:reason>
+        <access:principal ili:ref="49c8b974-0a28-586d-adec-afeb77eafa92" />
+        <access:assignedBy ili:ref="ad054d23-8b6a-5efe-b2d2-7519ab560941" />
+        <access:office ili:ref="5eb77e10-616f-5a7f-b732-13384462ef52" />
+      </access:AuthorityAssignment>
+      <access:AuthorityAssignment ili:tid="92ca410a-b657-5e01-92c1-0ad92e69a388">
+        <access:capability>manage_submitters</access:capability>
+        <access:validFrom>2026-01-01T00:00:00</access:validFrom>
+        <access:reason>Bootstrap Testzuständigkeit</access:reason>
+        <access:principal ili:ref="49c8b974-0a28-586d-adec-afeb77eafa92" />
+        <access:assignedBy ili:ref="ad054d23-8b6a-5efe-b2d2-7519ab560941" />
+        <access:office ili:ref="5eb77e10-616f-5a7f-b732-13384462ef52" />
+      </access:AuthorityAssignment>
+      <access:AuthorityAssignment ili:tid="1eac61d9-c4e1-5d58-9907-555b9446afe1">
+        <access:capability>submit_data</access:capability>
+        <access:validFrom>2026-01-01T00:00:00</access:validFrom>
+        <access:revokedAt>2026-10-02T12:00:00</access:revokedAt>
+        <access:revocationReason>Nachvollziehbarer Lieferrechtsentzug</access:revocationReason>
+        <access:revokedBy ili:ref="49c8b974-0a28-586d-adec-afeb77eafa92" />
+        <access:reason>Explizites Testlieferrecht</access:reason>
+        <access:principal ili:ref="5bd6c57a-fafb-517b-b917-94b298ec8430" />
+        <access:assignedBy ili:ref="ad054d23-8b6a-5efe-b2d2-7519ab560941" />
+        <access:dataset ili:ref="e3757b5c-1633-5c3c-b491-b242bb407cb7" />
       </access:AuthorityAssignment>
       <access:AccessRequest ili:tid="67d82bcf-b849-59cf-9132-72c68776ec25">
         <access:reason>Forschung

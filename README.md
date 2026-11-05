@@ -24,13 +24,18 @@ Konfiguration und Secrets liegen nur im aktiven STACK/.runtime-Bereich.
 
 Schema-/Auditwerkzeuge benötigen einen expliziten PostgreSQL-Toolkontext und laufen
 über Compose. Bei Bestand werden Vertrag, Mapping und Audit nur geprüft.
-Der explizite Javaoperator für Dateiverifikation bleibt über
-STACK/scripts/compose_operator.py erreichbar. Der abgelöste Legacyimport wurde
-aus Java, Gradle und Operator-API entfernt. Kein automatischer Fachseed.
+Der explizite Operator `STACK/scripts/compose_operator.py bootstrap-submitters`
+vergibt ausschliesslich den ersten `manage_submitters`-Auftrag im angegebenen
+Scope. Er erwartet eine private, begrenzte JSON-Datei. Manuelle
+Versionsregistrierung und Dateiverifikation/-aktivierung sind entfernt. Neue
+CSV-Versionen entstehen ausschliesslich über den validierten Ingestionabschluss.
+Kein automatischer Fachseed.
 
 Javafachtests und bestehende JVM-/Native-Gradle-Buildoptionen bleiben erhalten.
 Die früheren separaten Python-Containerharnesses sind retired; aktuelle isolierte
-Integrationstests: STACK/scripts/test-consolidation.sh --phase MA-F1/MA-F2/MA-F3/MA-F4.
+Integrationstests für MA-G2: `STACK/scripts/test_ingestion_schema_g2.py` und
+`STACK/scripts/test_ingestion_backend_g2.py`. Frühere MA-F-Harnesses dokumentieren
+den Vorgänger und sind kein aktueller API-Vertrag.
 Die aktuellen Modelle lassen sich ausdrücklich mit
 `python3 scripts/test_models.py` kompilieren/validieren; das ist kein Normalstart.
 

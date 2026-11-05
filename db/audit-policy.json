@@ -69,7 +69,8 @@
       "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityAssignment",
       "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityDataset",
       "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityOffice",
-      "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityPrincipal"
+      "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityPrincipal",
+      "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityRevoker"
     ],
     "redacted_columns": [],
     "dataset_path": [
@@ -85,6 +86,7 @@
     "model_elements": [
       "SO_AGI_DataInfrastructure_Access_20261105.Access.ActionActor",
       "SO_AGI_DataInfrastructure_Access_20261105.Access.ActionDistribution",
+      "SO_AGI_DataInfrastructure_Access_20261105.Access.ActionInitiator",
       "SO_AGI_DataInfrastructure_Access_20261105.Access.ActionVersion",
       "SO_AGI_DataInfrastructure_Access_20261105.Access.CatalogAction",
       "SO_AGI_DataInfrastructure_Access_20261105.Access.CatalogActionDataset"
@@ -97,6 +99,22 @@
       }
     ],
     "protection": "immutable"
+  },
+  {
+    "table": "csvdeliveryconfiguration",
+    "model_elements": [
+      "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CsvDeliveryConfiguration",
+      "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CsvDeliveryDataset",
+      "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CsvDeliverySchema"
+    ],
+    "redacted_columns": [],
+    "dataset_path": [
+      {
+        "column": "dataset",
+        "table": "dataset"
+      }
+    ],
+    "protection": "normal"
   },
   {
     "table": "dataschema",

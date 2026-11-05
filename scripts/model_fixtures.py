@@ -25,7 +25,8 @@ def fixture():
   add(C,'Dataset',key,identifier='ch.so.demo.'+key,kind=kind,title='Demodaten '+key,description='Grüezi — Statistik\n\n**Mehrzeilig**, keine Kopie je Ausgabe.',contactEmail='mailto:demo@example.invalid',accessLevel=access,publicationStatus=status,modified='2026-11-04',origin='cantonal',frequency='annually',ownerOffice=ref('agi'),publisherOffice=ref('afin'),currentIssue=ref(key+'-2025' if kind=='series' else key+'-default') if status=='published' else None)
  for key,ds,label in [('open-default','open','default'),('series-2024','series','2024'),('series-2025','series','2025')]:
   add(C,'DatasetIssue',key,issueKey=label,label=label,publicationStatus='published',referenceDate='2025-12-31' if label=='2025' else None,modified='2026-11-04',dataset=ref(ds),currentVersion=ref(key+'-v1'))
- add(C,'DataSchema','schema',identifier='demo-schema',description='Definition mit Unicode ü')
+ add(C,'DataSchema','schema',identifier='demo-schema',modelName='SO_Demo_20261105',modelVersion='2026-11-05',modelSha256='b'*64,description='Definition mit Unicode ü')
+ add(C,'CsvDeliveryConfiguration','csv-config',enabled=False,automaticPublication=False,definitionKey='demo',definitionSha256='c'*64,allowedModes='replace_and_append',dataset=ref('series'),schema=ref('schema'))
  add(C,'AttributeDefinition','attr',name='anzahl',dataType='INTEGER',ordinal=1,mandatory=True,description='Anzahl Personen',schema=ref('schema'))
  for key,issue,status in [('open-default-v1','open-default','available'),('series-2024-v1','series-2024','available'),('series-2025-v1','series-2025','available'),('prepared-version','series-2025','prepared'),('withdrawn-version','series-2024','withdrawn')]:
   add(C,'DataVersion',key,versionKey=key,sequence=1 if key.endswith('v1') else 2,availability=status,acceptedAt='2026-10-01T12:00:00' if status=='available' else None,validationStatus='unknown',issue=ref(issue),schema=ref('schema'))
@@ -37,8 +38,9 @@ def fixture():
  for key,kind in [('anna','user'),('ben','user'),('claudia','user'),('dora','user'),('bootstrap','service'),('team','group')]:
   add(A,'Principal',key,kind=kind,issuer='urn:so:agi:di:local-groups' if kind=='group' else 'https://identity.example.invalid/realms/test',subject=key,displayName=key.capitalize(),active=True,provisionedAt='2026-01-01T00:00:00')
  add(A,'GroupMembership','membership',validFrom='2026-01-01T00:00:00',reason='Testteam',group=ref('team'),member=ref('anna'))
- for capability in ['manage_metadata','publish','manage_access']:
+ for capability in ['manage_metadata','publish','manage_access','submit_data','manage_submitters']:
   add(A,'AuthorityAssignment','authority-'+capability,capability=capability,validFrom='2026-01-01T00:00:00',reason='Bootstrap Testzuständigkeit',principal=ref('claudia'),assignedBy=ref('bootstrap'),office=ref('agi'))
+ add(A,'AuthorityAssignment','revoked-submit',capability='submit_data',validFrom='2026-01-01T00:00:00',revokedAt='2026-10-02T12:00:00',revocationReason='Nachvollziehbarer Lieferrechtsentzug',revokedBy=ref('claudia'),reason='Explizites Testlieferrecht',principal=ref('anna'),assignedBy=ref('bootstrap'),dataset=ref('series'))
  add(A,'AccessRequest','request',reason='Forschung\nmit Statistik',requestedAt='2026-10-01T10:00:00',status='approved',applicant=ref('anna'),dataset=ref('series'))
  add(A,'AccessRequest','denied-request',reason='Weitere Analyse',requestedAt='2026-10-01T10:00:00',status='denied',applicant=ref('ben'),dataset=ref('series'))
  decisions=[('approval','approve','anna','request'),('denial','deny','ben','denied-request'),('direct','direct_grant','ben',None),('group-decision','direct_grant','team',None),('future-decision','direct_grant','anna',None),('expired-decision','direct_grant','anna',None),('revoked-decision','direct_grant','anna',None),('revocation','revoke','anna',None)]
@@ -60,4 +62,16 @@ if __name__=='__main__':
    if el is None:el=E.SubElement(node,'{'+N[A]+'}'+field)
    el.set('{'+I+'}ref',value[1])
   else:el.text=value
+  write(root,p/(case+'.xtf'))
+
+ # G20: concrete new model contracts, no generated PASS from a changed expectation.
+ for case in ['invalid-authority-revocation','missing-csv-schema','duplicate-csv-configuration']:
+  root,objects=fixture()
+  if case=='invalid-authority-revocation':
+   node=objects['revoked-submit'];node.remove(node.find('{'+N[A]+'}revocationReason'))
+  elif case=='missing-csv-schema':
+   node=objects['csv-config'];node.remove(node.find('{'+N[C]+'}schema'))
+  else:
+   node=objects['csv-config'];duplicate=copy.deepcopy(node);duplicate.set('{'+I+'}tid',oid('second-csv-config'))
+   for basket in root.iter('{'+N[C]+'}Catalog'):basket.append(duplicate)
   write(root,p/(case+'.xtf'))

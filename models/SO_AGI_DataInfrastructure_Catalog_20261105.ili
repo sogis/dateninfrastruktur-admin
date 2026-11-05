@@ -173,6 +173,15 @@ MODEL SO_AGI_DataInfrastructure_Catalog_20261105 (en)
     END DataSchema;
 
     !!@ di.audit=full
+    CLASS CsvDeliveryConfiguration =
+      enabled : MANDATORY BOOLEAN;
+      automaticPublication : MANDATORY BOOLEAN;
+      definitionKey : MANDATORY TEXT*128;
+      definitionSha256 : MANDATORY Sha256;
+      allowedModes : MANDATORY (replace_only, append_only, replace_and_append);
+    END CsvDeliveryConfiguration;
+
+    !!@ di.audit=full
     CLASS AttributeDefinition =
       name : MANDATORY TEXT*255;
       dataType : MANDATORY TEXT*255;
@@ -290,6 +299,21 @@ MODEL SO_AGI_DataInfrastructure_Catalog_20261105 (en)
       keywords -- {0..*} DatasetKeyword;
     END KeywordDataset;
 
+    !!@ di.audit=full
+    ASSOCIATION CsvDeliveryDataset =
+      dataset -- {1} Dataset;
+      csvDeliveryConfiguration -- {0..1} CsvDeliveryConfiguration;
+    END CsvDeliveryDataset;
+
+    !!@ di.audit=full
+    ASSOCIATION CsvDeliverySchema =
+      schema -- {1} DataSchema;
+      csvDeliveryConfigurations -- {0..*} CsvDeliveryConfiguration;
+    END CsvDeliverySchema;
+
+    CONSTRAINTS OF CsvDeliveryConfiguration =
+      UNIQUE dataset;
+    END;
     CONSTRAINTS OF DatasetIssue =
       UNIQUE dataset, issueKey;
     END;

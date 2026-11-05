@@ -59,9 +59,9 @@ def verify(policies):
   if p['table']!=x['table_name'] or p['redacted_columns']!=x['redacted_columns'] or p['dataset_path']!=x['dataset_path']:raise RuntimeError('audit policy mismatch')
  if len(installed)!=len(policies):raise RuntimeError('audit table set mismatch')
  print('PASS audit coverage: '+str(len(policies))+' physical tables, timing/events/enabled/functions/policies verified')
-def apply(policies):
+def installation_sql(policies):
  if TARGET_MODE and policies!=json.loads((R/'db/audit-policy.json').read_text()):raise RuntimeError('Runtime audit policy differs from the pinned physical mapping')
- commands=['BEGIN;','SELECT pg_advisory_xact_lock(749583200);']
+ commands=['SELECT pg_advisory_xact_lock(749583200);']
  for p in policies:
   t=ident(p['table'])
   commands+=['ALTER TABLE di_management.'+t+' OWNER TO di_owner;', 'ALTER TABLE di_management.'+t+' ADD COLUMN IF NOT EXISTS row_version bigint NOT NULL DEFAULT 1;',
@@ -69,8 +69,10 @@ def apply(policies):
    'DROP TRIGGER IF EXISTS di_audit_stamp ON di_management.'+t+';', 'CREATE TRIGGER di_audit_stamp BEFORE INSERT OR UPDATE OR DELETE ON di_management.'+t+' FOR EACH ROW EXECUTE FUNCTION audit.stamp_row();',
    'DROP TRIGGER IF EXISTS di_audit_log ON di_management.'+t+';', 'CREATE TRIGGER di_audit_log AFTER INSERT OR UPDATE OR DELETE ON di_management.'+t+' FOR EACH ROW EXECUTE FUNCTION audit.log_row_change();',
    'GRANT SELECT,INSERT,UPDATE,DELETE ON di_management.'+t+' TO di_writer;', ('GRANT SELECT ON di_management.'+t+' TO di_authz;') if any(x.rsplit('.',1)[-1] in ('Dataset','DatasetIssue','DataVersion','Distribution','Principal','AccessGrant','GroupMembership') for x in p['model_elements']) else ('REVOKE ALL ON di_management.'+t+' FROM di_authz;')]
- commands+=['ALTER SEQUENCE di_management.t_ili2db_seq OWNER TO di_owner;','GRANT USAGE,SELECT ON SEQUENCE di_management.t_ili2db_seq TO di_writer;',"INSERT INTO di_ops.schema_revision(revision) VALUES('MA-B-1') ON CONFLICT DO NOTHING;",'COMMIT;']
- sql('\n'.join(commands));verify(policies)
+ commands+=['ALTER SEQUENCE di_management.t_ili2db_seq OWNER TO di_owner;','GRANT USAGE,SELECT ON SEQUENCE di_management.t_ili2db_seq TO di_writer;',"INSERT INTO di_ops.schema_revision(revision) VALUES('MA-B-1') ON CONFLICT DO NOTHING;"]
+ return '\n'.join(commands)
+def apply(policies):
+ sql('BEGIN;'+installation_sql(policies)+'COMMIT;');verify(policies)
  if not TARGET_MODE:(R/'db/audit-policy.json').write_text(json.dumps(policies,indent=2)+'\n')
 if __name__=='__main__':
  p=argparse.ArgumentParser();p.add_argument('mode',choices=['plan','apply','verify']);a=p.parse_args();policies=resolve()

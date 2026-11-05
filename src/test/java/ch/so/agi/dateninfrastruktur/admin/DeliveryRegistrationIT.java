@@ -1,34 +1,12 @@
 package ch.so.agi.dateninfrastruktur.admin;
-import java.util.*;
-import java.nio.file.*;
-import java.security.*;
-import java.time.Instant;
 import org.junit.jupiter.api.Test;
-import org.apache.cayenne.query.ObjectSelect;
-import ch.so.agi.dateninfrastruktur.admin.catalog.*;
-import ch.so.agi.dateninfrastruktur.admin.model.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static ch.so.agi.dateninfrastruktur.admin.ManagementFixture.command;
+import ch.so.agi.dateninfrastruktur.admin.catalog.DeliveryRegistrationService;
+/** Withdrawal retains immutable history after the sole validated CSV acceptance path. */
 class DeliveryRegistrationIT {
-    @Test void seriesIssueRegistrationUsesRealPrivateFileHashAndParentGuards()throws Exception{
-        try(var f=new ManagementFixture()){
-            UUID root=f.catalog.createDraft(f.manager,command("create_draft"),new CatalogCommandService.Create(f.office,"series-"+UUID.randomUUID(),"series",ManagementFixture.metadata("Zeitreihe")));
-            var issues=new DatasetIssueService(f.unit,f.authority);var first=issues.createIssue(f.manager,command("create_issue"),root,f.version("dataset",root),"2025","Jahr 2025");var second=issues.createIssue(f.manager,command("create_issue"),root,f.version("dataset",root),"2026","Jahr 2026");
-            issues.setCurrentIssue(f.manager,command("set_current_issue"),root,f.version("dataset",root),second);
-            f.catalog.transition(f.manager,command("publish"),root,f.version("dataset",root),"publish","Serie geprüft");
-            issues.updateIssueMetadata(f.manager,command("update_issue"),root,f.version("dataset",root),second,"Jahr 2026","Bestätigte Lieferung","published");
-            Path base=Files.createTempDirectory(Path.of(".runtime"),"registration-");UUID fileId=UUID.randomUUID();Path file=base.resolve("downloads/"+fileId+"/data.csv");Files.createDirectories(file.getParent());byte[] content="name,value\nGrüezi,12\n".getBytes(java.nio.charset.StandardCharsets.UTF_8);Files.write(file,content);
-            var registration=new DeliveryRegistrationService(f.unit,f.authority,key->{
-                try{if(!key.matches("downloads/[0-9a-f-]{36}/[A-Za-z0-9._-]+"))throw new IllegalArgumentException();Path target=base.resolve(key).normalize();if(!target.startsWith(base) || Files.isSymbolicLink(target))throw new IllegalArgumentException();byte[] bytes=Files.readAllBytes(target);return new DeliveryRegistrationService.ObjectEvidence(bytes.length,HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(bytes)));}
-                catch(Exception error){throw new IllegalStateException("Private fixture not verified",error);}
-            });
-            var version=registration.registerAcceptedVersion(f.manager,command("register_version"),root,f.version("dataset",root),new DeliveryRegistrationService.AcceptedVersion(second,null,"v1",1,Instant.now(),null,"test confirmed reference"));
-            registration.registerPrepared(f.manager,command("register_distribution"),root,f.version("dataset",root),new DeliveryRegistrationService.PreparedDistribution(version,fileId,"csv","data.csv","text/csv"));
-            registration.verifyAndActivate(f.manager,command("activate_distribution"),root,f.version("dataset",root),fileId);
-            var row=ObjectSelect.query(Distribution.class).where(Distribution.T_ILI_TID.eq(fileId)).selectOne(f.runtime.newContext());assertEquals(content.length,row.getBytesize());assertEquals(HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(content)),row.getSha256());
-            issues.setCurrentVersion(f.manager,command("set_current_version"),root,f.version("dataset",root),second,version);
-            assertThrows(RuntimeException.class,()->issues.setCurrentVersion(f.manager,command("set_current_version"),root,f.version("dataset",root),first,version));
-            registration.withdraw(f.manager,command("withdraw_distribution"),root,f.version("dataset",root),fileId,"Lieferung zurückgezogen");assertEquals("withdrawn",ObjectSelect.query(Distribution.class).where(Distribution.T_ILI_TID.eq(fileId)).selectOne(f.runtime.newContext()).getAvailability());
-        }
-    }
+    @Test void withdrawAcceptedFileRetainsVersionAndOtherFormats(){try(var x=new IngestionG2IT.Fixture()){
+        var id=x.ready();var claim=x.claim(id);var manifest=x.validated(claim);var accepted=x.publications.complete(x.runner,IngestionG2IT.command("ingestion.complete"),claim.executionId(),x.binding(claim),manifest);
+        var file=claim.plan().outputs().getFirst().distributionId();new DeliveryRegistrationService(x.f.unit,x.f.authority).withdraw(x.f.manager,IngestionG2IT.command("withdraw_distribution"),x.dataset,x.version("dataset",x.dataset),file,"Datei zurückgezogen");
+        assertEquals(1,x.f.count("SELECT count(*) FROM di_management.distribution WHERE t_ili_tid=? AND availability='withdrawn'",file));assertEquals(1,x.f.count("SELECT count(*) FROM di_management.dataversion WHERE t_ili_tid=? AND availability='available'",accepted.versionId()));assertEquals(2,x.f.count("SELECT count(*) FROM di_management.distribution d JOIN di_management.dataversion v ON v.t_id=d.version WHERE v.t_ili_tid=? AND d.availability='available'",accepted.versionId()));
+    }}
 }

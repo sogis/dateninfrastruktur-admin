@@ -72,7 +72,9 @@
 		<db-attribute name="office" type="BIGINT" length="19" />
 		<db-attribute name="principal" type="BIGINT" isMandatory="true" length="19" />
 		<db-attribute name="reason" type="VARCHAR" isMandatory="true" />
+		<db-attribute name="revocationreason" type="VARCHAR" />
 		<db-attribute name="revokedat" type="TIMESTAMP" length="29" />
+		<db-attribute name="revokedby" type="BIGINT" length="19" />
 		<db-attribute name="row_version" type="BIGINT" isMandatory="true" length="19" />
 		<db-attribute name="t_createdate" type="TIMESTAMP" isMandatory="true" length="29" />
 		<db-attribute name="t_id" type="BIGINT" isPrimaryKey="true" isMandatory="true" length="19" />
@@ -89,8 +91,24 @@
 		<db-attribute name="affectedversion" type="BIGINT" length="19" />
 		<db-attribute name="commandid" type="OTHER" isMandatory="true" length="2147483647" />
 		<db-attribute name="dataset" type="BIGINT" isMandatory="true" length="19" />
+		<db-attribute name="initiator" type="BIGINT" length="19" />
 		<db-attribute name="performedat" type="TIMESTAMP" isMandatory="true" length="29" />
 		<db-attribute name="reason" type="VARCHAR" isMandatory="true" />
+		<db-attribute name="row_version" type="BIGINT" isMandatory="true" length="19" />
+		<db-attribute name="t_createdate" type="TIMESTAMP" isMandatory="true" length="29" />
+		<db-attribute name="t_id" type="BIGINT" isPrimaryKey="true" isMandatory="true" length="19" />
+		<db-attribute name="t_ili_tid" type="OTHER" isMandatory="true" length="2147483647" />
+		<db-attribute name="t_lastchange" type="TIMESTAMP" isMandatory="true" length="29" />
+		<db-attribute name="t_user" type="VARCHAR" isMandatory="true" length="40" />
+	</db-entity>
+	<db-entity name="csvdeliveryconfiguration" schema="di_management">
+		<db-attribute name="allowedmodes" type="VARCHAR" isMandatory="true" length="255" />
+		<db-attribute name="aschema" type="BIGINT" isMandatory="true" length="19" />
+		<db-attribute name="automaticpublication" type="BIT" isMandatory="true" length="1" />
+		<db-attribute name="dataset" type="BIGINT" isMandatory="true" length="19" />
+		<db-attribute name="definitionkey" type="VARCHAR" isMandatory="true" length="128" />
+		<db-attribute name="definitionsha256" type="VARCHAR" isMandatory="true" length="64" />
+		<db-attribute name="enabled" type="BIT" isMandatory="true" length="1" />
 		<db-attribute name="row_version" type="BIGINT" isMandatory="true" length="19" />
 		<db-attribute name="t_createdate" type="TIMESTAMP" isMandatory="true" length="29" />
 		<db-attribute name="t_id" type="BIGINT" isPrimaryKey="true" isMandatory="true" length="19" />
@@ -298,6 +316,7 @@
 	<obj-entity name="Authorityassignment" className="ch.so.agi.dateninfrastruktur.admin.model.Authorityassignment" dbEntityName="authorityassignment">
 		<obj-attribute name="capability" type="java.lang.String" db-attribute-path="capability" />
 		<obj-attribute name="reason" type="java.lang.String" db-attribute-path="reason" />
+		<obj-attribute name="revocationreason" type="java.lang.String" db-attribute-path="revocationreason" />
 		<obj-attribute name="revokedat" type="java.time.LocalDateTime" db-attribute-path="revokedat" />
 		<obj-attribute name="tIliTid" type="java.util.UUID" db-attribute-path="t_ili_tid" />
 		<obj-attribute name="validfrom" type="java.time.LocalDateTime" db-attribute-path="validfrom" />
@@ -308,6 +327,14 @@
 		<obj-attribute name="commandid" type="java.util.UUID" db-attribute-path="commandid" />
 		<obj-attribute name="performedat" type="java.time.LocalDateTime" db-attribute-path="performedat" />
 		<obj-attribute name="reason" type="java.lang.String" db-attribute-path="reason" />
+		<obj-attribute name="tIliTid" type="java.util.UUID" db-attribute-path="t_ili_tid" />
+	</obj-entity>
+	<obj-entity name="Csvdeliveryconfiguration" className="ch.so.agi.dateninfrastruktur.admin.model.Csvdeliveryconfiguration" dbEntityName="csvdeliveryconfiguration">
+		<obj-attribute name="allowedmodes" type="java.lang.String" db-attribute-path="allowedmodes" />
+		<obj-attribute name="automaticpublication" type="boolean" db-attribute-path="automaticpublication" />
+		<obj-attribute name="definitionkey" type="java.lang.String" db-attribute-path="definitionkey" />
+		<obj-attribute name="definitionsha256" type="java.lang.String" db-attribute-path="definitionsha256" />
+		<obj-attribute name="enabled" type="boolean" db-attribute-path="enabled" />
 		<obj-attribute name="tIliTid" type="java.util.UUID" db-attribute-path="t_ili_tid" />
 	</obj-entity>
 	<obj-entity name="Dataschema" className="ch.so.agi.dateninfrastruktur.admin.model.Dataschema" dbEntityName="dataschema">
@@ -473,6 +500,9 @@
 	<db-relationship name="principal1" source="authorityassignment" target="principal">
 		<db-attribute-pair source="principal" target="t_id" />
 	</db-relationship>
+	<db-relationship name="revokedby1" source="authorityassignment" target="principal">
+		<db-attribute-pair source="revokedby" target="t_id" />
+	</db-relationship>
 	<db-relationship name="actor1" source="catalogaction" target="principal">
 		<db-attribute-pair source="actor" target="t_id" />
 	</db-relationship>
@@ -485,7 +515,19 @@
 	<db-relationship name="dataset1" source="catalogaction" target="dataset">
 		<db-attribute-pair source="dataset" target="t_id" />
 	</db-relationship>
+	<db-relationship name="initiator1" source="catalogaction" target="principal">
+		<db-attribute-pair source="initiator" target="t_id" />
+	</db-relationship>
+	<db-relationship name="aschema1" source="csvdeliveryconfiguration" target="dataschema">
+		<db-attribute-pair source="aschema" target="t_id" />
+	</db-relationship>
+	<db-relationship name="dataset1" source="csvdeliveryconfiguration" target="dataset">
+		<db-attribute-pair source="dataset" target="t_id" />
+	</db-relationship>
 	<db-relationship name="attributedefinitions" source="dataschema" target="attributedefinition" toMany="true">
+		<db-attribute-pair source="t_id" target="aschema" />
+	</db-relationship>
+	<db-relationship name="csvdeliveryconfigurations" source="dataschema" target="csvdeliveryconfiguration" toMany="true">
 		<db-attribute-pair source="t_id" target="aschema" />
 	</db-relationship>
 	<db-relationship name="dataversions" source="dataschema" target="dataversion" toMany="true">
@@ -504,6 +546,9 @@
 		<db-attribute-pair source="t_id" target="dataset" />
 	</db-relationship>
 	<db-relationship name="catalogactions" source="dataset" target="catalogaction" toMany="true">
+		<db-attribute-pair source="t_id" target="dataset" />
+	</db-relationship>
+	<db-relationship name="csvdeliveryconfigurations" source="dataset" target="csvdeliveryconfiguration" toMany="true">
 		<db-attribute-pair source="t_id" target="dataset" />
 	</db-relationship>
 	<db-relationship name="currentissue1" source="dataset" target="datasetissue">
@@ -597,19 +642,25 @@
 		<db-attribute-pair source="t_id" target="principal" />
 	</db-relationship>
 	<db-relationship name="authorityassignments1" source="principal" target="authorityassignment" toMany="true">
+		<db-attribute-pair source="t_id" target="revokedby" />
+	</db-relationship>
+	<db-relationship name="authorityassignments2" source="principal" target="authorityassignment" toMany="true">
 		<db-attribute-pair source="t_id" target="assignedby" />
 	</db-relationship>
 	<db-relationship name="catalogactions" source="principal" target="catalogaction" toMany="true">
+		<db-attribute-pair source="t_id" target="initiator" />
+	</db-relationship>
+	<db-relationship name="catalogactions1" source="principal" target="catalogaction" toMany="true">
 		<db-attribute-pair source="t_id" target="actor" />
 	</db-relationship>
 	<db-relationship name="groupmemberships" source="principal" target="groupmembership" toMany="true">
 		<db-attribute-pair source="t_id" target="agroup" />
 	</db-relationship>
 	<db-relationship name="groupmemberships1" source="principal" target="groupmembership" toMany="true">
-		<db-attribute-pair source="t_id" target="revokedby" />
+		<db-attribute-pair source="t_id" target="amember" />
 	</db-relationship>
 	<db-relationship name="groupmemberships2" source="principal" target="groupmembership" toMany="true">
-		<db-attribute-pair source="t_id" target="amember" />
+		<db-attribute-pair source="t_id" target="revokedby" />
 	</db-relationship>
 	<obj-relationship name="accessdecisions" source="Accessdecision" target="Accessdecision" deleteRule="Deny" db-relationship-path="accessdecisions" />
 	<obj-relationship name="accessgrants" source="Accessdecision" target="Accessgrant" deleteRule="Deny" db-relationship-path="accessgrants" />
@@ -631,17 +682,23 @@
 	<obj-relationship name="dataset1" source="Authorityassignment" target="Dataset" deleteRule="Nullify" db-relationship-path="dataset1" />
 	<obj-relationship name="office1" source="Authorityassignment" target="Office" deleteRule="Nullify" db-relationship-path="office1" />
 	<obj-relationship name="principal1" source="Authorityassignment" target="Principal" deleteRule="Nullify" db-relationship-path="principal1" />
+	<obj-relationship name="revokedby1" source="Authorityassignment" target="Principal" deleteRule="Nullify" db-relationship-path="revokedby1" />
 	<obj-relationship name="actor1" source="Catalogaction" target="Principal" deleteRule="Nullify" db-relationship-path="actor1" />
 	<obj-relationship name="affecteddistribution1" source="Catalogaction" target="Distribution" deleteRule="Nullify" db-relationship-path="affecteddistribution1" />
 	<obj-relationship name="affectedversion1" source="Catalogaction" target="Dataversion" deleteRule="Nullify" db-relationship-path="affectedversion1" />
 	<obj-relationship name="dataset1" source="Catalogaction" target="Dataset" deleteRule="Nullify" db-relationship-path="dataset1" />
+	<obj-relationship name="initiator1" source="Catalogaction" target="Principal" deleteRule="Nullify" db-relationship-path="initiator1" />
+	<obj-relationship name="aschema1" source="Csvdeliveryconfiguration" target="Dataschema" deleteRule="Nullify" db-relationship-path="aschema1" />
+	<obj-relationship name="dataset1" source="Csvdeliveryconfiguration" target="Dataset" deleteRule="Nullify" db-relationship-path="dataset1" />
 	<obj-relationship name="attributedefinitions" source="Dataschema" target="Attributedefinition" deleteRule="Deny" db-relationship-path="attributedefinitions" />
+	<obj-relationship name="csvdeliveryconfigurations" source="Dataschema" target="Csvdeliveryconfiguration" deleteRule="Deny" db-relationship-path="csvdeliveryconfigurations" />
 	<obj-relationship name="dataversions" source="Dataschema" target="Dataversion" deleteRule="Deny" db-relationship-path="dataversions" />
 	<obj-relationship name="accessdecisions" source="Dataset" target="Accessdecision" deleteRule="Deny" db-relationship-path="accessdecisions" />
 	<obj-relationship name="accessgrants" source="Dataset" target="Accessgrant" deleteRule="Deny" db-relationship-path="accessgrants" />
 	<obj-relationship name="accessrequests" source="Dataset" target="Accessrequest" deleteRule="Deny" db-relationship-path="accessrequests" />
 	<obj-relationship name="authorityassignments" source="Dataset" target="Authorityassignment" deleteRule="Deny" db-relationship-path="authorityassignments" />
 	<obj-relationship name="catalogactions" source="Dataset" target="Catalogaction" deleteRule="Deny" db-relationship-path="catalogactions" />
+	<obj-relationship name="csvdeliveryconfigurations" source="Dataset" target="Csvdeliveryconfiguration" deleteRule="Deny" db-relationship-path="csvdeliveryconfigurations" />
 	<obj-relationship name="currentissue1" source="Dataset" target="Datasetissue" deleteRule="Nullify" db-relationship-path="currentissue1" />
 	<obj-relationship name="datasetissues" source="Dataset" target="Datasetissue" deleteRule="Deny" db-relationship-path="datasetissues" />
 	<obj-relationship name="datasetkeywords" source="Dataset" target="Datasetkeyword" deleteRule="Deny" db-relationship-path="datasetkeywords" />
@@ -673,7 +730,9 @@
 	<obj-relationship name="accessrequests" source="Principal" target="Accessrequest" deleteRule="Deny" db-relationship-path="accessrequests" />
 	<obj-relationship name="authorityassignments" source="Principal" target="Authorityassignment" deleteRule="Deny" db-relationship-path="authorityassignments" />
 	<obj-relationship name="authorityassignments1" source="Principal" target="Authorityassignment" deleteRule="Deny" db-relationship-path="authorityassignments1" />
+	<obj-relationship name="authorityassignments2" source="Principal" target="Authorityassignment" deleteRule="Deny" db-relationship-path="authorityassignments2" />
 	<obj-relationship name="catalogactions" source="Principal" target="Catalogaction" deleteRule="Deny" db-relationship-path="catalogactions" />
+	<obj-relationship name="catalogactions1" source="Principal" target="Catalogaction" deleteRule="Deny" db-relationship-path="catalogactions1" />
 	<obj-relationship name="groupmemberships" source="Principal" target="Groupmembership" deleteRule="Deny" db-relationship-path="groupmemberships" />
 	<obj-relationship name="groupmemberships1" source="Principal" target="Groupmembership" deleteRule="Deny" db-relationship-path="groupmemberships1" />
 	<obj-relationship name="groupmemberships2" source="Principal" target="Groupmembership" deleteRule="Deny" db-relationship-path="groupmemberships2" />

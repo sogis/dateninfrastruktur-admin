@@ -6,7 +6,7 @@ R=pathlib.Path(__file__).resolve().parents[1]; OUT=R/'.runtime/model-tests';OUT.
 def run(args,name,expected=0,needle=None):
  p=subprocess.run(args,cwd=R,capture_output=True,text=True);log=p.stdout+p.stderr;(OUT/(name+'.log')).write_text(log)
  assert p.returncode==expected,(name,p.returncode,log[-2500:])
- if needle: assert needle in log,(name,'missing expected diagnostic',log[-2500:])
+ if needle: assert any(needle in line for line in log.splitlines() if line.startswith('Error:')),(name,'missing expected diagnostic',log[-2500:])
  assert 'compiler failed' not in log and 'incompatible values' not in log,(name,'tool failure, not semantic rejection')
  return log
 for name,item in json.loads((R/'db/toolchain.json').read_text()).items():
@@ -43,9 +43,20 @@ for name in ['AccessRequest','AccessDecision','AccessGrant']:
  assert {x for x in linked if x and x.startswith(C+'.Catalog.')}=={C+'.Catalog.Dataset'},(name,linked)
 assert 'accessLevel' in attrs[C+'.Catalog.Dataset']
 print('M04 PASS: compiled UUID identities, sole dataset rights anchor, no child metadata copies')
-expected={'invalid-interval':A+'.Access.AccessGrant.Constraint1','invalid-scope':A+'.Access.AuthorityAssignment.Constraint2','invalid-principal-kind':A+'.Access.GroupMembership.Constraint3','invalid-available':C+'.Catalog.Distribution.Constraint2','duplicate-identifier':C+'.Catalog.Dataset.Constraint1'}
+expected={'invalid-interval':A+'.Access.AccessGrant.Constraint1','invalid-scope':A+'.Access.AuthorityAssignment.Constraint3','invalid-principal-kind':A+'.Access.GroupMembership.Constraint3','invalid-available':C+'.Catalog.Distribution.Constraint2','duplicate-identifier':C+'.Catalog.Dataset.Constraint1'}
 for case,needle in expected.items():run([*validate,str(R/'models/fixtures'/(case+'.xtf'))],case,1,needle)
 print('M05 PASS: five semantic invalid fixtures rejected for the intended constraints')
+
+new_expected={
+ 'invalid-authority-revocation':A+'.Access.AuthorityAssignment.Constraint2',
+ 'missing-csv-schema':'CsvDeliveryConfiguration: tid '+oid('csv-config')+': schema should associate 1 to 1',
+ 'duplicate-csv-configuration':'Dataset: tid '+oid('series')+': csvDeliveryConfiguration should associate 0 to 1',
+}
+for case,needle in new_expected.items():run([*validate,str(R/'models/fixtures'/(case+'.xtf'))],case,1,needle)
+assert {'enabled','automaticPublication','definitionKey','definitionSha256','allowedModes'}<=attrs[C+'.Catalog.CsvDeliveryConfiguration']
+assert 'revocationReason' in attrs[A+'.Access.AuthorityAssignment']
+print('G20 PASS: CSV configuration and new capabilities compile; missing schema, duplicate configuration and incomplete Authority revocation rejected with actual semantic Error diagnostics')
+
 policies={(ref(e,'MetaElement'),e.findtext(M+'Name')):e.findtext(M+'Value') for e in meta.iter(M+'MetaAttribute')}
 for name in classes:
  assert policies.get((name,'di.audit'))=='full',name

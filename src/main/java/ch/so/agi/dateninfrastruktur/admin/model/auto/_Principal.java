@@ -52,7 +52,9 @@ public abstract class _Principal extends PersistentObject {
     public static final ListProperty<Accessrequest> ACCESSREQUESTS = PropertyFactory.createList("accessrequests", Accessrequest.class);
     public static final ListProperty<Authorityassignment> AUTHORITYASSIGNMENTS = PropertyFactory.createList("authorityassignments", Authorityassignment.class);
     public static final ListProperty<Authorityassignment> AUTHORITYASSIGNMENTS1 = PropertyFactory.createList("authorityassignments1", Authorityassignment.class);
+    public static final ListProperty<Authorityassignment> AUTHORITYASSIGNMENTS2 = PropertyFactory.createList("authorityassignments2", Authorityassignment.class);
     public static final ListProperty<Catalogaction> CATALOGACTIONS = PropertyFactory.createList("catalogactions", Catalogaction.class);
+    public static final ListProperty<Catalogaction> CATALOGACTIONS1 = PropertyFactory.createList("catalogactions1", Catalogaction.class);
     public static final ListProperty<Groupmembership> GROUPMEMBERSHIPS = PropertyFactory.createList("groupmemberships", Groupmembership.class);
     public static final ListProperty<Groupmembership> GROUPMEMBERSHIPS1 = PropertyFactory.createList("groupmemberships1", Groupmembership.class);
     public static final ListProperty<Groupmembership> GROUPMEMBERSHIPS2 = PropertyFactory.createList("groupmemberships2", Groupmembership.class);
@@ -71,7 +73,9 @@ public abstract class _Principal extends PersistentObject {
     protected Object accessrequests;
     protected Object authorityassignments;
     protected Object authorityassignments1;
+    protected Object authorityassignments2;
     protected Object catalogactions;
+    protected Object catalogactions1;
     protected Object groupmemberships;
     protected Object groupmemberships1;
     protected Object groupmemberships2;
@@ -224,6 +228,19 @@ public abstract class _Principal extends PersistentObject {
         return (List<Authorityassignment>)readProperty("authorityassignments1");
     }
 
+    public void addToAuthorityassignments2(Authorityassignment obj) {
+        addToManyTarget("authorityassignments2", obj, true);
+    }
+
+    public void removeFromAuthorityassignments2(Authorityassignment obj) {
+        removeToManyTarget("authorityassignments2", obj, true);
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Authorityassignment> getAuthorityassignments2() {
+        return (List<Authorityassignment>)readProperty("authorityassignments2");
+    }
+
     public void addToCatalogactions(Catalogaction obj) {
         addToManyTarget("catalogactions", obj, true);
     }
@@ -235,6 +252,19 @@ public abstract class _Principal extends PersistentObject {
     @SuppressWarnings("unchecked")
     public List<Catalogaction> getCatalogactions() {
         return (List<Catalogaction>)readProperty("catalogactions");
+    }
+
+    public void addToCatalogactions1(Catalogaction obj) {
+        addToManyTarget("catalogactions1", obj, true);
+    }
+
+    public void removeFromCatalogactions1(Catalogaction obj) {
+        removeToManyTarget("catalogactions1", obj, true);
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Catalogaction> getCatalogactions1() {
+        return (List<Catalogaction>)readProperty("catalogactions1");
     }
 
     public void addToGroupmemberships(Groupmembership obj) {
@@ -309,8 +339,12 @@ public abstract class _Principal extends PersistentObject {
                 return this.authorityassignments;
             case "authorityassignments1":
                 return this.authorityassignments1;
+            case "authorityassignments2":
+                return this.authorityassignments2;
             case "catalogactions":
                 return this.catalogactions;
+            case "catalogactions1":
+                return this.catalogactions1;
             case "groupmemberships":
                 return this.groupmemberships;
             case "groupmemberships1":
@@ -368,8 +402,14 @@ public abstract class _Principal extends PersistentObject {
             case "authorityassignments1":
                 this.authorityassignments1 = val;
                 break;
+            case "authorityassignments2":
+                this.authorityassignments2 = val;
+                break;
             case "catalogactions":
                 this.catalogactions = val;
+                break;
+            case "catalogactions1":
+                this.catalogactions1 = val;
                 break;
             case "groupmemberships":
                 this.groupmemberships = val;
@@ -409,7 +449,9 @@ public abstract class _Principal extends PersistentObject {
         out.writeObject(this.accessrequests);
         out.writeObject(this.authorityassignments);
         out.writeObject(this.authorityassignments1);
+        out.writeObject(this.authorityassignments2);
         out.writeObject(this.catalogactions);
+        out.writeObject(this.catalogactions1);
         out.writeObject(this.groupmemberships);
         out.writeObject(this.groupmemberships1);
         out.writeObject(this.groupmemberships2);
@@ -431,7 +473,9 @@ public abstract class _Principal extends PersistentObject {
         this.accessrequests = in.readObject();
         this.authorityassignments = in.readObject();
         this.authorityassignments1 = in.readObject();
+        this.authorityassignments2 = in.readObject();
         this.catalogactions = in.readObject();
+        this.catalogactions1 = in.readObject();
         this.groupmemberships = in.readObject();
         this.groupmemberships1 = in.readObject();
         this.groupmemberships2 = in.readObject();

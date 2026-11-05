@@ -8,15 +8,11 @@ import ch.so.agi.dateninfrastruktur.admin.access.*;
 import ch.so.agi.dateninfrastruktur.admin.model.*;
 import ch.so.agi.dateninfrastruktur.admin.identity.PrincipalRepository;
 import ch.so.agi.dateninfrastruktur.admin.persistence.*;
-/** Operator/backend registration of confirmed deliveries; no loader, upload endpoint or arbitrary URL fetch. */
+/** Single validated CSV acceptance core and explicit withdrawal of existing files. */
 public final class DeliveryRegistrationService {
-    public record AcceptedVersion(UUID issue,UUID schema,String versionKey,int sequence,Instant acceptedAt,String sourceSha256,String sourceReference){}
-    public record PreparedDistribution(UUID version,UUID distributionId,String format,String fileName,String mediaType){}
-    public record ObjectEvidence(long byteSize,String sha256){}
-    @FunctionalInterface public interface PrivateObjectVerifier {ObjectEvidence verify(String canonicalKey);}
-    private final AuditedUnitOfWork unit;private final AuthorityService authority;private final PrivateObjectVerifier verifier;
+    private final AuditedUnitOfWork unit;private final AuthorityService authority;
     private final AggregateWriteGuard guard=new AggregateWriteGuard();private final CommandReceiptRepository receipts=new CommandReceiptRepository();
-    public DeliveryRegistrationService(AuditedUnitOfWork unit,AuthorityService authority,PrivateObjectVerifier verifier){this.unit=unit;this.authority=authority;this.verifier=verifier;}
+    public DeliveryRegistrationService(AuditedUnitOfWork unit,AuthorityService authority){this.unit=unit;this.authority=authority;}
     private UUID execute(ActorContext actor,CommandContext command,String action,UUID dataset,long expected,Object payload,java.util.function.BiFunction<ObjectContext,Dataset,UUID> work){
         if(!action.equals(command.actionCode()))throw BusinessException.invalid("Ungültige Registrierungsaktion.");
         return unit.execute(actor,command,ctx->{var prior=receipts.findOrReserve(ctx,actor,command,CommandReceiptRepository.payloadHash(dataset,expected,payload));if(prior!=null)return prior.reference();
@@ -25,32 +21,25 @@ public final class DeliveryRegistrationService {
             if("published".equals(root.getPublicationstatus()))authority.require(ctx,actor,dataset,"publish");
             var id=work.apply(ctx,root);receipts.complete(ctx,actor,command,new CommandReceiptRepository.Receipt(id,"COMMITTED"));return id;});
     }
-    public UUID registerAcceptedVersion(ActorContext actor,CommandContext command,UUID dataset,long expected,AcceptedVersion input){
-        if(input.versionKey()==null || input.versionKey().isBlank() || input.versionKey().length()>128 || input.sequence()<1 || input.acceptedAt()==null || (input.sourceSha256()!=null && !input.sourceSha256().matches("[0-9a-f]{64}")))throw BusinessException.invalid("Ungültige bestätigte Lieferreferenz.");
-        return execute(actor,command,"register_version",dataset,expected,input,(ctx,root)->{
-            var issue=ObjectSelect.query(Datasetissue.class).where(Datasetissue.T_ILI_TID.eq(input.issue())).selectOne(ctx);
-            if(issue==null || !dataset.equals(issue.getDataset1().getTIliTid()))throw BusinessException.invalid("Ausgabe gehört nicht zum Datensatz.");
-            var schema=input.schema()==null?null:ObjectSelect.query(Dataschema.class).where(Dataschema.T_ILI_TID.eq(input.schema())).selectOne(ctx);
-            if(input.schema()!=null && schema==null)throw BusinessException.invalid("Schema nicht bekannt.");
-            var row=ctx.newObject(Dataversion.class);row.setTIliTid(UUID.randomUUID());row.setIssue1(issue);row.setAschema1(schema);row.setVersionkey(input.versionKey());row.setAsequence(input.sequence());row.setAcceptedat(UtcTime.toDatabase(input.acceptedAt()));row.setSourcesha256(input.sourceSha256());row.setSourcereference(input.sourceReference());row.setValidationstatus("unknown");row.setAvailability("available");return row.getTIliTid();
-        });
-    }
-    public UUID registerPrepared(ActorContext actor,CommandContext command,UUID dataset,long expected,PreparedDistribution input){
-        if(input.distributionId()==null || !Set.of("csv","xlsx","parquet","other").contains(input.format()) || input.fileName()==null || !input.fileName().matches("[A-Za-z0-9][A-Za-z0-9._-]{0,127}") || input.mediaType()==null || input.mediaType().isBlank() || input.mediaType().length()>255)throw BusinessException.invalid("Ungültige Dateiregistrierung.");
-        return execute(actor,command,"register_distribution",dataset,expected,input,(ctx,root)->{
-            var version=ObjectSelect.query(Dataversion.class).where(Dataversion.T_ILI_TID.eq(input.version())).selectOne(ctx);
-            if(version==null || !dataset.equals(version.getIssue1().getDataset1().getTIliTid()) || !"available".equals(version.getAvailability()))throw BusinessException.invalid("Version gehört nicht zum Datensatz oder ist nicht verfügbar.");
-            var row=ctx.newObject(Distribution.class);row.setTIliTid(input.distributionId());row.setVersion1(version);row.setAformat(input.format());row.setFilename(input.fileName());row.setMediatype(input.mediaType());row.setObjectkey("downloads/"+input.distributionId()+"/"+input.fileName());row.setAvailability("prepared");return row.getTIliTid();
-        });
-    }
-    public UUID verifyAndActivate(ActorContext actor,CommandContext command,UUID dataset,long expected,UUID distribution){
-        return execute(actor,command,"activate_distribution",dataset,expected,distribution,(ctx,root)->{
-            var row=ObjectSelect.query(Distribution.class).where(Distribution.T_ILI_TID.eq(distribution)).selectOne(ctx);
-            if(row==null || !dataset.equals(row.getVersion1().getIssue1().getDataset1().getTIliTid()) || !"prepared".equals(row.getAvailability()))throw BusinessException.conflict("Nur vorbereitete Dateien dieses Datensatzes können aktiviert werden.");
-            var evidence=verifier.verify(row.getObjectkey());
-            if(evidence==null || evidence.byteSize()<0 || evidence.sha256()==null || !evidence.sha256().matches("[0-9a-f]{64}"))throw BusinessException.invalid("Private Datei konnte nicht bestätigt werden.");
-            row.setBytesize(evidence.byteSize());row.setSha256(evidence.sha256());row.setAvailability("available");return distribution;
-        });
+    /** The central CSV acceptance core, called inside PublicationService's audited transaction. */
+    public UUID acceptValidatedCsv(ObjectContext ctx,ActorContext executor,CommandContext command,
+            ch.so.agi.dateninfrastruktur.admin.ingestion.ResultEvidenceValidator.VerifiedResult evidence,UUID schemaId){
+        if(!"service".equals(executor.kind()) || !"ingestion.complete".equals(command.actionCode()) || org.apache.cayenne.tx.BaseTransaction.getThreadTransaction()==null)throw BusinessException.forbidden();
+        var plan=evidence.plan();var result=evidence.manifest();
+        var issue=ObjectSelect.query(Datasetissue.class).where(Datasetissue.T_ILI_TID.eq(plan.issueId())).selectOne(ctx);
+        var schema=ObjectSelect.query(Dataschema.class).where(Dataschema.T_ILI_TID.eq(schemaId)).selectOne(ctx);
+        var initiator=new PrincipalRepository().findByOid(ctx,plan.initiatorPrincipalId());
+        if(issue==null || schema==null || initiator==null || !plan.datasetId().equals(issue.getDataset1().getTIliTid()))throw BusinessException.forbidden();
+        long next=((Number)CayenneSql.rows(ctx,"SELECT coalesce(max(v.asequence),0)+1 AS next FROM di_management.dataversion v JOIN di_management.datasetissue i ON i.t_id=v.issue WHERE i.t_ili_tid=CAST(#bind($issue) AS uuid)",Map.of("issue",plan.issueId().toString())).getFirst().get("next")).longValue();
+        if(next>Integer.MAX_VALUE)throw BusinessException.conflict("Versionsfolge erschöpft.");
+        var now=CayenneSql.now(ctx);var version=ctx.newObject(Dataversion.class);version.setTIliTid(plan.reservedVersionId());version.setIssue1(issue);version.setAschema1(schema);version.setVersionkey(plan.reservedVersionId().toString());version.setAsequence((int)next);version.setAcceptedat(now);version.setSourcesha256(plan.input().sha256());version.setSourcereference("urn:di:submission:"+plan.submissionId());version.setValidationstatus("success");version.setValidationat(now);version.setValidationerrors(0L);version.setObjectcount(result.snapshot().rowCount());version.setAttributecount((long)plan.orderedColumns().size());version.setAvailability("available");
+        for(var output:plan.outputs()){
+            var attestation=result.outputs().artifacts().stream().filter(a->a.distributionId().equals(output.distributionId())).findFirst().orElseThrow();
+            var distribution=ctx.newObject(Distribution.class);distribution.setTIliTid(output.distributionId());distribution.setVersion1(version);distribution.setAformat(output.format());distribution.setFilename(output.fileName());distribution.setMediatype(output.mediaType());distribution.setObjectkey(output.objectKey());distribution.setBytesize(attestation.byteSize());distribution.setSha256(attestation.sha256());distribution.setAvailability("available");
+        }
+        issue.setCurrentversion1(version);issue.setModified(now.toLocalDate());
+        var action=ctx.newObject(Catalogaction.class);action.setTIliTid(UUID.randomUUID());action.setDataset1(issue.getDataset1());action.setAffectedversion1(version);action.setActor1(new PrincipalRepository().requireActive(ctx,executor));action.setInitiator1(initiator);action.setActioncode("accept_delivery");action.setCommandid(command.commandId());action.setReason("Validierte CSV-Lieferung "+plan.submissionId());action.setPerformedat(now);
+        return version.getTIliTid();
     }
     public UUID withdraw(ActorContext actor,CommandContext command,UUID dataset,long expected,UUID distribution,String reason){
         if(reason==null || reason.isBlank() || reason.length()>4000)throw BusinessException.invalid("Bitte eine Begründung angeben.");

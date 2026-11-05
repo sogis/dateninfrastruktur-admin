@@ -15,6 +15,7 @@ import org.apache.cayenne.exp.property.SelfProperty;
 import org.apache.cayenne.exp.property.StringProperty;
 
 import ch.so.agi.dateninfrastruktur.admin.model.Attributedefinition;
+import ch.so.agi.dateninfrastruktur.admin.model.Csvdeliveryconfiguration;
 import ch.so.agi.dateninfrastruktur.admin.model.Dataschema;
 import ch.so.agi.dateninfrastruktur.admin.model.Dataversion;
 
@@ -41,6 +42,7 @@ public abstract class _Dataschema extends PersistentObject {
     public static final StringProperty<String> MODELVERSION = PropertyFactory.createString("modelversion", String.class);
     public static final BaseProperty<UUID> T_ILI_TID = PropertyFactory.createBase("tIliTid", UUID.class);
     public static final ListProperty<Attributedefinition> ATTRIBUTEDEFINITIONS = PropertyFactory.createList("attributedefinitions", Attributedefinition.class);
+    public static final ListProperty<Csvdeliveryconfiguration> CSVDELIVERYCONFIGURATIONS = PropertyFactory.createList("csvdeliveryconfigurations", Csvdeliveryconfiguration.class);
     public static final ListProperty<Dataversion> DATAVERSIONS = PropertyFactory.createList("dataversions", Dataversion.class);
 
     protected String adescription;
@@ -52,6 +54,7 @@ public abstract class _Dataschema extends PersistentObject {
     protected UUID tIliTid;
 
     protected Object attributedefinitions;
+    protected Object csvdeliveryconfigurations;
     protected Object dataversions;
 
     public void setAdescription(String adescription) {
@@ -137,6 +140,19 @@ public abstract class _Dataschema extends PersistentObject {
         return (List<Attributedefinition>)readProperty("attributedefinitions");
     }
 
+    public void addToCsvdeliveryconfigurations(Csvdeliveryconfiguration obj) {
+        addToManyTarget("csvdeliveryconfigurations", obj, true);
+    }
+
+    public void removeFromCsvdeliveryconfigurations(Csvdeliveryconfiguration obj) {
+        removeToManyTarget("csvdeliveryconfigurations", obj, true);
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Csvdeliveryconfiguration> getCsvdeliveryconfigurations() {
+        return (List<Csvdeliveryconfiguration>)readProperty("csvdeliveryconfigurations");
+    }
+
     public void addToDataversions(Dataversion obj) {
         addToManyTarget("dataversions", obj, true);
     }
@@ -173,6 +189,8 @@ public abstract class _Dataschema extends PersistentObject {
                 return this.tIliTid;
             case "attributedefinitions":
                 return this.attributedefinitions;
+            case "csvdeliveryconfigurations":
+                return this.csvdeliveryconfigurations;
             case "dataversions":
                 return this.dataversions;
             default:
@@ -211,6 +229,9 @@ public abstract class _Dataschema extends PersistentObject {
             case "attributedefinitions":
                 this.attributedefinitions = val;
                 break;
+            case "csvdeliveryconfigurations":
+                this.csvdeliveryconfigurations = val;
+                break;
             case "dataversions":
                 this.dataversions = val;
                 break;
@@ -238,6 +259,7 @@ public abstract class _Dataschema extends PersistentObject {
         out.writeObject(this.modelversion);
         out.writeObject(this.tIliTid);
         out.writeObject(this.attributedefinitions);
+        out.writeObject(this.csvdeliveryconfigurations);
         out.writeObject(this.dataversions);
     }
 
@@ -252,6 +274,7 @@ public abstract class _Dataschema extends PersistentObject {
         this.modelversion = (String)in.readObject();
         this.tIliTid = (UUID)in.readObject();
         this.attributedefinitions = in.readObject();
+        this.csvdeliveryconfigurations = in.readObject();
         this.dataversions = in.readObject();
     }
 

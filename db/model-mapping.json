@@ -33,6 +33,10 @@
       "sqlname": "actiondistribution"
     },
     {
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.ActionInitiator",
+      "sqlname": "actioninitiator"
+    },
+    {
       "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.ActionVersion",
       "sqlname": "actionversion"
     },
@@ -55,6 +59,10 @@
     {
       "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityPrincipal",
       "sqlname": "authorityprincipal"
+    },
+    {
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityRevoker",
+      "sqlname": "authorityrevoker"
     },
     {
       "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.CatalogAction",
@@ -123,6 +131,18 @@
     {
       "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.AttributeSchema",
       "sqlname": "attributeschema"
+    },
+    {
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CsvDeliveryConfiguration",
+      "sqlname": "csvdeliveryconfiguration"
+    },
+    {
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CsvDeliveryDataset",
+      "sqlname": "csvdeliverydataset"
+    },
+    {
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CsvDeliverySchema",
+      "sqlname": "csvdeliveryschema"
     },
     {
       "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CurrentIssue",
@@ -301,6 +321,12 @@
       "target": "distribution"
     },
     {
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.ActionInitiator.initiator",
+      "sqlname": "initiator",
+      "colowner": "catalogaction",
+      "target": "principal"
+    },
+    {
       "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.ActionVersion.affectedVersion",
       "sqlname": "affectedversion",
       "colowner": "catalogaction",
@@ -321,6 +347,12 @@
     {
       "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityAssignment.reason",
       "sqlname": "reason",
+      "colowner": "authorityassignment",
+      "target": null
+    },
+    {
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityAssignment.revocationReason",
+      "sqlname": "revocationreason",
       "colowner": "authorityassignment",
       "target": null
     },
@@ -357,6 +389,12 @@
     {
       "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityPrincipal.principal",
       "sqlname": "principal",
+      "colowner": "authorityassignment",
+      "target": "principal"
+    },
+    {
+      "iliname": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityRevoker.revokedBy",
+      "sqlname": "revokedby",
       "colowner": "authorityassignment",
       "target": "principal"
     },
@@ -562,6 +600,48 @@
       "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.AttributeSchema.schema",
       "sqlname": "aschema",
       "colowner": "attributedefinition",
+      "target": "dataschema"
+    },
+    {
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CsvDeliveryConfiguration.allowedModes",
+      "sqlname": "allowedmodes",
+      "colowner": "csvdeliveryconfiguration",
+      "target": null
+    },
+    {
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CsvDeliveryConfiguration.automaticPublication",
+      "sqlname": "automaticpublication",
+      "colowner": "csvdeliveryconfiguration",
+      "target": null
+    },
+    {
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CsvDeliveryConfiguration.definitionKey",
+      "sqlname": "definitionkey",
+      "colowner": "csvdeliveryconfiguration",
+      "target": null
+    },
+    {
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CsvDeliveryConfiguration.definitionSha256",
+      "sqlname": "definitionsha256",
+      "colowner": "csvdeliveryconfiguration",
+      "target": null
+    },
+    {
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CsvDeliveryConfiguration.enabled",
+      "sqlname": "enabled",
+      "colowner": "csvdeliveryconfiguration",
+      "target": null
+    },
+    {
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CsvDeliveryDataset.dataset",
+      "sqlname": "dataset",
+      "colowner": "csvdeliveryconfiguration",
+      "target": "dataset"
+    },
+    {
+      "iliname": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CsvDeliverySchema.schema",
+      "sqlname": "aschema",
+      "colowner": "csvdeliveryconfiguration",
       "target": "dataschema"
     },
     {
@@ -1384,6 +1464,13 @@
     },
     {
       "table_name": "authorityassignment",
+      "column_name": "revocationreason",
+      "data_type": "text",
+      "is_nullable": "YES",
+      "column_default": null
+    },
+    {
+      "table_name": "authorityassignment",
       "column_name": "validfrom",
       "data_type": "timestamp without time zone",
       "is_nullable": "NO",
@@ -1436,6 +1523,13 @@
       "column_name": "principal",
       "data_type": "bigint",
       "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "authorityassignment",
+      "column_name": "revokedby",
+      "data_type": "bigint",
+      "is_nullable": "YES",
       "column_default": null
     },
     {
@@ -1531,6 +1625,13 @@
     },
     {
       "table_name": "catalogaction",
+      "column_name": "initiator",
+      "data_type": "bigint",
+      "is_nullable": "YES",
+      "column_default": null
+    },
+    {
+      "table_name": "catalogaction",
       "column_name": "t_lastchange",
       "data_type": "timestamp without time zone",
       "is_nullable": "NO",
@@ -1545,6 +1646,90 @@
     },
     {
       "table_name": "catalogaction",
+      "column_name": "t_user",
+      "data_type": "character varying",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "csvdeliveryconfiguration",
+      "column_name": "t_id",
+      "data_type": "bigint",
+      "is_nullable": "NO",
+      "column_default": "nextval('di_management.t_ili2db_seq'::regclass)"
+    },
+    {
+      "table_name": "csvdeliveryconfiguration",
+      "column_name": "t_ili_tid",
+      "data_type": "uuid",
+      "is_nullable": "YES",
+      "column_default": "uuid_generate_v4()"
+    },
+    {
+      "table_name": "csvdeliveryconfiguration",
+      "column_name": "enabled",
+      "data_type": "boolean",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "csvdeliveryconfiguration",
+      "column_name": "automaticpublication",
+      "data_type": "boolean",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "csvdeliveryconfiguration",
+      "column_name": "definitionkey",
+      "data_type": "character varying",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "csvdeliveryconfiguration",
+      "column_name": "definitionsha256",
+      "data_type": "character varying",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "csvdeliveryconfiguration",
+      "column_name": "allowedmodes",
+      "data_type": "character varying",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "csvdeliveryconfiguration",
+      "column_name": "dataset",
+      "data_type": "bigint",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "csvdeliveryconfiguration",
+      "column_name": "aschema",
+      "data_type": "bigint",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "csvdeliveryconfiguration",
+      "column_name": "t_lastchange",
+      "data_type": "timestamp without time zone",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "csvdeliveryconfiguration",
+      "column_name": "t_createdate",
+      "data_type": "timestamp without time zone",
+      "is_nullable": "NO",
+      "column_default": null
+    },
+    {
+      "table_name": "csvdeliveryconfiguration",
       "column_name": "t_user",
       "data_type": "character varying",
       "is_nullable": "NO",
@@ -3084,6 +3269,41 @@
       "attr_value": "ASSOCIATE"
     },
     {
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.ActionInitiator",
+      "attr_name": "di.audit",
+      "attr_value": "full"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.ActionInitiator.initiatedCatalogActions",
+      "attr_name": "ili2db.ili.assocCardinalityMax",
+      "attr_value": "*"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.ActionInitiator.initiatedCatalogActions",
+      "attr_name": "ili2db.ili.assocCardinalityMin",
+      "attr_value": "0"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.ActionInitiator.initiatedCatalogActions",
+      "attr_name": "ili2db.ili.assocKind",
+      "attr_value": "ASSOCIATE"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.ActionInitiator.initiator",
+      "attr_name": "ili2db.ili.assocCardinalityMax",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.ActionInitiator.initiator",
+      "attr_name": "ili2db.ili.assocCardinalityMin",
+      "attr_value": "0"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.ActionInitiator.initiator",
+      "attr_name": "ili2db.ili.assocKind",
+      "attr_value": "ASSOCIATE"
+    },
+    {
       "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.ActionVersion",
       "attr_name": "di.audit",
       "attr_value": "full"
@@ -3177,6 +3397,16 @@
       "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityAssignment.reason",
       "attr_name": "ili2db.ili.attrCardinalityMin",
       "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityAssignment.revocationReason",
+      "attr_name": "ili2db.ili.attrCardinalityMax",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityAssignment.revocationReason",
+      "attr_name": "ili2db.ili.attrCardinalityMin",
+      "attr_value": "0"
     },
     {
       "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityAssignment.revokedAt",
@@ -3310,6 +3540,41 @@
     },
     {
       "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityPrincipal.principal",
+      "attr_name": "ili2db.ili.assocKind",
+      "attr_value": "ASSOCIATE"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityRevoker",
+      "attr_name": "di.audit",
+      "attr_value": "full"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityRevoker.revokedAuthorities",
+      "attr_name": "ili2db.ili.assocCardinalityMax",
+      "attr_value": "*"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityRevoker.revokedAuthorities",
+      "attr_name": "ili2db.ili.assocCardinalityMin",
+      "attr_value": "0"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityRevoker.revokedAuthorities",
+      "attr_name": "ili2db.ili.assocKind",
+      "attr_value": "ASSOCIATE"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityRevoker.revokedBy",
+      "attr_name": "ili2db.ili.assocCardinalityMax",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityRevoker.revokedBy",
+      "attr_name": "ili2db.ili.assocCardinalityMin",
+      "attr_value": "0"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Access_20261105.Access.AuthorityRevoker.revokedBy",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
@@ -3901,7 +4166,7 @@
     {
       "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog",
       "attr_name": "ili2db.ili.topicClasses",
-      "attr_value": "attributedefinition dataschema dataset datasetissue datasetkeyword datasettheme dataversion distribution office"
+      "attr_value": "attributedefinition csvdeliveryconfiguration dataschema dataset datasetissue datasetkeyword datasettheme dataversion distribution office"
     },
     {
       "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.AttributeDefinition",
@@ -4010,6 +4275,131 @@
     },
     {
       "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.AttributeSchema.schema",
+      "attr_name": "ili2db.ili.assocKind",
+      "attr_value": "ASSOCIATE"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CsvDeliveryConfiguration",
+      "attr_name": "di.audit",
+      "attr_value": "full"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CsvDeliveryConfiguration.allowedModes",
+      "attr_name": "ili2db.ili.attrCardinalityMax",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CsvDeliveryConfiguration.allowedModes",
+      "attr_name": "ili2db.ili.attrCardinalityMin",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CsvDeliveryConfiguration.automaticPublication",
+      "attr_name": "ili2db.ili.attrCardinalityMax",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CsvDeliveryConfiguration.automaticPublication",
+      "attr_name": "ili2db.ili.attrCardinalityMin",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CsvDeliveryConfiguration.definitionKey",
+      "attr_name": "ili2db.ili.attrCardinalityMax",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CsvDeliveryConfiguration.definitionKey",
+      "attr_name": "ili2db.ili.attrCardinalityMin",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CsvDeliveryConfiguration.definitionSha256",
+      "attr_name": "ili2db.ili.attrCardinalityMax",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CsvDeliveryConfiguration.definitionSha256",
+      "attr_name": "ili2db.ili.attrCardinalityMin",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CsvDeliveryConfiguration.enabled",
+      "attr_name": "ili2db.ili.attrCardinalityMax",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CsvDeliveryConfiguration.enabled",
+      "attr_name": "ili2db.ili.attrCardinalityMin",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CsvDeliveryDataset",
+      "attr_name": "di.audit",
+      "attr_value": "full"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CsvDeliveryDataset.csvDeliveryConfiguration",
+      "attr_name": "ili2db.ili.assocCardinalityMax",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CsvDeliveryDataset.csvDeliveryConfiguration",
+      "attr_name": "ili2db.ili.assocCardinalityMin",
+      "attr_value": "0"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CsvDeliveryDataset.csvDeliveryConfiguration",
+      "attr_name": "ili2db.ili.assocKind",
+      "attr_value": "ASSOCIATE"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CsvDeliveryDataset.dataset",
+      "attr_name": "ili2db.ili.assocCardinalityMax",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CsvDeliveryDataset.dataset",
+      "attr_name": "ili2db.ili.assocCardinalityMin",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CsvDeliveryDataset.dataset",
+      "attr_name": "ili2db.ili.assocKind",
+      "attr_value": "ASSOCIATE"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CsvDeliverySchema",
+      "attr_name": "di.audit",
+      "attr_value": "full"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CsvDeliverySchema.csvDeliveryConfigurations",
+      "attr_name": "ili2db.ili.assocCardinalityMax",
+      "attr_value": "*"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CsvDeliverySchema.csvDeliveryConfigurations",
+      "attr_name": "ili2db.ili.assocCardinalityMin",
+      "attr_value": "0"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CsvDeliverySchema.csvDeliveryConfigurations",
+      "attr_name": "ili2db.ili.assocKind",
+      "attr_value": "ASSOCIATE"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CsvDeliverySchema.schema",
+      "attr_name": "ili2db.ili.assocCardinalityMax",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CsvDeliverySchema.schema",
+      "attr_name": "ili2db.ili.assocCardinalityMin",
+      "attr_value": "1"
+    },
+    {
+      "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.CsvDeliverySchema.schema",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
     },
@@ -5032,6 +5422,1870 @@
       "ilielement": "SO_AGI_DataInfrastructure_Catalog_20261105.Catalog.VersionSchema.usingVersions",
       "attr_name": "ili2db.ili.assocKind",
       "attr_value": "ASSOCIATE"
+    }
+  ],
+  "column_details": [
+    {
+      "table_name": "accessdecision",
+      "column_name": "t_id",
+      "sql_type": "bigint",
+      "not_null": true,
+      "default_expression": "nextval('di_management.t_ili2db_seq'::regclass)"
+    },
+    {
+      "table_name": "accessdecision",
+      "column_name": "t_ili_tid",
+      "sql_type": "uuid",
+      "not_null": false,
+      "default_expression": "uuid_generate_v4()"
+    },
+    {
+      "table_name": "accessdecision",
+      "column_name": "akind",
+      "sql_type": "character varying(255)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "accessdecision",
+      "column_name": "decidedat",
+      "sql_type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "accessdecision",
+      "column_name": "reason",
+      "sql_type": "text",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "accessdecision",
+      "column_name": "commandid",
+      "sql_type": "uuid",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "accessdecision",
+      "column_name": "actor",
+      "sql_type": "bigint",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "accessdecision",
+      "column_name": "beneficiary",
+      "sql_type": "bigint",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "accessdecision",
+      "column_name": "dataset",
+      "sql_type": "bigint",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "accessdecision",
+      "column_name": "request",
+      "sql_type": "bigint",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "accessdecision",
+      "column_name": "supersedes",
+      "sql_type": "bigint",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "accessdecision",
+      "column_name": "t_lastchange",
+      "sql_type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "accessdecision",
+      "column_name": "t_createdate",
+      "sql_type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "accessdecision",
+      "column_name": "t_user",
+      "sql_type": "character varying(40)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "accessgrant",
+      "column_name": "t_id",
+      "sql_type": "bigint",
+      "not_null": true,
+      "default_expression": "nextval('di_management.t_ili2db_seq'::regclass)"
+    },
+    {
+      "table_name": "accessgrant",
+      "column_name": "t_ili_tid",
+      "sql_type": "uuid",
+      "not_null": false,
+      "default_expression": "uuid_generate_v4()"
+    },
+    {
+      "table_name": "accessgrant",
+      "column_name": "permission",
+      "sql_type": "character varying(255)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "accessgrant",
+      "column_name": "validfrom",
+      "sql_type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "accessgrant",
+      "column_name": "validuntil",
+      "sql_type": "timestamp without time zone",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "accessgrant",
+      "column_name": "revokedat",
+      "sql_type": "timestamp without time zone",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "accessgrant",
+      "column_name": "beneficiary",
+      "sql_type": "bigint",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "accessgrant",
+      "column_name": "dataset",
+      "sql_type": "bigint",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "accessgrant",
+      "column_name": "grantingdecision",
+      "sql_type": "bigint",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "accessgrant",
+      "column_name": "revocationdecision",
+      "sql_type": "bigint",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "accessgrant",
+      "column_name": "t_lastchange",
+      "sql_type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "accessgrant",
+      "column_name": "t_createdate",
+      "sql_type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "accessgrant",
+      "column_name": "t_user",
+      "sql_type": "character varying(40)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "accessrequest",
+      "column_name": "t_id",
+      "sql_type": "bigint",
+      "not_null": true,
+      "default_expression": "nextval('di_management.t_ili2db_seq'::regclass)"
+    },
+    {
+      "table_name": "accessrequest",
+      "column_name": "t_ili_tid",
+      "sql_type": "uuid",
+      "not_null": false,
+      "default_expression": "uuid_generate_v4()"
+    },
+    {
+      "table_name": "accessrequest",
+      "column_name": "reason",
+      "sql_type": "text",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "accessrequest",
+      "column_name": "requestedat",
+      "sql_type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "accessrequest",
+      "column_name": "requestedvaliduntil",
+      "sql_type": "timestamp without time zone",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "accessrequest",
+      "column_name": "astatus",
+      "sql_type": "character varying(255)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "accessrequest",
+      "column_name": "applicant",
+      "sql_type": "bigint",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "accessrequest",
+      "column_name": "dataset",
+      "sql_type": "bigint",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "accessrequest",
+      "column_name": "t_lastchange",
+      "sql_type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "accessrequest",
+      "column_name": "t_createdate",
+      "sql_type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "accessrequest",
+      "column_name": "t_user",
+      "sql_type": "character varying(40)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "attributedefinition",
+      "column_name": "t_id",
+      "sql_type": "bigint",
+      "not_null": true,
+      "default_expression": "nextval('di_management.t_ili2db_seq'::regclass)"
+    },
+    {
+      "table_name": "attributedefinition",
+      "column_name": "t_ili_tid",
+      "sql_type": "uuid",
+      "not_null": false,
+      "default_expression": "uuid_generate_v4()"
+    },
+    {
+      "table_name": "attributedefinition",
+      "column_name": "aname",
+      "sql_type": "character varying(255)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "attributedefinition",
+      "column_name": "datatype",
+      "sql_type": "character varying(255)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "attributedefinition",
+      "column_name": "ordinal",
+      "sql_type": "integer",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "attributedefinition",
+      "column_name": "mandatory",
+      "sql_type": "boolean",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "attributedefinition",
+      "column_name": "adescription",
+      "sql_type": "text",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "attributedefinition",
+      "column_name": "unit",
+      "sql_type": "character varying(255)",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "attributedefinition",
+      "column_name": "codelist",
+      "sql_type": "character varying(1023)",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "attributedefinition",
+      "column_name": "aschema",
+      "sql_type": "bigint",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "attributedefinition",
+      "column_name": "t_lastchange",
+      "sql_type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "attributedefinition",
+      "column_name": "t_createdate",
+      "sql_type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "attributedefinition",
+      "column_name": "t_user",
+      "sql_type": "character varying(40)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "authorityassignment",
+      "column_name": "t_id",
+      "sql_type": "bigint",
+      "not_null": true,
+      "default_expression": "nextval('di_management.t_ili2db_seq'::regclass)"
+    },
+    {
+      "table_name": "authorityassignment",
+      "column_name": "t_ili_tid",
+      "sql_type": "uuid",
+      "not_null": false,
+      "default_expression": "uuid_generate_v4()"
+    },
+    {
+      "table_name": "authorityassignment",
+      "column_name": "capability",
+      "sql_type": "character varying(255)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "authorityassignment",
+      "column_name": "revocationreason",
+      "sql_type": "text",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "authorityassignment",
+      "column_name": "validfrom",
+      "sql_type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "authorityassignment",
+      "column_name": "validuntil",
+      "sql_type": "timestamp without time zone",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "authorityassignment",
+      "column_name": "revokedat",
+      "sql_type": "timestamp without time zone",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "authorityassignment",
+      "column_name": "reason",
+      "sql_type": "text",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "authorityassignment",
+      "column_name": "assignedby",
+      "sql_type": "bigint",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "authorityassignment",
+      "column_name": "dataset",
+      "sql_type": "bigint",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "authorityassignment",
+      "column_name": "office",
+      "sql_type": "bigint",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "authorityassignment",
+      "column_name": "principal",
+      "sql_type": "bigint",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "authorityassignment",
+      "column_name": "revokedby",
+      "sql_type": "bigint",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "authorityassignment",
+      "column_name": "t_lastchange",
+      "sql_type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "authorityassignment",
+      "column_name": "t_createdate",
+      "sql_type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "authorityassignment",
+      "column_name": "t_user",
+      "sql_type": "character varying(40)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "catalogaction",
+      "column_name": "t_id",
+      "sql_type": "bigint",
+      "not_null": true,
+      "default_expression": "nextval('di_management.t_ili2db_seq'::regclass)"
+    },
+    {
+      "table_name": "catalogaction",
+      "column_name": "t_ili_tid",
+      "sql_type": "uuid",
+      "not_null": false,
+      "default_expression": "uuid_generate_v4()"
+    },
+    {
+      "table_name": "catalogaction",
+      "column_name": "performedat",
+      "sql_type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "catalogaction",
+      "column_name": "actioncode",
+      "sql_type": "character varying(255)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "catalogaction",
+      "column_name": "reason",
+      "sql_type": "text",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "catalogaction",
+      "column_name": "commandid",
+      "sql_type": "uuid",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "catalogaction",
+      "column_name": "actor",
+      "sql_type": "bigint",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "catalogaction",
+      "column_name": "affecteddistribution",
+      "sql_type": "bigint",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "catalogaction",
+      "column_name": "affectedversion",
+      "sql_type": "bigint",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "catalogaction",
+      "column_name": "dataset",
+      "sql_type": "bigint",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "catalogaction",
+      "column_name": "initiator",
+      "sql_type": "bigint",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "catalogaction",
+      "column_name": "t_lastchange",
+      "sql_type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "catalogaction",
+      "column_name": "t_createdate",
+      "sql_type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "catalogaction",
+      "column_name": "t_user",
+      "sql_type": "character varying(40)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "csvdeliveryconfiguration",
+      "column_name": "t_id",
+      "sql_type": "bigint",
+      "not_null": true,
+      "default_expression": "nextval('di_management.t_ili2db_seq'::regclass)"
+    },
+    {
+      "table_name": "csvdeliveryconfiguration",
+      "column_name": "t_ili_tid",
+      "sql_type": "uuid",
+      "not_null": false,
+      "default_expression": "uuid_generate_v4()"
+    },
+    {
+      "table_name": "csvdeliveryconfiguration",
+      "column_name": "enabled",
+      "sql_type": "boolean",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "csvdeliveryconfiguration",
+      "column_name": "automaticpublication",
+      "sql_type": "boolean",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "csvdeliveryconfiguration",
+      "column_name": "definitionkey",
+      "sql_type": "character varying(128)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "csvdeliveryconfiguration",
+      "column_name": "definitionsha256",
+      "sql_type": "character varying(64)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "csvdeliveryconfiguration",
+      "column_name": "allowedmodes",
+      "sql_type": "character varying(255)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "csvdeliveryconfiguration",
+      "column_name": "dataset",
+      "sql_type": "bigint",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "csvdeliveryconfiguration",
+      "column_name": "aschema",
+      "sql_type": "bigint",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "csvdeliveryconfiguration",
+      "column_name": "t_lastchange",
+      "sql_type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "csvdeliveryconfiguration",
+      "column_name": "t_createdate",
+      "sql_type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "csvdeliveryconfiguration",
+      "column_name": "t_user",
+      "sql_type": "character varying(40)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataschema",
+      "column_name": "t_id",
+      "sql_type": "bigint",
+      "not_null": true,
+      "default_expression": "nextval('di_management.t_ili2db_seq'::regclass)"
+    },
+    {
+      "table_name": "dataschema",
+      "column_name": "t_ili_tid",
+      "sql_type": "uuid",
+      "not_null": false,
+      "default_expression": "uuid_generate_v4()"
+    },
+    {
+      "table_name": "dataschema",
+      "column_name": "identifier",
+      "sql_type": "character varying(255)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataschema",
+      "column_name": "modelname",
+      "sql_type": "character varying(255)",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataschema",
+      "column_name": "modeluri",
+      "sql_type": "character varying(1023)",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataschema",
+      "column_name": "modelversion",
+      "sql_type": "character varying(100)",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataschema",
+      "column_name": "modelsha256",
+      "sql_type": "character varying(64)",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataschema",
+      "column_name": "adescription",
+      "sql_type": "text",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataschema",
+      "column_name": "t_lastchange",
+      "sql_type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataschema",
+      "column_name": "t_createdate",
+      "sql_type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataschema",
+      "column_name": "t_user",
+      "sql_type": "character varying(40)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataset",
+      "column_name": "t_id",
+      "sql_type": "bigint",
+      "not_null": true,
+      "default_expression": "nextval('di_management.t_ili2db_seq'::regclass)"
+    },
+    {
+      "table_name": "dataset",
+      "column_name": "t_ili_tid",
+      "sql_type": "uuid",
+      "not_null": false,
+      "default_expression": "uuid_generate_v4()"
+    },
+    {
+      "table_name": "dataset",
+      "column_name": "identifier",
+      "sql_type": "character varying(255)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataset",
+      "column_name": "akind",
+      "sql_type": "character varying(255)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataset",
+      "column_name": "title",
+      "sql_type": "character varying(255)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataset",
+      "column_name": "adescription",
+      "sql_type": "text",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataset",
+      "column_name": "contactname",
+      "sql_type": "character varying(255)",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataset",
+      "column_name": "contactunit",
+      "sql_type": "character varying(255)",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataset",
+      "column_name": "contactemail",
+      "sql_type": "character varying(1023)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataset",
+      "column_name": "contactphone",
+      "sql_type": "character varying(64)",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataset",
+      "column_name": "contacturl",
+      "sql_type": "character varying(1023)",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataset",
+      "column_name": "accesslevel",
+      "sql_type": "character varying(255)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataset",
+      "column_name": "publicationstatus",
+      "sql_type": "character varying(255)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataset",
+      "column_name": "origin",
+      "sql_type": "character varying(255)",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataset",
+      "column_name": "frequency",
+      "sql_type": "character varying(255)",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataset",
+      "column_name": "issued",
+      "sql_type": "date",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataset",
+      "column_name": "modified",
+      "sql_type": "date",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataset",
+      "column_name": "licenseuri",
+      "sql_type": "character varying(1023)",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataset",
+      "column_name": "surveymethod",
+      "sql_type": "text",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataset",
+      "column_name": "furtheruses",
+      "sql_type": "text",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataset",
+      "column_name": "auxiliarydata",
+      "sql_type": "text",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataset",
+      "column_name": "dataavailablefrom",
+      "sql_type": "character varying(255)",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataset",
+      "column_name": "currentissue",
+      "sql_type": "bigint",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataset",
+      "column_name": "owneroffice",
+      "sql_type": "bigint",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataset",
+      "column_name": "publisheroffice",
+      "sql_type": "bigint",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataset",
+      "column_name": "t_lastchange",
+      "sql_type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataset",
+      "column_name": "t_createdate",
+      "sql_type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataset",
+      "column_name": "t_user",
+      "sql_type": "character varying(40)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "datasetissue",
+      "column_name": "t_id",
+      "sql_type": "bigint",
+      "not_null": true,
+      "default_expression": "nextval('di_management.t_ili2db_seq'::regclass)"
+    },
+    {
+      "table_name": "datasetissue",
+      "column_name": "t_ili_tid",
+      "sql_type": "uuid",
+      "not_null": false,
+      "default_expression": "uuid_generate_v4()"
+    },
+    {
+      "table_name": "datasetissue",
+      "column_name": "issuekey",
+      "sql_type": "character varying(128)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "datasetissue",
+      "column_name": "label",
+      "sql_type": "character varying(255)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "datasetissue",
+      "column_name": "publicationstatus",
+      "sql_type": "character varying(255)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "datasetissue",
+      "column_name": "referencedate",
+      "sql_type": "date",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "datasetissue",
+      "column_name": "startdate",
+      "sql_type": "date",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "datasetissue",
+      "column_name": "enddate",
+      "sql_type": "date",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "datasetissue",
+      "column_name": "note",
+      "sql_type": "text",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "datasetissue",
+      "column_name": "issued",
+      "sql_type": "date",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "datasetissue",
+      "column_name": "modified",
+      "sql_type": "date",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "datasetissue",
+      "column_name": "currentversion",
+      "sql_type": "bigint",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "datasetissue",
+      "column_name": "dataset",
+      "sql_type": "bigint",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "datasetissue",
+      "column_name": "t_lastchange",
+      "sql_type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "datasetissue",
+      "column_name": "t_createdate",
+      "sql_type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "datasetissue",
+      "column_name": "t_user",
+      "sql_type": "character varying(40)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "datasetkeyword",
+      "column_name": "t_id",
+      "sql_type": "bigint",
+      "not_null": true,
+      "default_expression": "nextval('di_management.t_ili2db_seq'::regclass)"
+    },
+    {
+      "table_name": "datasetkeyword",
+      "column_name": "t_ili_tid",
+      "sql_type": "uuid",
+      "not_null": false,
+      "default_expression": "uuid_generate_v4()"
+    },
+    {
+      "table_name": "datasetkeyword",
+      "column_name": "keyword",
+      "sql_type": "character varying(255)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "datasetkeyword",
+      "column_name": "dataset",
+      "sql_type": "bigint",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "datasetkeyword",
+      "column_name": "t_lastchange",
+      "sql_type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "datasetkeyword",
+      "column_name": "t_createdate",
+      "sql_type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "datasetkeyword",
+      "column_name": "t_user",
+      "sql_type": "character varying(40)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "datasettheme",
+      "column_name": "t_id",
+      "sql_type": "bigint",
+      "not_null": true,
+      "default_expression": "nextval('di_management.t_ili2db_seq'::regclass)"
+    },
+    {
+      "table_name": "datasettheme",
+      "column_name": "t_ili_tid",
+      "sql_type": "uuid",
+      "not_null": false,
+      "default_expression": "uuid_generate_v4()"
+    },
+    {
+      "table_name": "datasettheme",
+      "column_name": "theme",
+      "sql_type": "character varying(255)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "datasettheme",
+      "column_name": "dataset",
+      "sql_type": "bigint",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "datasettheme",
+      "column_name": "t_lastchange",
+      "sql_type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "datasettheme",
+      "column_name": "t_createdate",
+      "sql_type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "datasettheme",
+      "column_name": "t_user",
+      "sql_type": "character varying(40)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataversion",
+      "column_name": "t_id",
+      "sql_type": "bigint",
+      "not_null": true,
+      "default_expression": "nextval('di_management.t_ili2db_seq'::regclass)"
+    },
+    {
+      "table_name": "dataversion",
+      "column_name": "t_ili_tid",
+      "sql_type": "uuid",
+      "not_null": false,
+      "default_expression": "uuid_generate_v4()"
+    },
+    {
+      "table_name": "dataversion",
+      "column_name": "versionkey",
+      "sql_type": "character varying(128)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataversion",
+      "column_name": "asequence",
+      "sql_type": "integer",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataversion",
+      "column_name": "availability",
+      "sql_type": "character varying(255)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataversion",
+      "column_name": "acceptedat",
+      "sql_type": "timestamp without time zone",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataversion",
+      "column_name": "sourcesha256",
+      "sql_type": "character varying(64)",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataversion",
+      "column_name": "objectcount",
+      "sql_type": "bigint",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataversion",
+      "column_name": "attributecount",
+      "sql_type": "bigint",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataversion",
+      "column_name": "validationstatus",
+      "sql_type": "character varying(255)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataversion",
+      "column_name": "validationat",
+      "sql_type": "timestamp without time zone",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataversion",
+      "column_name": "validationerrors",
+      "sql_type": "bigint",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataversion",
+      "column_name": "validationreportkey",
+      "sql_type": "character varying(1024)",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataversion",
+      "column_name": "sourcereference",
+      "sql_type": "character varying(1024)",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataversion",
+      "column_name": "issue",
+      "sql_type": "bigint",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataversion",
+      "column_name": "aschema",
+      "sql_type": "bigint",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataversion",
+      "column_name": "t_lastchange",
+      "sql_type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataversion",
+      "column_name": "t_createdate",
+      "sql_type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "dataversion",
+      "column_name": "t_user",
+      "sql_type": "character varying(40)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "distribution",
+      "column_name": "t_id",
+      "sql_type": "bigint",
+      "not_null": true,
+      "default_expression": "nextval('di_management.t_ili2db_seq'::regclass)"
+    },
+    {
+      "table_name": "distribution",
+      "column_name": "t_ili_tid",
+      "sql_type": "uuid",
+      "not_null": false,
+      "default_expression": "uuid_generate_v4()"
+    },
+    {
+      "table_name": "distribution",
+      "column_name": "aformat",
+      "sql_type": "character varying(255)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "distribution",
+      "column_name": "filename",
+      "sql_type": "character varying(128)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "distribution",
+      "column_name": "mediatype",
+      "sql_type": "character varying(255)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "distribution",
+      "column_name": "availability",
+      "sql_type": "character varying(255)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "distribution",
+      "column_name": "bytesize",
+      "sql_type": "bigint",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "distribution",
+      "column_name": "sha256",
+      "sql_type": "character varying(64)",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "distribution",
+      "column_name": "objectkey",
+      "sql_type": "character varying(1024)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "distribution",
+      "column_name": "version",
+      "sql_type": "bigint",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "distribution",
+      "column_name": "t_lastchange",
+      "sql_type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "distribution",
+      "column_name": "t_createdate",
+      "sql_type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "distribution",
+      "column_name": "t_user",
+      "sql_type": "character varying(40)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "groupmembership",
+      "column_name": "t_id",
+      "sql_type": "bigint",
+      "not_null": true,
+      "default_expression": "nextval('di_management.t_ili2db_seq'::regclass)"
+    },
+    {
+      "table_name": "groupmembership",
+      "column_name": "t_ili_tid",
+      "sql_type": "uuid",
+      "not_null": false,
+      "default_expression": "uuid_generate_v4()"
+    },
+    {
+      "table_name": "groupmembership",
+      "column_name": "validfrom",
+      "sql_type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "groupmembership",
+      "column_name": "validuntil",
+      "sql_type": "timestamp without time zone",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "groupmembership",
+      "column_name": "revokedat",
+      "sql_type": "timestamp without time zone",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "groupmembership",
+      "column_name": "reason",
+      "sql_type": "text",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "groupmembership",
+      "column_name": "agroup",
+      "sql_type": "bigint",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "groupmembership",
+      "column_name": "amember",
+      "sql_type": "bigint",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "groupmembership",
+      "column_name": "revokedby",
+      "sql_type": "bigint",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "groupmembership",
+      "column_name": "t_lastchange",
+      "sql_type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "groupmembership",
+      "column_name": "t_createdate",
+      "sql_type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "groupmembership",
+      "column_name": "t_user",
+      "sql_type": "character varying(40)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "office",
+      "column_name": "t_id",
+      "sql_type": "bigint",
+      "not_null": true,
+      "default_expression": "nextval('di_management.t_ili2db_seq'::regclass)"
+    },
+    {
+      "table_name": "office",
+      "column_name": "t_ili_tid",
+      "sql_type": "uuid",
+      "not_null": false,
+      "default_expression": "uuid_generate_v4()"
+    },
+    {
+      "table_name": "office",
+      "column_name": "identifier",
+      "sql_type": "character varying(255)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "office",
+      "column_name": "aname",
+      "sql_type": "character varying(255)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "office",
+      "column_name": "abbreviation",
+      "sql_type": "character varying(32)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "office",
+      "column_name": "email",
+      "sql_type": "character varying(1023)",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "office",
+      "column_name": "phone",
+      "sql_type": "character varying(64)",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "office",
+      "column_name": "website",
+      "sql_type": "character varying(1023)",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "office",
+      "column_name": "aactive",
+      "sql_type": "boolean",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "office",
+      "column_name": "t_lastchange",
+      "sql_type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "office",
+      "column_name": "t_createdate",
+      "sql_type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "office",
+      "column_name": "t_user",
+      "sql_type": "character varying(40)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "principal",
+      "column_name": "t_id",
+      "sql_type": "bigint",
+      "not_null": true,
+      "default_expression": "nextval('di_management.t_ili2db_seq'::regclass)"
+    },
+    {
+      "table_name": "principal",
+      "column_name": "t_ili_tid",
+      "sql_type": "uuid",
+      "not_null": false,
+      "default_expression": "uuid_generate_v4()"
+    },
+    {
+      "table_name": "principal",
+      "column_name": "akind",
+      "sql_type": "character varying(255)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "principal",
+      "column_name": "aissuer",
+      "sql_type": "character varying(1024)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "principal",
+      "column_name": "asubject",
+      "sql_type": "character varying(255)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "principal",
+      "column_name": "displayname",
+      "sql_type": "character varying(255)",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "principal",
+      "column_name": "aactive",
+      "sql_type": "boolean",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "principal",
+      "column_name": "provisionedat",
+      "sql_type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "principal",
+      "column_name": "t_lastchange",
+      "sql_type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "principal",
+      "column_name": "t_createdate",
+      "sql_type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "principal",
+      "column_name": "t_user",
+      "sql_type": "character varying(40)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "t_ili2db_attrname",
+      "column_name": "iliname",
+      "sql_type": "character varying(1024)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "t_ili2db_attrname",
+      "column_name": "sqlname",
+      "sql_type": "character varying(1024)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "t_ili2db_attrname",
+      "column_name": "colowner",
+      "sql_type": "character varying(1024)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "t_ili2db_attrname",
+      "column_name": "target",
+      "sql_type": "character varying(1024)",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "t_ili2db_basket",
+      "column_name": "t_id",
+      "sql_type": "bigint",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "t_ili2db_basket",
+      "column_name": "dataset",
+      "sql_type": "bigint",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "t_ili2db_basket",
+      "column_name": "topic",
+      "sql_type": "character varying(200)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "t_ili2db_basket",
+      "column_name": "t_ili_tid",
+      "sql_type": "character varying(200)",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "t_ili2db_basket",
+      "column_name": "attachmentkey",
+      "sql_type": "character varying(200)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "t_ili2db_basket",
+      "column_name": "domains",
+      "sql_type": "character varying(1024)",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "t_ili2db_classname",
+      "column_name": "iliname",
+      "sql_type": "character varying(1024)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "t_ili2db_classname",
+      "column_name": "sqlname",
+      "sql_type": "character varying(1024)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "t_ili2db_column_prop",
+      "column_name": "tablename",
+      "sql_type": "character varying(255)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "t_ili2db_column_prop",
+      "column_name": "subtype",
+      "sql_type": "character varying(255)",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "t_ili2db_column_prop",
+      "column_name": "columnname",
+      "sql_type": "character varying(255)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "t_ili2db_column_prop",
+      "column_name": "tag",
+      "sql_type": "character varying(1024)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "t_ili2db_column_prop",
+      "column_name": "setting",
+      "sql_type": "character varying(8000)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "t_ili2db_dataset",
+      "column_name": "t_id",
+      "sql_type": "bigint",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "t_ili2db_dataset",
+      "column_name": "datasetname",
+      "sql_type": "character varying(200)",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "t_ili2db_inheritance",
+      "column_name": "thisclass",
+      "sql_type": "character varying(1024)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "t_ili2db_inheritance",
+      "column_name": "baseclass",
+      "sql_type": "character varying(1024)",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "t_ili2db_meta_attrs",
+      "column_name": "ilielement",
+      "sql_type": "character varying(255)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "t_ili2db_meta_attrs",
+      "column_name": "attr_name",
+      "sql_type": "character varying(1024)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "t_ili2db_meta_attrs",
+      "column_name": "attr_value",
+      "sql_type": "character varying(8000)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "t_ili2db_model",
+      "column_name": "filename",
+      "sql_type": "character varying(250)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "t_ili2db_model",
+      "column_name": "iliversion",
+      "sql_type": "character varying(3)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "t_ili2db_model",
+      "column_name": "modelname",
+      "sql_type": "text",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "t_ili2db_model",
+      "column_name": "content",
+      "sql_type": "text",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "t_ili2db_model",
+      "column_name": "importdate",
+      "sql_type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "t_ili2db_settings",
+      "column_name": "tag",
+      "sql_type": "character varying(60)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "t_ili2db_settings",
+      "column_name": "setting",
+      "sql_type": "character varying(8000)",
+      "not_null": false,
+      "default_expression": null
+    },
+    {
+      "table_name": "t_ili2db_table_prop",
+      "column_name": "tablename",
+      "sql_type": "character varying(255)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "t_ili2db_table_prop",
+      "column_name": "tag",
+      "sql_type": "character varying(1024)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "t_ili2db_table_prop",
+      "column_name": "setting",
+      "sql_type": "character varying(8000)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "t_ili2db_trafo",
+      "column_name": "iliname",
+      "sql_type": "character varying(1024)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "t_ili2db_trafo",
+      "column_name": "tag",
+      "sql_type": "character varying(1024)",
+      "not_null": true,
+      "default_expression": null
+    },
+    {
+      "table_name": "t_ili2db_trafo",
+      "column_name": "setting",
+      "sql_type": "character varying(1024)",
+      "not_null": true,
+      "default_expression": null
     }
   ]
 }
