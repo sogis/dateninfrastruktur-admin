@@ -75,7 +75,7 @@ public final class CsvDefinitionRegistry {
         var c=d.compiledModel();require(c!=null && c.relativePath()!=null && c.relativePath().matches("contracts/compiled/[a-z][a-z0-9_-]*\\.imd") && hash(c.sha256()) && "5.6.9".equals(c.compilerVersion()));
         byte[] imd=source.apply(c.relativePath());require(CanonicalJson.sha256(imd).equals(c.sha256()));
         var dialect=d.dialect();require(dialect!=null && "UTF-8".equals(dialect.encoding()) && Boolean.TRUE.equals(dialect.header()) && Set.of(";",",").contains(dialect.separator()) && "\"".equals(dialect.quote()) && "LF".equals(dialect.lineEnding()) && "reject".equals(dialect.bom()) && "".equals(dialect.nullLiteral()) && ".".equals(dialect.decimalSeparator()));
-        var limits=d.limits();require(limits!=null && limits.maxBytes()!=null && limits.maxBytes()>0 && limits.maxBytes()<=HARD_MAX_BYTES && limits.maxRows()!=null && limits.maxRows()>0 && limits.maxRows()<=10000000 && limits.maxCellBytes()!=null && limits.maxCellBytes()>0 && limits.maxCellBytes()<=32767 && limits.timeoutSeconds()!=null && limits.timeoutSeconds()>0 && limits.timeoutSeconds()<=7200 && d.allowEmptyReplacement()!=null);
+        var limits=d.limits();require(limits!=null && limits.maxBytes()!=null && limits.maxBytes()>0 && limits.maxBytes()<=HARD_MAX_BYTES && limits.maxRows()!=null && limits.maxRows()>0 && limits.maxRows()<=10000000 && limits.maxCellBytes()!=null && limits.maxCellBytes()>0 && limits.maxCellBytes()<=32767 && limits.timeoutSeconds()!=null && limits.timeoutSeconds()>0 && limits.timeoutSeconds()<=7200 && Boolean.FALSE.equals(d.allowEmptyReplacement()));
         require(d.columns()!=null && !d.columns().isEmpty() && d.columns().size()<=256 && d.businessKey()!=null);
         verifyCompiled(d,imd);
     }
@@ -85,6 +85,23 @@ public final class CsvDefinitionRegistry {
     }
     private static String text(Element e,String name){Element x=child(e,name);return x==null?null:x.getTextContent();}
     private static String reference(Element e,String name){Element x=child(e,name);return x==null?null:x.getAttributeNS(ILI,"ref");}
+    private static void numeric(Element type,Column column){
+        require("NumType".equals(type.getLocalName()) && column.minimum()!=null && column.maximum()!=null &&
+                column.minimum().compareTo(new BigDecimal(text(type,"Min")))==0 && column.maximum().compareTo(new BigDecimal(text(type,"Max")))==0);
+    }
+    private static String enumType(Element type,Map<String,Element> ids){
+        require("EnumType".equals(type.getLocalName()) && "Ordered".equals(text(type,"Order")));
+        String typeId=type.getAttributeNS(ILI,"tid");String top=typeId+".TOP";
+        require(ids.containsKey(top) && typeId.equals(reference(ids.get(top),"EnumType")));
+        var values=new TreeMap<Integer,String>();
+        for(var e:ids.values())if("EnumNode".equals(e.getLocalName()) && e.getAttributeNS(ILI,"tid").startsWith(top+".")){
+            require(top.equals(reference(e,"ParentNode")));
+            String name=text(e,"Name");int index=Integer.parseInt(child(e,"ParentNode").getAttributeNS(ILI,"order_pos"));
+            require(name!=null && name.matches("[A-Za-z][A-Za-z0-9_]{0,63}") && values.put(index,name)==null);
+        }
+        require(!values.isEmpty() && values.size()<=127 && values.firstKey()==1 && values.lastKey()==values.size());
+        return values.entrySet().stream().map(e->"'"+e.getValue()+"'="+e.getKey()).collect(java.util.stream.Collectors.joining(",","Enum8(",")"));
+    }
     private static void verifyCompiled(Definition d,byte[] bytes){
         try{
             var factory=DocumentBuilderFactory.newInstance();factory.setNamespaceAware(true);factory.setXIncludeAware(false);factory.setExpandEntityReferences(false);
@@ -104,10 +121,36 @@ public final class CsvDefinitionRegistry {
             for(int i=0;i<d.columns().size();i++){
                 var column=d.columns().get(i);var attribute=attributes.get(i+1);require(attribute!=null && column.header()!=null && column.header().matches("[A-Za-z][A-Za-z0-9_]{0,127}") && names.add(column.header()) && column.header().equals(column.attribute()) && column.attribute().equals(text(attribute,"Name")));
                 var type=ids.get(reference(attribute,"Type"));require(type!=null && Boolean.valueOf(text(type,"Mandatory")).equals(column.mandatory()));
-                // The approved initial pilot is numeric. Unsupported model types fail
-                // here before configuration/acceptance; G4 adds only proven adapters.
-                require("integer".equals(column.type()) && "NumType".equals(type.getLocalName()) && column.minimum()!=null && column.maximum()!=null && column.minimum().stripTrailingZeros().scale()<=0 && column.maximum().stripTrailingZeros().scale()<=0);
-                require(column.minimum().compareTo(new BigDecimal(text(type,"Min")))==0 && column.maximum().compareTo(new BigDecimal(text(type,"Max")))==0 && "Int32".equals(column.clickhouseType()) && "integer".equals(column.exportType()) && column.minimum().compareTo(BigDecimal.valueOf(Integer.MIN_VALUE))>=0 && column.maximum().compareTo(BigDecimal.valueOf(Integer.MAX_VALUE))<=0);
+                require(column.type()!=null && column.type().equals(column.exportType()));
+                String expected=switch(column.type()){
+                    case "integer" -> {
+                        numeric(type,column);
+                        require(column.minimum().scale()<=0 && column.maximum().scale()<=0 && column.minimum().compareTo(BigDecimal.valueOf(Integer.MIN_VALUE))>=0 && column.maximum().compareTo(BigDecimal.valueOf(Integer.MAX_VALUE))<=0);
+                        yield "Int32";
+                    }
+                    case "decimal" -> {
+                        numeric(type,column);
+                        int scale=new BigDecimal(text(type,"Max")).scale();
+                        int precision=Math.max(new BigDecimal(text(type,"Min")).precision(),new BigDecimal(text(type,"Max")).precision());
+                        require(scale>=1 && scale<=9 && precision>scale && precision<=18);
+                        yield "Decimal("+precision+","+scale+")";
+                    }
+                    case "text","mtext" -> {
+                        require("TextType".equals(type.getLocalName()) && (column.type().equals("text")?"Text":"MText").equals(text(type,"Kind")));
+                        int length=Integer.parseInt(text(type,"MaxLength"));require(length>0 && length<=32767);
+                        yield "String";
+                    }
+                    case "boolean" -> {require("BooleanType".equals(type.getLocalName()));yield "Bool";}
+                    case "date","timestamp" -> {
+                        require("FormattedType".equals(type.getLocalName()) && (column.type().equals("date")?"INTERLIS.XMLDate":"INTERLIS.XMLDateTime").equals(reference(type,"Super")));
+                        yield column.type().equals("date")?"Date32":"DateTime64(3,'UTC')";
+                    }
+                    case "enum" -> enumType(type,ids);
+                    default -> throw new IllegalArgumentException("Unsupported approved CSV type");
+                };
+                if(!Set.of("integer","decimal").contains(column.type()))require(column.minimum()==null && column.maximum()==null);
+                require((column.mandatory()?expected:"Nullable("+expected+")").equals(column.clickhouseType()));
+
             }
             require(new HashSet<>(d.businessKey()).size()==d.businessKey().size() && names.containsAll(d.businessKey()));
             var uniqueKeys=new ArrayList<List<String>>();

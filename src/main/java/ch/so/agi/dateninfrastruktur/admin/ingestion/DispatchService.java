@@ -91,7 +91,16 @@ public final class DispatchService {
                 }
                 return new SpoolDecision(id,false);
             }
-            if(!Set.of("UPLOAD_FAILED","CANCELLED","REJECTED_VALIDATION","REJECTED_AUTHORIZATION","CONFLICT").contains(state))return new SpoolDecision(id,false);
+            if("PUBLISHED".equals(state)){
+                var archived=CayenneSql.rows(context,"""
+                    SELECT 1 FROM di_ingest.execution e JOIN di_ingest.execution_checkpoint cp ON cp.execution_id=e.id
+                    JOIN di_ingest.submission s ON s.id=e.submission_id
+                    WHERE s.id=CAST(#bind($id) AS uuid) AND e.state IN ('COMMITTED','FINISHED')
+                      AND cp.checkpoint='ARTIFACTS_VERIFIED' AND cp.evidence->'archive'->>'inputSha256'=s.input_sha256
+                      AND (cp.evidence->'archive'->>'inputSize')::bigint=s.input_size
+                    """,params);
+                if(archived.size()!=1)return new SpoolDecision(id,false);
+            }else if(!Set.of("UPLOAD_FAILED","CANCELLED","REJECTED_VALIDATION","REJECTED_AUTHORIZATION","CONFLICT").contains(state))return new SpoolDecision(id,false);
             var old=CayenneSql.rows(context,"""
                 SELECT 1 FROM (SELECT occurred_at FROM di_ingest.event WHERE submission_id=CAST(#bind($id) AS uuid)
                   ORDER BY id DESC LIMIT 1) e WHERE e.occurred_at<clock_timestamp()-interval '7 days'

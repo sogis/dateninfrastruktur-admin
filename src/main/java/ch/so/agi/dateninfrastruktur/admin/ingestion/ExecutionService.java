@@ -93,12 +93,21 @@ public final class ExecutionService {
             repository.event(context,plan.submissionId(),id,checkpoint,"Gebundenen Verarbeitungsschritt bestätigt.");return null;
         });
     }
-    public void fail(ActorContext actor,CommandContext command,UUID id,Binding binding,String code){
+    public record ValidationIssue(String code,long row,String attribute){}
+    private static final Set<String> VALIDATION_ISSUES=Set.of("HEADER","COLUMN_COUNT","CELL_LIMIT","ROW_LIMIT","QUOTE","DIALECT","UTF8","MANDATORY","INVALID_TYPE","EMPTY_SNAPSHOT","SNAPSHOT_LIMIT","MODEL_RULE","BUSINESS_KEY_DUPLICATE","XLSX_ROW_LIMIT","XLSX_CELL_LIMIT");
+    public void fail(ActorContext actor,CommandContext command,UUID id,Binding binding,String code){fail(actor,command,id,binding,code,null);}
+    public void fail(ActorContext actor,CommandContext command,UUID id,Binding binding,String code,ValidationIssue issue){
         action(command,"ingestion.fail");
         if(!Set.of("DEPENDENCY_UNAVAILABLE","INPUT_MISMATCH","VALIDATION_FAILED","ARTIFACT_CONFLICT").contains(code))throw IngestionProblem.invalid("INVALID_INPUT");
         unit.execute(actor,command,context->{var row=lock(context,id);requireCurrent(context,actor,row,binding,false);var sub=repository.find(context,SubmissionRepository.uuid(row,"submission_id"),false);
             if("FAILED".equals(row.get("state")) && code.equals(sub.get("last_error_code")) && Set.of("FAILED_RETRYABLE","REJECTED_VALIDATION").contains(sub.get("status")))return null;
             requireCurrent(context,actor,row,binding,true);
+            if(issue!=null){
+                var plan=plan(row);
+                if(!"VALIDATION_FAILED".equals(code)||issue.code()==null||!VALIDATION_ISSUES.contains(issue.code())||issue.row()<0||issue.row()>plan.limits().maxRows()+1||
+                    (issue.attribute()!=null && plan.orderedColumns().stream().noneMatch(c->c.attribute().equals(issue.attribute()))))throw IngestionProblem.invalid("INVALID_INPUT");
+                repository.event(context,plan.submissionId(),id,"VALIDATION_DETAIL",CanonicalJson.encode(issue));
+            }
             String next=Set.of("INPUT_MISMATCH","VALIDATION_FAILED").contains(code)?"REJECTED_VALIDATION":"FAILED_RETRYABLE";
             repository.transition(context,SubmissionRepository.uuid(sub,"id"),sub.get("status").toString(),next,code,"Verarbeitung ohne fachliche Annahme beendet.");
             SubmissionRepository.execute(context,"UPDATE di_ingest.execution SET state='FAILED',finished_at=clock_timestamp() WHERE id=CAST(#bind($id) AS uuid)",Map.of("id",id.toString()));

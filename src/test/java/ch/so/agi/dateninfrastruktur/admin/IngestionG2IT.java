@@ -52,7 +52,7 @@ public final class IngestionG2IT {
         ResultEvidenceValidator.Manifest evidence(ExecutionService.Claimed claim){
             var p=claim.plan();String data="2".repeat(64);var input=new ResultEvidenceValidator.InputEvidence(1,p.input().size(),p.input().sha256());var valid=new ResultEvidenceValidator.ValidationEvidence(1,p.definitionSha256(),p.modelSetSha256(),"1.15.0",true,2,data);
             var candidate=new ResultEvidenceValidator.CandidateEvidence(1,p.clickhouse().candidateDatabase(),p.clickhouse().candidateTable(),p.fullSchemaDigest(),2,data);
-            var artifacts=new ResultEvidenceValidator.ArtifactsEvidence(1,p.outputs().stream().map(o->new ResultEvidenceValidator.Artifact(o.distributionId(),o.format(),o.objectKey(),o.mediaType(),123,"3".repeat(64),data)).toList(),"4".repeat(64),"5".repeat(64),"6".repeat(64));
+            var artifacts=new ResultEvidenceValidator.ArtifactsEvidence(1,p.outputs().stream().map(o->new ResultEvidenceValidator.Artifact(o.distributionId(),o.format(),o.objectKey(),o.mediaType(),123,"3".repeat(64),data)).toList(),"4".repeat(64),"5".repeat(64),"6".repeat(64),new ResultEvidenceValidator.SourceArchive("ingestion/"+p.submissionId()+"/input.csv",p.input().size(),p.input().sha256(),"ingestion/"+p.submissionId()+"/attempts/"+p.executionId()+"/report.json",123,"7".repeat(64)));
             return new ResultEvidenceValidator.Manifest(1,p.submissionId(),p.executionId(),p.fence(),claim.planDigest(),input,valid,valid,candidate,artifacts);
         }
         ResultEvidenceValidator.Manifest validated(ExecutionService.Claimed claim){var e=evidence(claim);List<Object> values=List.of(e.input(),e.incoming(),e.snapshot(),e.candidate(),e.outputs());var names=List.of("INPUT_VERIFIED","INCOMING_VALIDATED","SNAPSHOT_VALIDATED","CANDIDATE_VERIFIED","ARTIFACTS_VERIFIED");for(int i=0;i<5;i++)executions.checkpoint(runner,command("ingestion.checkpoint"),claim.executionId(),binding(claim),names.get(i),values.get(i));return e;}
@@ -95,7 +95,7 @@ public final class IngestionG2IT {
         assertThrows(IngestionProblem.class,()->x.executions.claim(x.runner,command("ingestion.claim"),new ExecutionService.Claim(reserved.dispatchId(),x.instance,DispatchService.JOB,"17",other)));
         var observed=x.dispatches.reconcile(x.runner).stream().filter(d->d.dispatchId().equals(reserved.dispatchId())).findFirst().orElseThrow();assertEquals("17",observed.runId());
         var evidence=x.evidence(claim);
-        var wrong=new ResultEvidenceValidator.ArtifactsEvidence(1,evidence.outputs().artifacts(),RUNNER.runnerSha256(),RUNNER.repositorySha256(),other.imageSha256());
+        var wrong=new ResultEvidenceValidator.ArtifactsEvidence(1,evidence.outputs().artifacts(),RUNNER.runnerSha256(),RUNNER.repositorySha256(),other.imageSha256(),evidence.outputs().archive());
         assertThrows(IngestionProblem.class,()->new ResultEvidenceValidator().artifacts(claim.plan(),evidence.snapshot(),wrong));
         assertThrows(IngestionProblem.class,()->x.executions.interrupted(x.f.anna,command("ingestion.interrupted"),reserved.dispatchId(),"17"));
         assertThrows(IngestionProblem.class,()->x.executions.interrupted(x.runner,command("ingestion.interrupted"),reserved.dispatchId(),"18"));

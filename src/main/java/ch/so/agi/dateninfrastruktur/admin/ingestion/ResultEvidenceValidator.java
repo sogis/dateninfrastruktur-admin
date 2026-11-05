@@ -8,7 +8,8 @@ public final class ResultEvidenceValidator {
     public record ValidationEvidence(int schemaVersion,String definitionSha256,String modelSetSha256,String validatorVersion,boolean valid,long rowCount,String dataSha256){}
     public record CandidateEvidence(int schemaVersion,String database,String table,String schemaDigest,long rowCount,String dataSha256){}
     public record Artifact(UUID distributionId,String format,String objectKey,String mediaType,long byteSize,String sha256,String snapshotDigest){}
-    public record ArtifactsEvidence(int schemaVersion,List<Artifact> artifacts,String runnerSha256,String repositorySha256,String imageSha256){public ArtifactsEvidence{artifacts=List.copyOf(artifacts);}}
+    public record SourceArchive(String inputKey,long inputSize,String inputSha256,String reportKey,long reportSize,String reportSha256){}
+    public record ArtifactsEvidence(int schemaVersion,List<Artifact> artifacts,String runnerSha256,String repositorySha256,String imageSha256,SourceArchive archive){public ArtifactsEvidence{artifacts=List.copyOf(artifacts);}}
     public record Manifest(int schemaVersion,UUID submissionId,UUID executionId,long fence,String planDigest,InputEvidence input,ValidationEvidence incoming,ValidationEvidence snapshot,CandidateEvidence candidate,ArtifactsEvidence outputs){}
     public void input(CsvExecutionPlanFactory.Plan plan,InputEvidence e){
         require(e!=null && e.schemaVersion()==1 && e.size()==plan.input().size() && Objects.equals(e.sha256(),plan.input().sha256()),"INPUT_MISMATCH");
@@ -21,6 +22,10 @@ public final class ResultEvidenceValidator {
     }
     public void artifacts(CsvExecutionPlanFactory.Plan plan,ValidationEvidence snapshot,ArtifactsEvidence e){
         require(e!=null && e.schemaVersion()==1 && plan.runner()!=null && Objects.equals(e.runnerSha256(),plan.runner().runnerSha256()) && Objects.equals(e.repositorySha256(),plan.runner().repositorySha256()) && Objects.equals(e.imageSha256(),plan.runner().imageSha256()) && e.artifacts().size()==3,"ARTIFACT_CONFLICT");
+        var archive=e.archive();String prefix="ingestion/"+plan.submissionId()+"/";
+        require(archive!=null && (prefix+"input.csv").equals(archive.inputKey()) && archive.inputSize()==plan.input().size()
+            && plan.input().sha256().equals(archive.inputSha256()) && (prefix+"attempts/"+plan.executionId()+"/report.json").equals(archive.reportKey())
+            && archive.reportSize()>0 && archive.reportSize()<=65536 && hash(archive.reportSha256()),"ARTIFACT_CONFLICT");
         var seen=new HashSet<UUID>();
         for(var artifact:e.artifacts()){
             require(artifact!=null && seen.add(artifact.distributionId()) && artifact.byteSize()>0 && artifact.byteSize()<=10737418240L && hash(artifact.sha256()) && Objects.equals(artifact.snapshotDigest(),snapshot.dataSha256()),"ARTIFACT_CONFLICT");

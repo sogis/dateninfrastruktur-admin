@@ -9,7 +9,7 @@ import ch.so.agi.dateninfrastruktur.admin.access.AuthorityService;
 /** Safe provenance API. read_data alone never opens submission history. */
 public final class SubmissionQueryService {
     public record Status(UUID submissionId,UUID datasetId,UUID issueId,String state,long statusVersion,String originalName,Long inputSize,String mode,UUID publishedVersionId,String errorCode,String message,String datasetTitle,String createdAt){}
-    public record Report(UUID submissionId,String state,String errorCode,String message,List<Step> steps){}
+    public record Report(UUID submissionId,String state,String errorCode,String message,List<Step> steps,List<ExecutionService.ValidationIssue> issues){}
     public record Step(String checkpoint){}
     private final AuditedUnitOfWork unit;private final SubmissionAuthorizationService users;
     private final SubmissionRepository repository=new SubmissionRepository();
@@ -18,7 +18,9 @@ public final class SubmissionQueryService {
     public Report report(ActorContext actor,UUID id){return unit.read(context->{var row=visible(context,actor,id);
         // Checkpoint names are the server's finite vocabulary. No raw runner JSON/logs.
         var steps=CayenneSql.rows(context,"SELECT DISTINCT cp.sequence,cp.checkpoint FROM di_ingest.execution_checkpoint cp JOIN di_ingest.execution e ON e.id=cp.execution_id WHERE e.submission_id=CAST(#bind($id) AS uuid) ORDER BY cp.sequence",Map.of("id",id.toString())).stream().map(r->new Step(r.get("checkpoint").toString())).toList();
-        return new Report(id,row.get("status").toString(),text(row,"last_error_code"),text(row,"safe_message"),steps);});}
+        var issues=CayenneSql.rows(context,"SELECT safe_message FROM di_ingest.event WHERE submission_id=CAST(#bind($id) AS uuid) AND event_type='VALIDATION_DETAIL' ORDER BY id DESC LIMIT 10",Map.of("id",id.toString())).stream()
+            .map(r->CanonicalJson.JSON.readValue(r.get("safe_message").toString(),ExecutionService.ValidationIssue.class)).toList();
+        return new Report(id,row.get("status").toString(),text(row,"last_error_code"),text(row,"safe_message"),steps,issues);});}
     public List<Status> list(ActorContext actor,int offset,int limit,UUID dataset){
         if(offset<0 || offset>100000 || limit<1 || limit>100)throw IngestionProblem.invalid("INVALID_INPUT");
         return unit.read(context->{long principal=users.requireUser(context,actor);var p=new HashMap<String,Object>();p.put("issuer",actor.issuer());p.put("subject",actor.subject());p.put("principal",principal);p.put("limit",limit);p.put("offset",offset);
