@@ -26,3 +26,11 @@ Bestehende identifizierte eigene Daten/Volumes/Identitäten/Secrets kontrolliert
 auch der Container-Schreibschichten. Keine fremden Ressourcen ändern. Phasen
 strikt nacheinander, unabhängige OpenCode2-/DeepSeek-Flash1017-Abnahme je Phase.
 Berichte unter compose-consolidation/, Rohbelege unter STACK/.runtime/compose-review/.
+
+## Geltung der historischen Aufträge
+
+Die vorstehenden MA-0–F-/Grundinstallationsgrenzen gelten nur für ihre damaligen
+Aufträge. Für den ausdrücklich aktivierten MA-G-Auftrag gilt `../AGENTS.md` und
+vollständig `../dateninfrastruktur-dev-stack/docs/implementation/storage-and-delivery/`.
+Aktive Altverträge werden gemäss MA-G ersetzt; Sicherheits- und Datenerhaltungsregeln
+bleiben bindend. Historische Dokumente und Nutzerarbeit nicht umschreiben.
