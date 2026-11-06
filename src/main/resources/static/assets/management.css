@@ -440,3 +440,50 @@ a:hover {
   align-items: center;
   gap: .75rem 1rem;
 }
+
+.dataset-statuses {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  gap: 1rem;
+  margin-block: 1rem 1.5rem;
+}
+
+.dataset-status {
+  padding: .875rem 1rem;
+  border: 1px solid var(--di-border);
+  border-radius: var(--di-control-radius);
+  background: var(--di-surface-subtle);
+}
+
+.dataset-status > :last-child {
+  margin-bottom: 0;
+}
+
+.dataset-status-value {
+  font-weight: 600;
+}
+
+.dataset-action-links,
+.dataset-values {
+  margin: 0;
+  padding-inline-start: 1.25rem;
+}
+
+.dataset-action-links li + li {
+  margin-top: .25rem;
+}
+
+.dataset-detail .record-details dd {
+  white-space: normal;
+}
+
+.dataset-detail .record-details .dataset-description {
+  white-space: pre-wrap;
+}
+
+.button:disabled {
+  border-color: var(--di-border-control);
+  background: var(--di-surface-subtle);
+  color: var(--di-text-secondary);
+  cursor: not-allowed;
+}

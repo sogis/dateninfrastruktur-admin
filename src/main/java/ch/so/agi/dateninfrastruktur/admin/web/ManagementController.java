@@ -9,14 +9,18 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ch.so.agi.dateninfrastruktur.admin.access.*;
 import ch.so.agi.dateninfrastruktur.admin.audit.*;
-import ch.so.agi.dateninfrastruktur.admin.catalog.*;
 import ch.so.agi.dateninfrastruktur.admin.security.*;
 import ch.so.agi.dateninfrastruktur.admin.web.UiPage.*;
 
 @Controller @ConditionalOnProperty(name="di.web.enabled",havingValue="true",matchIfMissing=true)
 public final class ManagementController {
-    private final ManagementQueryService query;private final CatalogCommandService catalog;private final AccessWorkflowService workflow;private final AuthorityService authority;
-    public ManagementController(ManagementQueryService query,CatalogCommandService catalog,AccessWorkflowService workflow,AuthorityService authority){this.query=query;this.catalog=catalog;this.workflow=workflow;this.authority=authority;}
+    private final ManagementQueryService query;
+    private final AccessWorkflowService workflow;
+
+    public ManagementController(ManagementQueryService query, AccessWorkflowService workflow) {
+        this.query = query;
+        this.workflow = workflow;
+    }
     private ActorContext actor(Authentication auth){return new VerifiedActorResolver().resolve(auth);}
     private CommandContext command(HttpServletRequest request,UUID id,String action,String reason){return new CommandContext(id,(UUID)request.getAttribute(RequestCorrelationFilter.ATTRIBUTE),action,reason);}
     private Field field(String name,String label,String type,Object value){return new Field(name,label,type,value);}
@@ -29,29 +33,6 @@ public final class ManagementController {
         return "page";
     }
     private Entry entry(String title,String link,Map<String,Object> details,Form... forms){return new Entry(title,link,details,List.of(forms));}
-    @GetMapping("/management/datasets/{id}") String detail(Authentication auth,@PathVariable UUID id,Model model,HttpServletRequest req,
-                  @RequestParam(defaultValue = "false") boolean created){
-        var actor=actor(auth);var data=query.detail(actor,id);var caps=authority.describe(actor,id);var forms=new ArrayList<Form>();String base="/management/datasets/"+id;var revision=hidden("expectedVersion",data.get("revision"));String status=data.get("status").toString();
-        if(caps.metadata() && (Set.of("draft","in_review").contains(status) || ("published".equals(status) && caps.publish()))){
-            boolean published="published".equals(status);
-            forms.add(new Form(published?"Metadaten speichern und veröffentlichen":"Entwurf bearbeiten",base+(published?"/save-published":"/save-draft"),List.of(revision,field("title","Titel","text",data.get("title")),field("description","Beschreibung","textarea",data.get("description")),field("contactName","Fachlicher Kontakt","text",data.get("contactname")),field("contactEmail","E-Mail des Kontakts","email",data.get("contactemail").toString().replaceFirst("^mailto:","")),field("themes","Themen (Codes, kommagetrennt)","text",String.join(",",(List<String>)data.get("themes"))),field("keywords","Schlagwörter (kommagetrennt)","text",String.join(",",(List<String>)data.get("keywords")))),published?"Speichern und veröffentlichen":"Entwurf speichern"));
-        }
-        if(caps.metadata() && "draft".equals(status))forms.add(form("Prüfung",base+"/submit","Zur Prüfung einreichen",revision,field("reason","Bemerkung","text","Zur Prüfung")));
-        if(caps.publish() && Set.of("draft","in_review").contains(status))forms.add(form("Publikation",base+"/publish","Publizieren",revision,field("reason","Begründung","textarea","")));
-        if(caps.publish() && "published".equals(status))forms.add(form("Archivierung",base+"/archive","Archivieren",revision,field("reason","Begründung","textarea","")));
-        if(caps.publish() && caps.access())forms.add(form("Datenzugang für alle verfügbaren Versionen",base+"/access","Datenzugang ändern",revision,new Field("level","Datenzugang","select",data.get("access").toString(),List.of("restricted","open")),field("reason","Begründung","textarea","")));
-        var entries=new ArrayList<Entry>();entries.add(entry(data.get("title").toString(),null,data));entries.add(entry("Historie",base+"/audit",Map.of()));entries.add(entry("Ausgaben",base+"/issues",Map.of()));if(caps.access())entries.add(entry("Freigaben",base+"/grants",Map.of()));
-        return page(model, NavigationSection.DATASETS, "Datensatz verwalten",
-            created ? "Der Datensatz wurde als Entwurf erstellt." : "Statusänderungen werden erst nach erfolgreichem Commit bestätigt.",
-            entries, forms, req);
-    }
-    private SortedSet<String> csv(String raw){if(raw==null || raw.isBlank())return new TreeSet<>();return new TreeSet<>(Arrays.stream(raw.split(",",-1)).map(String::strip).filter(s->!s.isBlank()).toList());}
-    private CatalogCommandService.Metadata metadata(String title,String description,String contactName,String contactEmail,String themes,String keywords){return new CatalogCommandService.Metadata(title,description,contactName,contactEmail.startsWith("mailto:")?contactEmail:"mailto:"+contactEmail,csv(themes),csv(keywords));}
-    @PostMapping({"/management/datasets/{id}/save-draft","/management/datasets/{id}/save-published"}) String save(Authentication auth,HttpServletRequest req,@PathVariable UUID id,@RequestParam UUID commandId,@RequestParam long expectedVersion,@RequestParam String title,@RequestParam String description,@RequestParam String contactName,@RequestParam String contactEmail,@RequestParam String themes,@RequestParam String keywords){
-        boolean published=req.getRequestURI().endsWith("/save-published");catalog.update(actor(auth),command(req,commandId,published?"save_published":"save_draft",null),id,expectedVersion,metadata(title,description,contactName,contactEmail,themes,keywords),published);return "redirect:/management/datasets/"+id;
-    }
-    @PostMapping("/management/datasets/{id}/{action:submit|publish|archive}") String transition(Authentication auth,HttpServletRequest req,@PathVariable UUID id,@PathVariable String action,@RequestParam UUID commandId,@RequestParam long expectedVersion,@RequestParam String reason){catalog.transition(actor(auth),command(req,commandId,action,reason),id,expectedVersion,action,reason);return "redirect:/management/datasets/"+id;}
-    @PostMapping("/management/datasets/{id}/access") String access(Authentication auth,HttpServletRequest req,@PathVariable UUID id,@RequestParam UUID commandId,@RequestParam long expectedVersion,@RequestParam String level,@RequestParam String reason){catalog.changeAccessLevel(actor(auth),command(req,commandId,"change_access_level",reason),id,expectedVersion,level,reason);return "redirect:/management/datasets/"+id;}
     @GetMapping("/access/requests/new") String requestForm(Authentication auth,@RequestParam UUID dataset,Model model,HttpServletRequest req){var data=query.requestDataset(dataset);return page(model,NavigationSection.MY_ACCESS,"Datenzugang anfragen",data.get("title").toString(),List.of(),"open".equals(data.get("access"))?List.of():List.of(form("Anfrage für Ihre angemeldete Identität","/access/requests","Anfrage senden",hidden("dataset",dataset),field("reason","Begründung","textarea",""),field("until","Gewünschtes Ende (UTC, optional)","text",""))),req);}
     private Instant instant(String text){return text==null || text.isBlank()?null:Instant.parse(text);}
     @PostMapping("/access/requests") String request(Authentication auth,HttpServletRequest req,@RequestParam UUID commandId,@RequestParam UUID dataset,@RequestParam String reason,@RequestParam(defaultValue="")String until){workflow.request(actor(auth),command(req,commandId,"request",reason),dataset,reason,instant(until));return "redirect:/access/me";}
@@ -72,7 +53,20 @@ public final class ManagementController {
             var forms=r.get("revokedat")==null?List.of(new Form("Direkte Freigabe entziehen","/management/grants/"+r.get("id")+"/revoke",List.of(hidden("expectedVersion",r.get("revision")),hidden("dataset",id),field("reason","Begründung","textarea","")),"Diesen Grant entziehen")):List.<Form>of();
             entries.add(new Entry("Freigabe "+r.get("id"),null,r,forms));
         }
-        if(!search.isBlank())for(var p:query.principals(actor(auth),id,search))entries.add(entry("Bekannte Identität "+p.get("id"),null,p,form("Direkt freigeben","/management/datasets/"+id+"/grants","Direktfreigabe erteilen",hidden("beneficiary",p.get("id")),hidden("expectedVersion",query.detail(actor(auth),id).get("revision")),field("until","Gültig bis (UTC, optional)","text",""),field("reason","Begründung","textarea",""))));
+        if (!search.isBlank()) {
+            var actor = actor(auth);
+            var principals = query.principals(actor, id, search);
+            if (!principals.isEmpty()) {
+                long revision = query.detail(actor, id).revision();
+                for (var principal : principals) {
+                    entries.add(entry("Bekannte Identität " + principal.get("id"), null, principal,
+                        form("Direkt freigeben", "/management/datasets/" + id + "/grants", "Direktfreigabe erteilen",
+                            hidden("beneficiary", principal.get("id")), hidden("expectedVersion", revision),
+                            field("until", "Gültig bis (UTC, optional)", "text", ""),
+                            field("reason", "Begründung", "textarea", ""))));
+                }
+            }
+        }
         model.addAttribute("identitySearch", true);
         return page(model,NavigationSection.DATASETS,"Freigaben verwalten","Ein Entzug betrifft diesen Grant; andere direkte oder Gruppenwege können fortbestehen.",entries,List.of(),req);
     }

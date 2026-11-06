@@ -25,6 +25,7 @@ import ch.so.agi.dateninfrastruktur.admin.model.Principal;
 import ch.so.agi.dateninfrastruktur.admin.persistence.CayenneSql;
 import ch.so.agi.dateninfrastruktur.admin.security.ManagementSecurityConfiguration;
 import ch.so.agi.dateninfrastruktur.admin.web.DatasetController;
+import ch.so.agi.dateninfrastruktur.admin.web.DatasetLifecycleController;
 import ch.so.agi.dateninfrastruktur.admin.web.ManagementController;
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.Page;
@@ -74,7 +75,7 @@ class DatasetCreationWebIT {
     private static final HttpClient HTTP = HttpClient.newHttpClient();
 
     @EnableAutoConfiguration(exclude = DataSourceAutoConfiguration.class)
-    @Import({ManagementSecurityConfiguration.class, DatasetController.class, ManagementController.class})
+    @Import({ManagementSecurityConfiguration.class, DatasetController.class, DatasetLifecycleController.class, ManagementController.class})
     @ComponentScan(
         basePackageClasses = DatasetController.class,
         useDefaultFilters = false,

@@ -123,14 +123,55 @@ public final class ManagementQueryService {
         return UUID.fromString(row.get(key).toString());
     }
 
-    public Map<String,Object> detail(ActorContext actor,UUID id){return runtime.performInTransaction(()->{
-        var ctx=runtime.newContext();authority.requireAny(actor,id);
-        var result=rows(ctx,"SELECT t_ili_tid AS id,title,adescription AS description,contactname,contactemail,publicationstatus AS status,accesslevel AS access,row_version AS revision,akind AS kind FROM di_management.dataset WHERE t_ili_tid=CAST(#bind($id) AS uuid)",Map.of("id",id.toString()));
-        if(result.isEmpty())throw BusinessException.missing();var data=new HashMap<>(result.getFirst());
-        data.put("themes",rows(ctx,"SELECT theme FROM di_management.datasettheme t JOIN di_management.dataset d ON d.t_id=t.dataset WHERE d.t_ili_tid=CAST(#bind($id) AS uuid) ORDER BY theme",Map.of("id",id.toString())).stream().map(r->r.get("theme").toString()).toList());
-        data.put("keywords",rows(ctx,"SELECT keyword FROM di_management.datasetkeyword k JOIN di_management.dataset d ON d.t_id=k.dataset WHERE d.t_ili_tid=CAST(#bind($id) AS uuid) ORDER BY keyword",Map.of("id",id.toString())).stream().map(r->r.get("keyword").toString()).toList());
-        return Collections.unmodifiableMap(data);
-    });}
+    public record DatasetDetail(UUID id, String identifier, String title, String description, String contactName,
+                                String contactEmail, List<String> themes, List<String> keywords,
+                                DatasetOffice ownerOffice, DatasetOffice publisherOffice, String kind,
+                                String publicationStatus, String accessLevel, long revision, LocalDate modified, boolean hasIssues) {}
+
+    public DatasetDetail detail(ActorContext actor, UUID id) {
+        return runtime.performInTransaction(() -> {
+            var context = runtime.newContext();
+            authority.requireAny(actor, id);
+            var parameters = Map.of("id", id.toString());
+            var result = rows(context, """
+                SELECT d.t_ili_tid AS id, d.identifier, d.title, d.adescription AS description,
+                       d.contactname, d.contactemail, d.akind AS kind, d.publicationstatus, d.accesslevel,
+                       d.row_version AS revision, to_char(d.modified, 'YYYY-MM-DD') AS modified,
+                       EXISTS (SELECT 1 FROM di_management.datasetissue issue WHERE issue.dataset = d.t_id) AS has_issues,
+                       owner.t_ili_tid AS office_id, owner.aname AS office_name,
+                       owner.abbreviation AS office_abbreviation, owner.identifier AS office_identifier,
+                       publisher.t_ili_tid AS publisher_id, publisher.aname AS publisher_name,
+                       publisher.abbreviation AS publisher_abbreviation, publisher.identifier AS publisher_identifier
+                FROM di_management.dataset d
+                JOIN di_management.office owner ON owner.t_id = d.owneroffice
+                JOIN di_management.office publisher ON publisher.t_id = d.publisheroffice
+                WHERE d.t_ili_tid = CAST(#bind($id) AS uuid)
+                """, parameters);
+            if (result.isEmpty()) {
+                throw BusinessException.missing();
+            }
+            var row = result.getFirst();
+            var themes = rows(context, """
+                SELECT theme FROM di_management.datasettheme t
+                JOIN di_management.dataset d ON d.t_id = t.dataset
+                WHERE d.t_ili_tid = CAST(#bind($id) AS uuid) ORDER BY theme
+                """, parameters).stream().map(theme -> (String) theme.get("theme")).toList();
+            var keywords = rows(context, """
+                SELECT keyword FROM di_management.datasetkeyword k
+                JOIN di_management.dataset d ON d.t_id = k.dataset
+                WHERE d.t_ili_tid = CAST(#bind($id) AS uuid) ORDER BY keyword
+                """, parameters).stream().map(keyword -> (String) keyword.get("keyword")).toList();
+            var publisher = new DatasetOffice(uuid(row, "publisher_id"), (String) row.get("publisher_name"),
+                (String) row.get("publisher_abbreviation"), (String) row.get("publisher_identifier"));
+            return new DatasetDetail(id, (String) row.get("identifier"), (String) row.get("title"),
+                (String) row.get("description"), (String) row.get("contactname"), (String) row.get("contactemail"),
+                themes, keywords, datasetOffice(row), publisher, (String) row.get("kind"),
+                (String) row.get("publicationstatus"), (String) row.get("accesslevel"),
+                ((Number) row.get("revision")).longValue(), LocalDate.parse((String) row.get("modified")),
+                Boolean.TRUE.equals(row.get("has_issues")));
+        });
+    }
+
     public Map<String,Object> requestDataset(UUID id){return runtime.performInTransaction(()->{
         var result=rows(runtime.newContext(),"SELECT t_ili_tid AS id,title,accesslevel AS access FROM di_management.dataset WHERE t_ili_tid=CAST(#bind($id) AS uuid) AND publicationstatus='published'",Map.of("id",id.toString()));
         if(result.isEmpty())throw BusinessException.missing();return result.getFirst();
