@@ -16,16 +16,30 @@ die Datenbank nicht.
 ## Explizites Setup und Prüfung
 
 Der [Compose-Betrieb](../../dateninfrastruktur-dev-stack/docs/operations.md)
-richtet eine leere Management-Datenbank explizit ein. Die Modelle kommen vor
-den technischen SQL-Definitionen für Audit, Constraints, öffentliche Sichten,
-Berechtigungszustand, Receipt- und Anlieferungstabellen. Für einen bereits
-eingerichteten Stand überprüft das Setup den Vertrag lesend.
+richtet die leere Management-Datenbank ausdrücklich ein. Die Baseline
+`management-20261106` bindet die Modelle, das Mappingprofil, die
+ili2pg-Referenzmetadaten und die technischen SQL-Schritte über
+`db/schema/manifest.json`. Nach dem Modellimport installiert der Aufbau
+Audit, Constraints, öffentliche Sichten, Anlieferungszustände und Rechte.
 
-`db/persistence-contract.properties` bindet Profil, Mapping, DataMap und
-die aktuell benötigten SQL-Inputs. Der Java-Start vergleicht die verpackten
-Properties und den aktuellen DB-Marker. Ein unerwarteter Vertrag verhindert
-den Start. Die Readiness prüft den aktiven Vertrag, die Liveness bleibt davon
-getrennt. Der normale Start führt keine DDL, Migration oder Fachseeds aus.
+`python3 scripts/persistence_contract.py --check` prüft die kanonischen
+Package-Properties aus dem Manifest. Gradle führt dieselbe Prüfung vor dem
+Packen aus. Setup prüft zusätzlich den tatsächlich installierten Vertrag,
+bevor es das erste Baseline-Ereignis und den Artefaktmarker einträgt. Beim
+erneuten Setup werden Mapping, Modellmetadaten, Struktur, Rechte, Trigger
+und Marker lesend verglichen. Ein nichtleerer unbekannter Zustand bricht ab.
+
+Java vergleicht beim Start den verpackten Artefaktdigest und den
+physischen Fingerprint. Letzterer umfasst die relevanten PostgreSQL-Kataloge
+einschliesslich ACLs, Constraints, Views, Indizes, Triggern, Sequenzbindungen
+und ili2pg-Metadaten. Er sortiert ACLs und berücksichtigt gleichwertige
+Darstellungen der bekannten CHECK-Literalarrays. Fachzeilen, Auditdaten,
+Sequenzstände und Importzeitpunkte gehören zum separaten Erhaltungsnachweis.
+
+Der normale Start führt keine DDL, Migration oder Fachseeds aus. Der
+Audit-Owner liest die Fachziele aus dem durch das Audit aufgelösten Pfad
+und benötigt kein direktes Leserecht an der CSV-Konfiguration. Änderungen
+am externen Principal-Issuer bleiben gesperrt.
 
 ## Rollen und Audit
 

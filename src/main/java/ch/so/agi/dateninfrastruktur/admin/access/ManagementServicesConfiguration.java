@@ -23,7 +23,7 @@ public class ManagementServicesConfiguration {
                 if(!r.next() || !"di_audit_reader".equals(r.getString(1)))throw new IllegalStateException("Audit views require their dedicated read-only role");
             }
             try(var c=writer.getConnection();var s=c.createStatement();var r=s.executeQuery("SELECT di_ops.management_web_contract()")){
-                if(!r.next() || !r.getBoolean(1))throw new IllegalStateException("Explicit MA-C migration is required before web startup");
+                if(!r.next() || !r.getBoolean(1))throw new IllegalStateException("Current management web contract is required before web startup");
             }
         };
     }

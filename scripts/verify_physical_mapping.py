@@ -1,5 +1,6 @@
 """Read-only verification of every recorded physical column, type and default."""
 import json
+from collections import Counter
 from management_db import R,sql
 
 def verify():
@@ -34,7 +35,23 @@ def verify():
             found=observed[key]
             if found['sql_type']!=wanted['sql_type'] or found['default_expression']!=wanted['default_expression']:raise RuntimeError('Physical length/precision/default differs')
             if found['not_null']!=wanted['not_null'] and not (key[1]=='t_ili_tid' and found['not_null']):raise RuntimeError('Physical detailed nullability differs')
+    verify_ili_metadata()
     print('PASS read-only physical mapping: all recorded columns/types/defaults and controlled technical additions')
+
+def verify_ili_metadata():
+    recorded=json.loads((R/'db/ili2pg-reference-metadata.json').read_text())
+    tables=('t_ili2db_model','t_ili2db_classname','t_ili2db_attrname','t_ili2db_meta_attrs',
+            't_ili2db_trafo','t_ili2db_column_prop','t_ili2db_table_prop','t_ili2db_inheritance')
+    if set(recorded)!=set(tables):
+        raise RuntimeError('Unexpected ili2pg metadata reference')
+    def canonical(records):
+        return Counter(json.dumps(row,sort_keys=True,ensure_ascii=True) for row in records)
+    for table in tables:
+        query=f"SELECT to_jsonb(row)-'importdate' FROM di_management.{table} row"
+        found=(json.loads(row) for row in sql(query).splitlines())
+        if canonical(found)!=canonical(recorded[table]):
+            raise RuntimeError('Physical ili2pg metadata differs: '+table)
+
 
 if __name__=='__main__':
     verify()

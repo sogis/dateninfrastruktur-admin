@@ -4,6 +4,7 @@ ARG JRE_IMAGE=eclipse-temurin:25-jre-jammy@sha256:659b528cca74a0edc5c25315ec5819
 ARG PG_TOOL_IMAGE=postgres_tools
 FROM ${JDK_IMAGE} AS jvm-build
 WORKDIR /workspace
+RUN apt-get update && apt-get install -y --no-install-recommends python3 && rm -rf /var/lib/apt/lists/*
 COPY --from=topics_source contracts /opt/csv-registry/contracts
 COPY --from=topics_source models /opt/csv-registry/models
 ENV DI_CSV_BUNDLE_ROOT=/opt/csv-registry
@@ -11,6 +12,8 @@ COPY gradlew settings.gradle build.gradle ./
 COPY gradle ./gradle
 COPY src ./src
 COPY db ./db
+COPY models ./models
+COPY scripts/setup_explicit.py scripts/audit_setup.py scripts/verify_physical_mapping.py scripts/persistence_contract.py scripts/database_target.py ./scripts/
 RUN --mount=type=cache,target=/root/.gradle ./gradlew --no-daemon bootJar
 
 FROM ${JRE_IMAGE} AS jvm-runtime
@@ -36,9 +39,9 @@ RUN mkdir -p /runtime/tools && python3 -c "import sys;sys.path.insert(0,'scripts
 COPY --from=jvm-build /workspace/build/libs/dateninfrastruktur-admin.jar /opt/admin/app.jar
 COPY --from=stack_source services/garage/setup-compose.py /opt/stack-tools/setup_garage.py
 COPY --from=stack_source services/postgres/initialize-compose.py /opt/stack-tools/initialize_postgres.py
-COPY scripts/apply_constraints.py scripts/audit_setup.py scripts/persistence_contract.py scripts/setup_explicit.py scripts/verify_physical_mapping.py ./scripts/
-COPY db/*.sql db/audit-policy.json db/mapping-profile.json db/model-mapping.json db/reference-ma-g2-metadata.json db/persistence-contract.properties ./db/
-COPY db/migrations ./db/migrations
+COPY scripts/audit_setup.py scripts/persistence_contract.py scripts/setup_explicit.py scripts/verify_physical_mapping.py ./scripts/
+COPY db/audit-policy.json db/mapping-profile.json db/model-mapping.json db/ili2pg-reference-metadata.json db/persistence-contract.properties ./db/
+COPY db/schema ./db/schema
 COPY models ./models
 COPY src/main/resources/cayenne ./src/main/resources/cayenne
 ENTRYPOINT ["python3","/opt/admin/scripts/setup_explicit.py"]

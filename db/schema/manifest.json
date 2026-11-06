@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "baseline": "management-20261106",
+  "models": [
+    "models/SO_AGI_DataInfrastructure_Catalog_20261105.ili",
+    "models/SO_AGI_DataInfrastructure_Access_20261105.ili"
+  ],
+  "steps": [
+    "db/schema/audit.sql",
+    "audit_mapping",
+    "db/schema/catalog_constraints.sql",
+    "db/schema/public_views.sql",
+    "db/schema/aggregate_revision.sql",
+    "db/schema/operations.sql",
+    "catalog_keys",
+    "db/schema/ingestion_state.sql",
+    "db/schema/delivery_guards.sql",
+    "db/schema/principal_identity.sql",
+    "db/schema/runtime_checks.sql",
+    "catalog_triggers",
+    "db/schema/physical_contract.sql"
+  ],
+  "artifacts": {
+    "profile.sha256": "db/mapping-profile.json",
+    "physical_mapping.sha256": "db/model-mapping.json",
+    "datamap.sha256": "src/main/resources/cayenne/management.map.xml",
+    "ili_metadata.sha256": "db/ili2pg-reference-metadata.json",
+    "audit_policy.sha256": "db/audit-policy.json",
+    "toolchain.sha256": "db/toolchain.json",
+    "setup.sha256": "scripts/setup_explicit.py",
+    "audit_helper.sha256": "scripts/audit_setup.py",
+    "mapping_verifier.sha256": "scripts/verify_physical_mapping.py",
+    "artifact_verifier.sha256": "scripts/persistence_contract.py",
+    "database_target.sha256": "scripts/database_target.py"
+  }
+}

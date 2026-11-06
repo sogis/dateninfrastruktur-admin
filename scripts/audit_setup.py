@@ -69,7 +69,7 @@ def installation_sql(policies):
    'DROP TRIGGER IF EXISTS di_audit_stamp ON di_management.'+t+';', 'CREATE TRIGGER di_audit_stamp BEFORE INSERT OR UPDATE OR DELETE ON di_management.'+t+' FOR EACH ROW EXECUTE FUNCTION audit.stamp_row();',
    'DROP TRIGGER IF EXISTS di_audit_log ON di_management.'+t+';', 'CREATE TRIGGER di_audit_log AFTER INSERT OR UPDATE OR DELETE ON di_management.'+t+' FOR EACH ROW EXECUTE FUNCTION audit.log_row_change();',
    'GRANT SELECT,INSERT,UPDATE,DELETE ON di_management.'+t+' TO di_writer;', ('GRANT SELECT ON di_management.'+t+' TO di_authz;') if any(x.rsplit('.',1)[-1] in ('Dataset','DatasetIssue','DataVersion','Distribution','Principal','AccessGrant','GroupMembership') for x in p['model_elements']) else ('REVOKE ALL ON di_management.'+t+' FROM di_authz;')]
- commands+=['ALTER SEQUENCE di_management.t_ili2db_seq OWNER TO di_owner;','GRANT USAGE,SELECT ON SEQUENCE di_management.t_ili2db_seq TO di_writer;',"INSERT INTO di_ops.schema_revision(revision) VALUES('MA-B-1') ON CONFLICT DO NOTHING;"]
+ commands+=['ALTER SEQUENCE di_management.t_ili2db_seq OWNER TO di_owner;','GRANT USAGE,SELECT ON SEQUENCE di_management.t_ili2db_seq TO di_writer;']
  return '\n'.join(commands)
 def apply(policies):
  sql('BEGIN;'+installation_sql(policies)+'COMMIT;');verify(policies)
