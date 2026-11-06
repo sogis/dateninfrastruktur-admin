@@ -94,7 +94,7 @@ public final class ManagementQueryService {
             var datasets = results.stream().limit(DATASET_PAGE_SIZE).map(ManagementQueryService::datasetRow).toList();
             var offices = scopedDatasetOffices(context, identity);
             return new DatasetPage(datasets, filters.page() < MAX_PAGE && results.size() > DATASET_PAGE_SIZE,
-                filters.page() > 0, !offices.isEmpty(), offices, !offices(context, identity).isEmpty());
+                filters.page() > 0, !offices.isEmpty(), offices, !eligibleOwnerOffices(context, identity).isEmpty());
         });
     }
 
@@ -145,17 +145,21 @@ public final class ManagementQueryService {
           JOIN di_management.principal p ON p.t_id=r.applicant WHERE
           """+filter+" ORDER BY r.requestedat DESC,r.t_id DESC LIMIT 50 OFFSET #bind($offset)",p);
     });}
-    public List<Map<String,Object>> offices(ActorContext actor) {
-        return runtime.performInTransaction(() -> offices(runtime.newContext(), params(actor)));
+    public List<DatasetOffice> eligibleOwnerOffices(ActorContext actor) {
+        return runtime.performInTransaction(() -> eligibleOwnerOffices(runtime.newContext(), params(actor)));
     }
 
-    private List<Map<String,Object>> offices(ObjectContext context, Map<String, ?> identity) {
+    private List<DatasetOffice> eligibleOwnerOffices(ObjectContext context, Map<String, ?> identity) {
         return rows(context, AuthorityService.ELIGIBLE + """
-        SELECT DISTINCT o.t_ili_tid AS id,o.aname AS title FROM di_management.office o
-        JOIN di_management.authorityassignment aa ON aa.office=o.t_id JOIN eligible e ON e.t_id=aa.principal CROSS JOIN di_now n
-        WHERE o.aactive AND aa.capability='manage_metadata' AND aa.revokedat IS NULL AND aa.validfrom<=n.observed_at
-          AND (aa.validuntil IS NULL OR n.observed_at<aa.validuntil) ORDER BY title LIMIT 50
-        """, identity);
+            SELECT DISTINCT o.t_ili_tid AS office_id, o.aname AS office_name, o.abbreviation AS office_abbreviation,
+                   o.identifier AS office_identifier
+            FROM di_management.office o
+            JOIN di_management.authorityassignment aa ON aa.office = o.t_id
+            JOIN eligible e ON e.t_id = aa.principal CROSS JOIN di_now n
+            WHERE o.aactive AND aa.capability = 'manage_metadata' AND aa.revokedat IS NULL
+              AND aa.validfrom <= n.observed_at AND (aa.validuntil IS NULL OR n.observed_at < aa.validuntil)
+            ORDER BY office_name, office_abbreviation, office_identifier
+            """, identity).stream().map(ManagementQueryService::datasetOffice).toList();
     }
     public List<Map<String,Object>> principals(ActorContext actor,UUID dataset,String term){
         if(term==null || term.length()<2 || term.length()>100)throw BusinessException.invalid("Bitte 2 bis 100 Suchzeichen eingeben.");

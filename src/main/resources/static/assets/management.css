@@ -371,3 +371,72 @@ a:hover {
     display: block;
   }
 }
+
+.field-optional,
+.field-help {
+  color: var(--di-text-secondary);
+  font-weight: 400;
+}
+
+.field-help,
+.field-error {
+  margin: .375rem 0 0;
+  font-size: .9375rem;
+}
+
+.field-error {
+  color: var(--di-error);
+  font-weight: 600;
+}
+
+.form-field :is(input, textarea, select)[aria-invalid="true"],
+.theme-choices[aria-invalid="true"] {
+  border-color: var(--di-error);
+}
+
+.notice > :last-child {
+  margin-bottom: 0;
+}
+
+.office-value {
+  margin-bottom: 0;
+}
+
+.theme-choices {
+  min-width: 0;
+  margin: 0 0 1rem;
+  padding: .5rem .75rem .75rem;
+  border: 1px solid var(--di-border);
+  border-radius: var(--di-control-radius);
+}
+
+.theme-choices legend {
+  padding-inline: .25rem;
+  font-weight: 600;
+}
+
+.theme-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  gap: .25rem 1rem;
+  margin-top: .5rem;
+}
+
+.theme-option {
+  display: flex;
+  align-items: baseline;
+  gap: .5rem;
+  padding-block: .25rem;
+}
+
+.theme-option input {
+  flex-shrink: 0;
+  accent-color: var(--di-action);
+}
+
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .75rem 1rem;
+}

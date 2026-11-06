@@ -51,6 +51,9 @@ public final class CatalogCommandService {
         if(input.identifier()==null || !input.identifier().matches("[A-Za-z0-9][A-Za-z0-9._-]{0,254}") || !Set.of("standalone","series").contains(input.kind()))throw BusinessException.invalid("Ungültiger Identifikator oder Datensatztyp.");
         return execute(actor,command,"create_draft",CommandReceiptRepository.payloadHash(input),ctx->{
             authority.requireOffice(ctx,actor,input.ownerOffice(),"manage_metadata");
+            if (ObjectSelect.query(Dataset.class).where(Dataset.IDENTIFIER.eq(input.identifier())).selectCount(ctx) > 0) {
+                throw new BusinessException(409, "DUPLICATE_DATASET_IDENTIFIER", "Diese Kennung ist bereits vergeben.");
+            }
             var office=ObjectSelect.query(Office.class).where(Office.T_ILI_TID.eq(input.ownerOffice())).selectOne(ctx);
             var root=ctx.newObject(Dataset.class);root.setTIliTid(UUID.randomUUID());root.setIdentifier(input.identifier());root.setAkind(input.kind());
             root.setOwneroffice1(office);root.setPublisheroffice1(office);root.setAccesslevel("restricted");root.setPublicationstatus("draft");metadata(ctx,root,input.metadata());

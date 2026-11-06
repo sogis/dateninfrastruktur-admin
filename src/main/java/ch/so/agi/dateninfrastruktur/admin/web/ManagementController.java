@@ -29,11 +29,8 @@ public final class ManagementController {
         return "page";
     }
     private Entry entry(String title,String link,Map<String,Object> details,Form... forms){return new Entry(title,link,details,List.of(forms));}
-    @GetMapping("/management/datasets/new") String createForm(Authentication auth,Model model,HttpServletRequest req){
-        var entries=query.offices(actor(auth)).stream().map(o->entry(o.get("title").toString(),null,Map.of(),new Form("Entwurf erstellen","/management/datasets",List.of(hidden("ownerOffice",o.get("id")),field("identifier","Stabiler Identifikator","text",""),new Field("kind","Angebotstyp","select","standalone",List.of("standalone","series")),field("title","Titel","text",""),field("description","Beschreibung","textarea",""),field("contactName","Fachlicher Kontakt","text",""),field("contactEmail","E-Mail des Kontakts","email",""),field("themes","Themen (Codes, kommagetrennt)","text","Geografie"),field("keywords","Schlagwörter (kommagetrennt)","text","")),"Entwurf erstellen"))).toList();
-        return page(model,NavigationSection.DATASETS,"Neuer Datensatz","Neue Angebote beginnen mit eingeschränktem Datenzugang.",entries,List.of(),req);
-    }
-    @GetMapping("/management/datasets/{id}") String detail(Authentication auth,@PathVariable UUID id,Model model,HttpServletRequest req){
+    @GetMapping("/management/datasets/{id}") String detail(Authentication auth,@PathVariable UUID id,Model model,HttpServletRequest req,
+                  @RequestParam(defaultValue = "false") boolean created){
         var actor=actor(auth);var data=query.detail(actor,id);var caps=authority.describe(actor,id);var forms=new ArrayList<Form>();String base="/management/datasets/"+id;var revision=hidden("expectedVersion",data.get("revision"));String status=data.get("status").toString();
         if(caps.metadata() && (Set.of("draft","in_review").contains(status) || ("published".equals(status) && caps.publish()))){
             boolean published="published".equals(status);
@@ -44,13 +41,12 @@ public final class ManagementController {
         if(caps.publish() && "published".equals(status))forms.add(form("Archivierung",base+"/archive","Archivieren",revision,field("reason","Begründung","textarea","")));
         if(caps.publish() && caps.access())forms.add(form("Datenzugang für alle verfügbaren Versionen",base+"/access","Datenzugang ändern",revision,new Field("level","Datenzugang","select",data.get("access").toString(),List.of("restricted","open")),field("reason","Begründung","textarea","")));
         var entries=new ArrayList<Entry>();entries.add(entry(data.get("title").toString(),null,data));entries.add(entry("Historie",base+"/audit",Map.of()));entries.add(entry("Ausgaben",base+"/issues",Map.of()));if(caps.access())entries.add(entry("Freigaben",base+"/grants",Map.of()));
-        return page(model,NavigationSection.DATASETS,"Datensatz verwalten","Statusänderungen werden erst nach erfolgreichem Commit bestätigt.",entries,forms,req);
+        return page(model, NavigationSection.DATASETS, "Datensatz verwalten",
+            created ? "Der Datensatz wurde als Entwurf erstellt." : "Statusänderungen werden erst nach erfolgreichem Commit bestätigt.",
+            entries, forms, req);
     }
     private SortedSet<String> csv(String raw){if(raw==null || raw.isBlank())return new TreeSet<>();return new TreeSet<>(Arrays.stream(raw.split(",",-1)).map(String::strip).filter(s->!s.isBlank()).toList());}
     private CatalogCommandService.Metadata metadata(String title,String description,String contactName,String contactEmail,String themes,String keywords){return new CatalogCommandService.Metadata(title,description,contactName,contactEmail.startsWith("mailto:")?contactEmail:"mailto:"+contactEmail,csv(themes),csv(keywords));}
-    @PostMapping("/management/datasets") String create(Authentication auth,HttpServletRequest req,@RequestParam UUID commandId,@RequestParam UUID ownerOffice,@RequestParam String identifier,@RequestParam String kind,@RequestParam String title,@RequestParam String description,@RequestParam String contactName,@RequestParam String contactEmail,@RequestParam String themes,@RequestParam String keywords){
-        var id=catalog.createDraft(actor(auth),command(req,commandId,"create_draft",null),new CatalogCommandService.Create(ownerOffice,identifier,kind,metadata(title,description,contactName,contactEmail,themes,keywords)));return "redirect:/management/datasets/"+id;
-    }
     @PostMapping({"/management/datasets/{id}/save-draft","/management/datasets/{id}/save-published"}) String save(Authentication auth,HttpServletRequest req,@PathVariable UUID id,@RequestParam UUID commandId,@RequestParam long expectedVersion,@RequestParam String title,@RequestParam String description,@RequestParam String contactName,@RequestParam String contactEmail,@RequestParam String themes,@RequestParam String keywords){
         boolean published=req.getRequestURI().endsWith("/save-published");catalog.update(actor(auth),command(req,commandId,published?"save_published":"save_draft",null),id,expectedVersion,metadata(title,description,contactName,contactEmail,themes,keywords),published);return "redirect:/management/datasets/"+id;
     }

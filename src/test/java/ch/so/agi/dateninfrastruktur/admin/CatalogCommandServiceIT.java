@@ -30,8 +30,17 @@ class CatalogCommandServiceIT {
     @Test void metadataAuthorityAloneCannotPublishOrChangeAccess(){
         try(var f=new ManagementFixture()){
             var root=f.draft();f.unit.execute(f.manager,command("operator.revoke_authority"),ctx->{
-                for(var assignment:ObjectSelect.query(Authorityassignment.class).where(Authorityassignment.PRINCIPAL1.dot(Principal.T_ILI_TID).eq(f.managerId)).select(ctx))
-                    if(!"manage_metadata".equals(assignment.getCapability()))assignment.setRevokedat(ch.so.agi.dateninfrastruktur.admin.persistence.CayenneSql.now(ctx));return null;
+                var revoker = ObjectSelect.query(Principal.class).where(Principal.T_ILI_TID.eq(f.managerId)).selectOne(ctx);
+                var assignments = ObjectSelect.query(Authorityassignment.class)
+                    .where(Authorityassignment.PRINCIPAL1.dot(Principal.T_ILI_TID).eq(f.managerId)).select(ctx);
+                for (var assignment : assignments) {
+                    if (!"manage_metadata".equals(assignment.getCapability())) {
+                        assignment.setRevokedat(ch.so.agi.dateninfrastruktur.admin.persistence.CayenneSql.now(ctx));
+                        assignment.setRevokedby1(revoker);
+                        assignment.setRevocationreason("Berechtigungen für Negativtest entzogen");
+                    }
+                }
+                return null;
             });
             f.catalog.update(f.manager,command("save_draft"),root,f.version("dataset",root),ManagementFixture.metadata("Erlaubt"),false);
             assertThrows(RuntimeException.class,()->f.catalog.transition(f.manager,command("publish"),root,f.version("dataset",root),"publish","Nicht erlaubt"));
