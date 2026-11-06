@@ -1,17 +1,14 @@
 # Modellinvarianten und ausführbare Zuständigkeiten
 
-Aktueller MA-G1-Stand: Catalog/Access `20261105`, ein Storagebackend und
-UNIQUE `Distribution.objectKey`; der bekannte MA-F-Vorgänger liegt ausschliesslich
-unter `src/test/resources/upgrade/ma-f/models/`. Die nachstehenden MA-A–C-Spalten
-beschreiben die ursprüngliche Zuständigkeitsaufteilung; ausführbare aktuelle
-Nachweise stehen im Storage-and-Delivery-Auftrag.
+Die Modelle Catalog und Access `20261105` verwenden ein Storagebackend.
+`Distribution.objectKey` ist eindeutig.
 
 Zwei INTERLIS2.4-Modelle, keine zusätzliche Base-Familie. `Dataset(kind=series)`
 ist der einzige Rechteanker. Issue/Version/Distribution sind keine ACL-Ziele.
 Alle fachlichen Objekte besitzen UUIDOID; technische Schlüssel entstehen erst
-in MA-B aus dem tatsächlichen ili2pg-Mapping. Keine Tabellen-/Sequenznamen raten.
+aus dem tatsächlichen ili2pg-Mapping. Keine Tabellen-/Sequenznamen raten.
 
-| Invariante | Modell/Validator MA-A | MA-B SQL-Vertrag | MA-C Servicevertrag |
+| Invariante | INTERLIS und Validator | PostgreSQL | Admin-Anwendung |
 |---|---|---|---|
 | Pflichtwerte, Domänen und Beziehungen | reale Pflichtattribute/Rollenkardinalitäten | generierte NOT NULL/FK prüfen und ergänzen | DTO-/Inputprüfung |
 | stabile UUID-OID | Topic UUIDOID; deterministische Test-UUIDs | TID-UUID, technische PK getrennt; Mapping real prüfen | UUID einmal erzeugen, niemals umdeuten |
@@ -36,17 +33,15 @@ in MA-B aus dem tatsächlichen ili2pg-Mapping. Keine Tabellen-/Sequenznamen rate
 | active Principals, aktuelle Authority/Grants/Gruppen | darstellbar; keine Loginbehauptung | echte aktuelle JDBC-Abfrage gegen Primärbestand | Login/JWTprüfung; Authority kein implizites READ |
 | Audit auf Root/Relationships/Hilfstabellen | di.audit=full auf sämtlichen Klassen und Assoziationen, IMD-Prüfung | externer Installer über tatsächliche Mappings, Coverage | Actor/DML gleiche physische Transaktion |
 
-Die rechten Spalten sind ausdrücklich **noch nicht implementierte Folgepflichten**,
-keine aus dem Modellvalidator abgeleiteten SQL-/Service-PASS. Keine automatische
-Übersetzung aller INTERLIS-Constraints durch ili2pg voraussetzen.
+Das [Schema-Manifest](../db/schema/manifest.json) bindet das ili2pg-Mapping
+und die technischen SQL-Ergänzungen. PostgreSQL- und Anwendungsprüfungen
+decken Regeln ab, die über den Modellvalidator hinausgehen.
 
 ## EventTime und Modellwerkzeuge
 
 EventTime ist ein expliziter `FORMAT INTERLIS.XMLDateTime`-Wertebereich, semantisch
 UTC. XTF-Werte enthalten keine lokale Zeitzone; Anwendung/Import müssen UTC
-normalisieren. Das tatsächliche SQL timestamp/timestamptz-Mapping und JDBC-
-Zeitzonenverhalten werden MA-B real geprüft; diese Datei behauptet sie nicht.
-DATE bleibt fachliches Datum.
+normalisieren. Das physische Mapping bindet die SQL-Typen. DATE bleibt ein fachliches Datum.
 
 Reproduzierter Validator1.15.0-/iox1.24.4-Befund: `EventTime = DATETIME` erzeugt
 einen verschachtelten Alias. Beim Vergleich zweier belegter Grantzeiten entsteht
@@ -58,7 +53,7 @@ Compiler5.6.8 von ili2pg/Validator sind dokumentiert und unverändert.
 
 `Principal.displayName` trägt bewusst `di.audit.redact=true`: Anzeigenamen sind
 keine Identitätsquelle und müssen nicht in jeder generischen Änderungszeile
-wiederholt werden. Verifizierter issuer/subject des Actors bleiben später im
+wiederholt werden. Verifizierter issuer/subject des Actors bleiben im
 Audit vollständig; fachliche Gründe/Entscheide bleiben nachvollziehbar.
 
 ## Vokabulare, Fixtures und Aufruf
@@ -68,7 +63,6 @@ alten Base-Modell übernommen; Quellkopie in `vendor/`, SHA256
 `fbb1bccc0e84795284f9fb1a3c0be9e6db516c3c4b8ae43ad2f856cf70948431`.
 Diese Kopie ist Referenz, kein drittes neues Fachmodell und keine zweite
 schreibende Quelle. Kein bisheriger AccessLevel-Code als open geraten.
-Legacyübernahme selbst ist erst MA-D.
 
 ```sh
 python3 scripts/test_models.py
