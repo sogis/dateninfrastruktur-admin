@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import ch.so.agi.dateninfrastruktur.admin.ingestion.CanonicalJson;
 
 /** Real Chrome sessions against the canonical isolated APISIX/Jenkins/Keycloak/ADMIN stack. */
-class DeliveryG3BrowserIT {
+class DeliveryQueueBrowserIT {
     static final byte[] CSV="Jahrgang;Auslaender;Auslaenderinnen;Schweizer;Schweizerinnen;Total\n2000;1;2;3;4;10\n".getBytes(StandardCharsets.UTF_8);
     final String base=System.getenv("DI_G3_GATEWAY");
     final String app="/jenkins/data-delivery/";

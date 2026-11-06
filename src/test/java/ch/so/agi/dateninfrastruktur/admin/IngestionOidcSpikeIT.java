@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class IngestionOidcSpikeIT {
     @Test void browserSessionYieldsSubjectBoundApiAccessToken() throws Exception {
         String issuer=System.getenv("G0_ISSUER");
-        assertNotNull(issuer,"Run through STACK/scripts/test_ingestion_oidc_g0.py");
+        assertNotNull(issuer,"Run through STACK/scripts/test_ingestion_oidc.py");
         JwtDecoder valid=ManagementJwtDecoder.create(issuer,issuer+"/protocol/openid-connect/certs","ingestion-api");
         JwtDecoder wrong=ManagementJwtDecoder.create(issuer,issuer+"/protocol/openid-connect/certs","unrelated-audience");
         AtomicInteger accepted=new AtomicInteger(),rejected=new AtomicInteger();

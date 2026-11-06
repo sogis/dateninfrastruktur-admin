@@ -14,7 +14,7 @@ import ch.so.agi.dateninfrastruktur.admin.ingestion.*;
 import ch.so.agi.dateninfrastruktur.admin.catalog.DeliveryRegistrationService;
 
 /** Real PG/Cayenne process contract. Evidence here is explicitly synthetic trusted-runner attestation. */
-public final class IngestionG2IT {
+public final class SubmissionAuthorizationIT {
     static final CsvExecutionPlanFactory.Runner RUNNER=new CsvExecutionPlanFactory.Runner("4".repeat(64),"5".repeat(64),"6".repeat(64));
     static final java.util.concurrent.atomic.AtomicLong RUNS=new java.util.concurrent.atomic.AtomicLong(100);
     static CommandContext command(String action){return ManagementFixture.command(action);}
@@ -165,6 +165,6 @@ public final class IngestionG2IT {
     }}
     public static void main(String[] args)throws Exception{
         if(!"true".equals(System.getenv("DI_COMPOSE_TEST_FIXTURE")))throw new IllegalStateException("Isolated explicit fixture only");
-        var tests=new IngestionG2IT();tests.officeGroupMembershipExpiryAndDelegation();System.out.println("PASS G22/G23 office, group, future scope, validity, inactive principal, least-privilege bootstrap/delegation");tests.submissionKeyAndSealBindExactInput();tests.idempotencyScopeAndExclusiveClaim();System.out.println("PASS G22/G25/G26 scope, idempotency, one claim, retry/cancel fencing");tests.exactRunRecoveryAndImmutableRunnerEvidence();System.out.println("PASS G35 exact-run recovery and immutable runner evidence");tests.atomicAcceptanceAndLostAcknowledgement();System.out.println("PASS G27/G29 atomic audited acceptance and lost-ACK receipt, no committed downgrade");tests.committedRevocationBlocksAcceptance();tests.disabledOriginalPrincipalCannotFinalize();tests.guardOrdersConcurrentRevocation();System.out.println("PASS G27 both concurrent guard orders and committed revocation");tests.flushedAcceptanceRollsBackAndDoesNotLeakActor();System.out.println("PASS G28 rollback after flush, one physical audited transaction, clean pool");
+        var tests=new SubmissionAuthorizationIT();tests.officeGroupMembershipExpiryAndDelegation();System.out.println("PASS G22/G23 office, group, future scope, validity, inactive principal, least-privilege bootstrap/delegation");tests.submissionKeyAndSealBindExactInput();tests.idempotencyScopeAndExclusiveClaim();System.out.println("PASS G22/G25/G26 scope, idempotency, one claim, retry/cancel fencing");tests.exactRunRecoveryAndImmutableRunnerEvidence();System.out.println("PASS G35 exact-run recovery and immutable runner evidence");tests.atomicAcceptanceAndLostAcknowledgement();System.out.println("PASS G27/G29 atomic audited acceptance and lost-ACK receipt, no committed downgrade");tests.committedRevocationBlocksAcceptance();tests.disabledOriginalPrincipalCannotFinalize();tests.guardOrdersConcurrentRevocation();System.out.println("PASS G27 both concurrent guard orders and committed revocation");tests.flushedAcceptanceRollsBackAndDoesNotLeakActor();System.out.println("PASS G28 rollback after flush, one physical audited transaction, clean pool");
     }
 }

@@ -7,7 +7,7 @@ import tools.jackson.databind.ObjectMapper;
 import static org.junit.jupiter.api.Assertions.*;
 class PortalNavigationIT {
     @Test void portalRequestLinkActuallyPassesGatewayOidcToTheAdminSelfService()throws Exception{
-        Map<?,?> fixture=new ObjectMapper().readValue(Files.readString(Path.of(".runtime/portal-fixture.json")),Map.class);
+        Map<?,?> fixture=new ObjectMapper().readValue(Files.readString(Path.of(System.getenv("DI_PORTAL_FIXTURE"))),Map.class);
         try(var playwright=Playwright.create(new Playwright.CreateOptions().setEnv(Map.of("PLAYWRIGHT_SKIP_BROWSER_GC","1")));var browser=playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(true))){
             var page=browser.newPage();String gateway=System.getenv("DI_TEST_GATEWAY");page.navigate(gateway+"/series/"+fixture.get("seriesIdentifier"));
             var link=page.locator("a",new Page.LocatorOptions().setHasText("Datenzugang anfragen"));assertEquals("/access/requests/new?dataset="+fixture.get("seriesId"),link.getAttribute("href"));link.click();

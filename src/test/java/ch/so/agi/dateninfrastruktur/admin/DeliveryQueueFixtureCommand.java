@@ -10,7 +10,7 @@ import java.nio.file.attribute.PosixFilePermissions;
 import java.util.*;
 
 /** Explicit synthetic G3 fixture, absent from the normal image. */
-public final class DeliveryG3FixtureCommand {
+public final class DeliveryQueueFixtureCommand {
     public static void main(String[] args)throws Exception{
         if(!"true".equals(System.getenv("DI_COMPOSE_TEST_FIXTURE")) || args.length!=1)throw new IllegalStateException("Isolated test fixture required");
         String issuer=System.getenv("DI_TEST_PILOT_ISSUER");String serviceSubject=args[0];

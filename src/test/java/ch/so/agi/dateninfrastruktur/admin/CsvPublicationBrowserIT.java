@@ -9,9 +9,9 @@ import org.junit.jupiter.api.Test;
 import tools.jackson.databind.JsonNode;
 import static org.junit.jupiter.api.Assertions.*;
 
-class DeliveryG5BrowserIT {
+class CsvPublicationBrowserIT {
     @Test void browserJourney() throws Exception {
-        var helper = new DeliveryG3BrowserIT();
+        var helper = new DeliveryQueueBrowserIT();
         var input = Path.of(System.getenv("DI_G5_BROWSER_COMMAND"));
         var command = CanonicalJson.JSON.readTree(Files.readAllBytes(input));
         var fixture = CanonicalJson.JSON.readTree(Files.readAllBytes(input.resolveSibling("g4-fixture.json")));

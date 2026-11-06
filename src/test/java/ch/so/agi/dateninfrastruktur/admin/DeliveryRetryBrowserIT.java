@@ -8,9 +8,9 @@ import java.util.*;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-class DeliveryG4BrowserIT {
+class DeliveryRetryBrowserIT {
     @Test void isolatedDelivery()throws Exception{
-        var support=new DeliveryG3BrowserIT();var fixture=Path.of(System.getenv("DI_G4_BROWSER_COMMAND"));
+        var support=new DeliveryQueueBrowserIT();var fixture=Path.of(System.getenv("DI_G4_BROWSER_COMMAND"));
         var command=CanonicalJson.JSON.readTree(Files.readAllBytes(fixture));String dataset=command.path("datasetId").asString();
         String base=support.base,app=support.app;
         try(var playwright=Playwright.create();var browser=playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(true))){

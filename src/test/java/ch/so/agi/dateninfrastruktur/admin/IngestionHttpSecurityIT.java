@@ -18,7 +18,7 @@ import org.springframework.boot.web.server.context.WebServerApplicationContext;
 import ch.so.agi.dateninfrastruktur.admin.ingestion.CanonicalJson;
 
 /** Real signed JWT -> real HTTP filter chains -> current PG; no mocked Authentication. */
-public final class IngestionHttpG2IT {
+public final class IngestionHttpSecurityIT {
     final HttpClient http=HttpClient.newBuilder().connectTimeout(java.time.Duration.ofSeconds(5)).followRedirects(HttpClient.Redirect.NEVER).build();
     static final String PLUGIN="g2-isolated-plugin-credential-000000000000000000000000";
     String base;RSAKey key;String subject,runner;
@@ -33,7 +33,7 @@ public final class IngestionHttpG2IT {
     @Test void cryptographicProfilesAndStrictHttp()throws Exception{
         key=new RSAKeyGenerator(2048).keyID("g2-key").generate();var forged=new RSAKeyGenerator(2048).keyID("g2-key").generate();
         var jwks=HttpServer.create(new InetSocketAddress("127.0.0.1",0),0);jwks.createContext("/keys",exchange->{byte[] bytes=new JWKSet(key.toPublicJWK()).toString().getBytes(StandardCharsets.UTF_8);exchange.getResponseHeaders().set("Content-Type","application/json");exchange.sendResponseHeaders(200,bytes.length);exchange.getResponseBody().write(bytes);exchange.close();});jwks.start();
-        try(var x=new IngestionG2IT.Fixture()){
+        try(var x=new SubmissionAuthorizationIT.Fixture()){
             String issuer=x.f.anna.issuer();subject=x.f.anna.subject();runner=x.runner.subject();
             var props=new HashMap<String,Object>();props.put("server.address","127.0.0.1");props.put("server.port",0);props.put("di.ingestion.enabled",true);props.put("di.ingestion.plugin-secret",PLUGIN);props.put("di.ingestion.lease-secret","g2-private-lease-secret-0000000000000000000000000");props.put("di.ingestion.jenkins-instance",x.instance);
             props.put("di.web.enabled",true);props.put("di.web.issuer",issuer);props.put("di.web.jwks-uri","http://127.0.0.1:"+jwks.getAddress().getPort()+"/keys");props.put("di.web.audience","management");props.put("di.web.gateway-secret","g2-private-gateway-000000000000000000000000");props.put("di.web.public-origin","http://127.0.0.1:12345");
@@ -55,7 +55,7 @@ public final class IngestionHttpG2IT {
                 assertEquals(400,call("/internal/ingestion/submissions",user,PLUGIN,"POST",body.substring(0,body.length()-1)+",\"actor\":\"other\"}",null).statusCode());assertEquals(400,call("/internal/ingestion/submissions",user,PLUGIN,"POST",body+"{}",null).statusCode());assertEquals(400,call("/internal/ingestion/submissions",user,PLUGIN,"POST",body.substring(0,body.length()-1)+",\"mode\":\"append\"}",null).statusCode());
                 assertEquals(413,call("/internal/ingestion/submissions",user,PLUGIN,"POST"," ".repeat(65537),null).statusCode());
                 var ben=x.f.unit.read(ctx->new ch.so.agi.dateninfrastruktur.admin.identity.PrincipalRepository().requireActive(ctx,x.f.ben).getTIliTid());
-                x.f.workflow.grantDirect(x.f.manager,IngestionG2IT.command("direct_grant"),x.dataset,x.version("dataset",x.dataset),ben,x.f.validity(),"Read only, no delivery provenance");
+                x.f.workflow.grantDirect(x.f.manager,SubmissionAuthorizationIT.command("direct_grant"),x.dataset,x.version("dataset",x.dataset),ben,x.f.validity(),"Read only, no delivery provenance");
                 String foreign=token(issuer,"di-ingestion-user","Bearer","jenkins-delivery",x.f.ben.subject(),key,null);assertEquals(403,call("/internal/ingestion/submissions",foreign,PLUGIN,"POST",body,subject).statusCode());
                 var id=x.ready();assertEquals(403,call("/internal/ingestion/submissions/"+id,foreign,PLUGIN,"GET",null,subject).statusCode());var status=call("/internal/ingestion/submissions/"+id,user,PLUGIN,"GET",null,null);assertEquals(200,status.statusCode());for(String forbidden:List.of("spool","leaseSecret","issuer_snapshot","jenkins_run_id","configuration_snapshot"))assertFalse(status.body().contains(forbidden));
                 String manager=token(issuer,"management","Bearer","management-client",x.f.manager.subject(),key,null),supplierBrowser=token(issuer,"management","Bearer","management-client",subject,key,null);
@@ -76,5 +76,5 @@ public final class IngestionHttpG2IT {
             }
         }finally{jwks.stop(0);}
     }
-    public static void main(String[] args)throws Exception{if(!"true".equals(System.getenv("DI_COMPOSE_TEST_FIXTURE")))throw new IllegalStateException("Isolated fixture required");new IngestionHttpG2IT().cryptographicProfilesAndStrictHttp();}
+    public static void main(String[] args)throws Exception{if(!"true".equals(System.getenv("DI_COMPOSE_TEST_FIXTURE")))throw new IllegalStateException("Isolated fixture required");new IngestionHttpSecurityIT().cryptographicProfilesAndStrictHttp();}
 }

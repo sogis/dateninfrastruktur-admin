@@ -11,7 +11,7 @@ import java.nio.file.attribute.PosixFilePermissions;
 import java.util.*;
 
 /** Explicit synthetic fixture; all catalog changes use the product command services. */
-public final class DeliveryG4FixtureCommand {
+public final class DeliveryProcessingFixtureCommand {
     record Case(String key,String label,String definition,boolean open,boolean published,boolean automatic){}
     public static void main(String[] args)throws Exception{
         if(!"true".equals(System.getenv("DI_COMPOSE_TEST_FIXTURE")))throw new IllegalStateException("Isolated G4 fixture only");
