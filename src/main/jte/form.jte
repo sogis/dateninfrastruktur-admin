@@ -1,4 +1,3 @@
-@import ch.so.agi.dateninfrastruktur.admin.web.UiPage
 @import ch.so.agi.dateninfrastruktur.admin.web.UiPage.Form
 @import org.springframework.security.web.csrf.CsrfToken
 @param Form form
@@ -23,7 +22,7 @@
                 @elseif(field.type().equals("select"))
                     <select name="${field.name()}">
                         @for(var option : field.options())
-                            <option value="${option}" selected="${option.equals(field.value())}">${UiPage.display(field.name().equals("level") ? "access" : field.name(), option)}</option>
+                            <option value="${option}" selected="${option.equals(field.value())}">${option}</option>
                         @endfor
                     </select>
                 @else

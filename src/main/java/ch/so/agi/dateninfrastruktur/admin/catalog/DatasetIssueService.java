@@ -21,13 +21,18 @@ public final class DatasetIssueService {
     public UUID createIssue(ActorContext actor,CommandContext command,UUID dataset,long version,String key,String label){
         if(key==null || !key.matches("[A-Za-z0-9][A-Za-z0-9._-]{0,127}") || label==null || label.isBlank() || label.length()>255)throw BusinessException.invalid("Bitte Ausgabeschlüssel und Bezeichnung angeben.");
         return execute(actor,command,"create_issue",dataset,version,CommandReceiptRepository.payloadHash(dataset,version,key,label),(ctx,root)->{
-            if(!"series".equals(root.getAkind()))throw BusinessException.conflict("Einzelangebote behalten ihre interne Standardausgabe.");
+            requireSeries(root);
+            if (ObjectSelect.query(Datasetissue.class)
+                .where(Datasetissue.DATASET1.eq(root).andExp(Datasetissue.ISSUEKEY.eq(key))).selectCount(ctx) > 0) {
+                throw new BusinessException(409, "DUPLICATE_ISSUE_KEY", "Dieser Ausgabeschlüssel ist bereits vergeben.");
+            }
             var row=ctx.newObject(Datasetissue.class);row.setTIliTid(UUID.randomUUID());row.setDataset1(root);row.setIssuekey(key);row.setLabel(label);row.setPublicationstatus(root.getPublicationstatus());row.setModified(CayenneSql.now(ctx).toLocalDate());return row.getTIliTid();
         });
     }
     public UUID updateIssueMetadata(ActorContext actor,CommandContext command,UUID dataset,long version,UUID issue,String label,String note,String status){
         if(label==null || label.isBlank() || label.length()>255 || (note!=null && note.length()>100000) || !Set.of("draft","in_review","published","archived").contains(status))throw BusinessException.invalid("Ungültige Ausgabemetadaten.");
         return execute(actor,command,"update_issue",dataset,version,CommandReceiptRepository.payloadHash(dataset,version,issue,label,note,status),(ctx,root)->{
+            requireSeries(root);
             var row=ObjectSelect.query(Datasetissue.class).where(Datasetissue.T_ILI_TID.eq(issue)).selectOne(ctx);
             if(row==null || !root.getTIliTid().equals(row.getDataset1().getTIliTid()))throw BusinessException.invalid("Die Ausgabe gehört nicht zu diesem Datensatz.");
             if(Set.of("published","archived").contains(status) || "published".equals(row.getPublicationstatus()))authority.require(ctx,actor,dataset,"publish");
@@ -37,10 +42,17 @@ public final class DatasetIssueService {
     }
     public UUID setCurrentIssue(ActorContext actor,CommandContext command,UUID dataset,long version,UUID issue){
         return execute(actor,command,"set_current_issue",dataset,version,CommandReceiptRepository.payloadHash(dataset,version,issue),(ctx,root)->{
+            requireSeries(root);
             var row=ObjectSelect.query(Datasetissue.class).where(Datasetissue.T_ILI_TID.eq(issue)).selectOne(ctx);
             if(row==null || !root.getTIliTid().equals(row.getDataset1().getTIliTid()))throw BusinessException.invalid("Die Ausgabe gehört nicht zu diesem Datensatz.");root.setCurrentissue1(row);return dataset;
         });
     }
+    private static void requireSeries(Dataset root) {
+        if (!"series".equals(root.getAkind())) {
+            throw BusinessException.conflict("Einzelangebote behalten ihre interne Standardausgabe.");
+        }
+    }
+
     public UUID setCurrentVersion(ActorContext actor,CommandContext command,UUID dataset,long version,UUID issue,UUID dataVersion){
         return execute(actor,command,"set_current_version",dataset,version,CommandReceiptRepository.payloadHash(dataset,version,issue,dataVersion),(ctx,root)->{
             var row=ObjectSelect.query(Datasetissue.class).where(Datasetissue.T_ILI_TID.eq(issue)).selectOne(ctx);

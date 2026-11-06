@@ -23,6 +23,15 @@ public final class DatasetLabels {
     public static final List<Choice> THEMES = CatalogCommandService.THEMES.stream()
         .sorted().map(code -> new Choice(code, themeLabel(code))).toList();
 
+    private static final List<Choice> VERSION_AVAILABILITIES = List.of(
+        new Choice("prepared", "Vorbereitet"),
+        new Choice("available", "Verfügbar"),
+        new Choice("withdrawn", "Zurückgezogen"));
+    private static final List<Choice> VERSION_VALIDATIONS = List.of(
+        new Choice("unknown", "Unbekannt"),
+        new Choice("success", "Erfolgreich"),
+        new Choice("fail", "Fehlgeschlagen"));
+
     private static final DateTimeFormatter DATE = DateTimeFormatter.ofPattern("dd.MM.uuuu", Locale.ROOT);
 
     private DatasetLabels() {}
@@ -37,6 +46,14 @@ public final class DatasetLabels {
 
     public static String kind(String code) {
         return label(KINDS, code);
+    }
+
+    public static String versionAvailability(String code) {
+        return label(VERSION_AVAILABILITIES, code);
+    }
+
+    public static String versionValidation(String code) {
+        return label(VERSION_VALIDATIONS, code);
     }
 
     public static String officeCode(DatasetOffice office) {

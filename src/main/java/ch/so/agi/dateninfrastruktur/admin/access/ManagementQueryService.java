@@ -207,10 +207,76 @@ public final class ManagementQueryService {
         return runtime.performInTransaction(()->{var ctx=runtime.newContext();authority.require(ctx,actor,dataset,"manage_access");
             return rows(ctx,"SELECT t_ili_tid AS id,akind AS kind,displayname,aissuer AS issuer,asubject AS subject FROM di_management.principal WHERE aactive AND (position(lower(#bind($term)) in lower(coalesce(displayname,'')||' '||coalesce(asubject,'')))>0) ORDER BY displayname NULLS LAST,t_id LIMIT 20",Map.of("term",term));});
     }
-    public List<Map<String,Object>> issues(ActorContext actor,UUID dataset){
-        authority.requireAny(actor,dataset);
-        return runtime.performInTransaction(()->rows(runtime.newContext(),"SELECT i.t_ili_tid AS id,i.label,i.issuekey,i.publicationstatus AS status,i.note,d.row_version AS revision FROM di_management.datasetissue i JOIN di_management.dataset d ON d.t_id=i.dataset WHERE d.t_ili_tid=CAST(#bind($id) AS uuid) ORDER BY i.issuekey LIMIT 100",Map.of("id",dataset.toString())));
+    public record DatasetIssue(UUID id, String key, String label, String note, String publicationStatus,
+                               boolean current, LocalDate modified) {}
+    public record DatasetVersion(String key, String availability, String validationStatus, LocalDate date, boolean current) {}
+    public record IssueVersions(DatasetIssue issue, List<DatasetVersion> versions) {}
+
+    private static final String ISSUES = """
+        SELECT i.t_ili_tid AS id, i.issuekey, i.label, i.note, i.publicationstatus,
+               i.t_id = d.currentissue AS current, to_char(i.modified, 'YYYY-MM-DD') AS modified
+        FROM di_management.datasetissue i JOIN di_management.dataset d ON d.t_id = i.dataset
+        WHERE d.t_ili_tid = CAST(#bind($dataset) AS uuid)
+        """;
+
+    public List<DatasetIssue> issues(ActorContext actor, UUID dataset) {
+        return runtime.performInTransaction(() -> {
+            authority.requireAny(actor, dataset);
+            return rows(runtime.newContext(), ISSUES + " ORDER BY i.issuekey, i.t_ili_tid",
+                Map.of("dataset", dataset.toString())).stream().map(ManagementQueryService::datasetIssue).toList();
+        });
     }
+
+    public DatasetIssue issue(ActorContext actor, UUID dataset, UUID issue) {
+        return runtime.performInTransaction(() -> {
+            authority.requireAny(actor, dataset);
+            return requireIssue(runtime.newContext(), issueParams(dataset, issue));
+        });
+    }
+
+    public IssueVersions versions(ActorContext actor, UUID dataset, UUID issue) {
+        return runtime.performInTransaction(() -> {
+            authority.requireAny(actor, dataset);
+            var context = runtime.newContext();
+            var parameters = issueParams(dataset, issue);
+            var selected = requireIssue(context, parameters);
+            var versions = rows(context, """
+                SELECT v.versionkey, v.availability, v.validationstatus, v.t_id = i.currentversion AS current,
+                       to_char(COALESCE(v.acceptedat, v.validationat), 'YYYY-MM-DD') AS observed_date
+                FROM di_management.dataversion v
+                JOIN di_management.datasetissue i ON i.t_id = v.issue
+                JOIN di_management.dataset d ON d.t_id = i.dataset
+                WHERE d.t_ili_tid = CAST(#bind($dataset) AS uuid)
+                  AND i.t_ili_tid = CAST(#bind($issue) AS uuid)
+                ORDER BY v.asequence DESC, v.t_ili_tid
+                """, parameters).stream().map(row -> {
+                    String date = (String) row.get("observed_date");
+                    return new DatasetVersion((String) row.get("versionkey"), (String) row.get("availability"),
+                        (String) row.get("validationstatus"), date == null ? null : LocalDate.parse(date),
+                        Boolean.TRUE.equals(row.get("current")));
+                }).toList();
+            return new IssueVersions(selected, versions);
+        });
+    }
+
+    private DatasetIssue requireIssue(ObjectContext context, Map<String, String> parameters) {
+        var result = rows(context, ISSUES + " AND i.t_ili_tid = CAST(#bind($issue) AS uuid)", parameters);
+        if (result.isEmpty()) {
+            throw BusinessException.missing();
+        }
+        return datasetIssue(result.getFirst());
+    }
+
+    private static Map<String, String> issueParams(UUID dataset, UUID issue) {
+        return Map.of("dataset", dataset.toString(), "issue", issue.toString());
+    }
+
+    private static DatasetIssue datasetIssue(Map<String, Object> row) {
+        return new DatasetIssue(uuid(row, "id"), (String) row.get("issuekey"), (String) row.get("label"),
+            (String) row.get("note"), (String) row.get("publicationstatus"), Boolean.TRUE.equals(row.get("current")),
+            LocalDate.parse((String) row.get("modified")));
+    }
+
     public List<Map<String,Object>> grants(ActorContext actor,UUID dataset){return runtime.performInTransaction(()->{
         var ctx=runtime.newContext();authority.require(ctx,actor,dataset,"manage_access");
         return rows(ctx,"""
