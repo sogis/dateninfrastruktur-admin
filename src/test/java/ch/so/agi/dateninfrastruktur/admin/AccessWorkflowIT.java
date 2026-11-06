@@ -13,6 +13,11 @@ class AccessWorkflowIT {
             assertEquals("approved",f.request(request).getAstatus());
             var grant=ObjectSelect.query(Accessgrant.class).where(Accessgrant.GRANTINGDECISION1.dot(Accessdecision.T_ILI_TID).eq(decision)).selectOne(f.runtime.newContext());
             assertNotNull(grant);assertEquals("read_data",grant.getPermission());
+            f.unit.read(context -> {
+                assertFalse(f.authority.allowed(context, f.anna, root, "submit_data"));
+                assertFalse(f.authority.allowed(context, f.anna, root, "manage_submitters"));
+                return null;
+            });
             assertEquals(3,f.count("SELECT count(*) FROM audit.row_change WHERE command_id=? AND table_name IN ('accessrequest','accessdecision','accessgrant')",approve.commandId()));
             assertEquals(1,f.count("SELECT count(DISTINCT transaction_id) FROM audit.row_change WHERE command_id=?",approve.commandId()));
             var revoke=command("revoke");f.workflow.revoke(f.manager,revoke,grant.getTIliTid(),f.version("accessgrant",grant.getTIliTid()),"Zweck beendet");
