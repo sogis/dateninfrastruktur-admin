@@ -72,6 +72,9 @@ class DatasetLifecycleWebIT {
             String path = path(id);
             var page = context.newPage();
             assertEquals(200, page.navigate(uri(path).toString()).status());
+            page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Metadaten bearbeiten")).click();
+            assertEquals(uri(path + "/edit").toString(), page.url());
+            assertEquals(1, page.locator("form[action='" + path + "/edit']").count());
             show(page, get(path + "?search=50%25&page=2", fixture.manager), 200);
             assertEquals("/management/datasets?search=50%25&page=2",
                 page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Zur Datensatzliste")).getAttribute("href"));
