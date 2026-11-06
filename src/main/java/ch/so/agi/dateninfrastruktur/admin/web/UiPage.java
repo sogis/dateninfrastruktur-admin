@@ -9,8 +9,7 @@ public record UiPage(String title,String introduction,List<Entry> entries,List<F
             case "reason"->"Begründung";case "requestedat"->"Angefragt am (UTC)";case "requestedvaliduntil"->"Gewünschtes Ende (UTC)";case "subject"->"Identitätskennung";case "displayname"->"Anzeigename";
             case "applicant"->"Anfragende Person";case "dataset"->"Datensatz";case "beneficiary"->"Berechtigte Identität";case "validfrom"->"Gültig ab (UTC)";case "validuntil"->"Gültig bis (UTC)";case "revokedat"->"Entzogen am (UTC)";
             case "via_kind"->"Zugangsweg";case "via_principal"->"Vermittelnde Identität";case "grant_id"->"Freigabe";case "issuer"->"Identitätsanbieter";
-            case "change_id"->"Auditkennung";case "recorded_at"->"Aufgezeichnet am";case "actor_subject"->"Ausführende Identität";case "action_code"->"Aktion";case "operation"->"Änderung";case "table_name"->"Objekttyp";case "command_id"->"Vorgangskennung";case "request_id"->"Anfragekennung";
-            case "old_values"->"Vorherige Werte";case "new_values"->"Neue Werte";case "label"->"Bezeichnung";case "issuekey"->"Ausgabeschlüssel";case "note"->"Bemerkung";default->key;
+            case "label"->"Bezeichnung";case "issuekey"->"Ausgabeschlüssel";case "note"->"Bemerkung";default->key;
         };
     }
     public static String display(String key,Object value){
