@@ -7,6 +7,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -16,11 +17,16 @@ import ch.so.agi.dateninfrastruktur.admin.access.AccessWorkflowService;
 import ch.so.agi.dateninfrastruktur.admin.access.AuthorityService;
 import ch.so.agi.dateninfrastruktur.admin.access.BusinessException;
 import ch.so.agi.dateninfrastruktur.admin.access.ManagementQueryService;
+import ch.so.agi.dateninfrastruktur.admin.access.ManagementQueryService.DatasetFilters;
+import ch.so.agi.dateninfrastruktur.admin.access.ManagementQueryService.DatasetOffice;
+import ch.so.agi.dateninfrastruktur.admin.access.ManagementQueryService.DatasetPage;
+import ch.so.agi.dateninfrastruktur.admin.access.ManagementQueryService.DatasetRow;
 import ch.so.agi.dateninfrastruktur.admin.authorization.DownloadAuthorizationService;
 import ch.so.agi.dateninfrastruktur.admin.catalog.CatalogCommandService;
 import ch.so.agi.dateninfrastruktur.admin.persistence.AggregateWriteGuard.StaleAggregateException;
 import ch.so.agi.dateninfrastruktur.admin.security.ManagementSecurityConfiguration;
 import ch.so.agi.dateninfrastruktur.admin.web.AuthorizationController;
+import ch.so.agi.dateninfrastruktur.admin.web.DatasetController;
 import ch.so.agi.dateninfrastruktur.admin.web.ManagementController;
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.Page;
@@ -66,7 +72,7 @@ class ManagementBrowserIT {
     private static final HttpClient HTTP = HttpClient.newHttpClient();
 
     @EnableAutoConfiguration(exclude = DataSourceAutoConfiguration.class)
-    @Import({ManagementSecurityConfiguration.class, ManagementController.class, AuthorizationController.class})
+    @Import({ManagementSecurityConfiguration.class, ManagementController.class, DatasetController.class, AuthorizationController.class})
     @ComponentScan(
         basePackageClasses = ManagementController.class,
         useDefaultFilters = false,
@@ -90,6 +96,8 @@ class ManagementBrowserIT {
             .subject("browser-tester")
             .build());
         when(query.requestDataset(DATASET)).thenReturn(Map.of("title", DATASET_TITLE, "access", "restricted"));
+        when(query.datasets(any(), eq(new DatasetFilters(null, null, null, null, 0))))
+            .thenReturn(new DatasetPage(List.of(), false, false, false, List.of(), false));
     }
 
     @Test
@@ -209,6 +217,58 @@ class ManagementBrowserIT {
             page.evaluate("document.documentElement.style.fontSize = '200%'");
             assertEquals(Boolean.TRUE, page.evaluate("document.documentElement.scrollWidth <= innerWidth"));
         }
+    }
+
+    @Test
+    void datasetListRendersScopedRowsAndPreservesFiltersOnPageAndDetailLinks() throws Exception {
+        var office = new DatasetOffice(UUID.fromString("4080f38d-9f4d-46c0-ad5e-e9835c891c59"),
+            "Prüfamt", "AGI", "agi-pruefung");
+        String search = "50%_ + &";
+        String queryString = "search=" + URLEncoder.encode(search, StandardCharsets.UTF_8)
+            + "&publicationStatus=published&accessLevel=open&ownerOffice=" + office.id();
+        String list = "/management/datasets?" + queryString + "&page=1";
+
+        assertEquals(401, send(HttpRequest.newBuilder(uri(list)).header("Accept", "text/html").GET()).statusCode());
+        verifyNoInteractions(query);
+        var filters = new DatasetFilters(search, "published", "open", office.id(), 1);
+        var row = new DatasetRow(DATASET, "angebot-1", DATASET_TITLE, office, "series",
+            "published", "open", LocalDate.of(2026, 11, 6));
+        when(query.datasets(any(), eq(filters)))
+            .thenReturn(new DatasetPage(List.of(row), false, true, true, List.of(office), false));
+        when(query.datasets(any(), eq(new DatasetFilters(search, "published", "open", office.id(), 0))))
+            .thenReturn(new DatasetPage(List.of(), false, false, true, List.of(office), false));
+
+        try (var playwright = Playwright.create(new Playwright.CreateOptions()
+                .setEnv(Map.of("PLAYWRIGHT_SKIP_BROWSER_GC", "1")));
+             var chromium = playwright.chromium().launch();
+             var context = chromium.newContext(new Browser.NewContextOptions()
+                .setViewportSize(390, 844)
+                .setExtraHTTPHeaders(Map.of("Authorization", AUTHORIZATION)))) {
+            var page = context.newPage();
+            assertEquals(200, page.navigate(uri(list).toString()).status());
+            assertEquals(search, page.locator("input[name=search]").inputValue());
+            assertEquals(office.id().toString(), page.locator("select[name=ownerOffice]").inputValue());
+            assertEquals(1, page.getByRole(AriaRole.TABLE).count());
+            assertEquals(0, page.locator("#unsafe").count());
+            var cells = page.getByRole(AriaRole.CELL).allTextContents();
+            assertTrue(cells.stream().anyMatch(cell -> cell.contains("Prüfamt")
+                && cell.contains("AGI") && cell.contains("agi-pruefung")));
+            assertTrue(cells.stream().anyMatch(cell -> cell.strip().equals("Publiziert")));
+            assertTrue(cells.stream().anyMatch(cell -> cell.strip().equals("Frei zugänglich")));
+            assertEquals(0, page.locator("a[href='/management/datasets/new']").count());
+            assertEquals(Boolean.TRUE, page.evaluate("document.documentElement.scrollWidth <= innerWidth"));
+
+            var detail = page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName(DATASET_TITLE));
+            assertEquals("/management/datasets/" + DATASET, detail.evaluate("link => new URL(link.href).pathname"));
+            assertEquals(Map.of("search", search, "publicationStatus", "published", "accessLevel", "open",
+                "ownerOffice", office.id().toString(), "page", "1"),
+                detail.evaluate("link => Object.fromEntries(new URL(link.href).searchParams)"));
+            var previous = page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Vorherige Seite"));
+            previous.click();
+            assertTrue(page.getByRole(AriaRole.MAIN).innerText().contains("Keine Datensätze entsprechen Ihrer Suche."));
+            assertEquals(search, page.locator("input[name=search]").inputValue());
+        }
+        verify(query).datasets(argThat(actor -> actor.subject().equals("browser-tester")), eq(filters));
     }
 
     private static void screenshot(Page page, String filename) {

@@ -1,4 +1,5 @@
 package ch.so.agi.dateninfrastruktur.admin.access;
+import java.time.LocalDate;
 import java.util.*;
 import javax.sql.DataSource;
 import org.apache.cayenne.ObjectContext;
@@ -20,10 +21,108 @@ public final class ManagementQueryService {
         return CayenneSql.rows(ctx,sql,p).stream().map(r->Collections.unmodifiableMap(new HashMap<String,Object>(r))).toList();
     }
     private int offset(int page){if(page<0 || page>10000)throw BusinessException.invalid("Ungültige Seite.");return page*50;}
-    public List<Map<String,Object>> datasets(ActorContext actor,int page){return runtime.performInTransaction(()->{
-        var p=params(actor);p.put("offset",offset(page));
-        return rows(runtime.newContext(),AuthorityService.ELIGIBLE+"SELECT d.t_ili_tid AS id,d.title,d.publicationstatus AS status,d.accesslevel AS access,d.row_version AS revision FROM di_management.dataset d WHERE "+SCOPE+" ORDER BY d.title,d.t_id LIMIT 50 OFFSET #bind($offset)",p);
-    });}
+    private static final int DATASET_PAGE_SIZE = 50;
+    private static final int MAX_PAGE = 10_000;
+
+    public record DatasetFilters(String search, String publicationStatus, String accessLevel, UUID ownerOffice, int page) {
+        public DatasetFilters {
+            search = normalize(search);
+            publicationStatus = normalize(publicationStatus);
+            accessLevel = normalize(accessLevel);
+            if (search.length() > 100) {
+                throw BusinessException.invalid("Die Suche darf höchstens 100 Zeichen enthalten.");
+            }
+            if (!publicationStatus.isEmpty() && !Set.of("draft", "in_review", "published", "archived").contains(publicationStatus)) {
+                throw BusinessException.invalid("Dieser Publikationsstatus ist ungültig.");
+            }
+            if (!accessLevel.isEmpty() && !Set.of("open", "restricted").contains(accessLevel)) {
+                throw BusinessException.invalid("Dieser Datenzugang ist ungültig.");
+            }
+            if (page < 0 || page > MAX_PAGE) {
+                throw BusinessException.invalid("Ungültige Seite.");
+            }
+        }
+
+        private static String normalize(String value) {
+            return value == null ? "" : value.strip();
+        }
+    }
+
+    public record DatasetOffice(UUID id, String name, String abbreviation, String identifier) {}
+    public record DatasetRow(UUID id, String identifier, String title, DatasetOffice office, String kind,
+                             String publicationStatus, String accessLevel, LocalDate modified) {}
+    public record DatasetPage(List<DatasetRow> rows, boolean hasNext, boolean hasPrevious, boolean hasDatasets,
+                              List<DatasetOffice> offices, boolean canCreate) {}
+
+    public DatasetPage datasets(ActorContext actor, DatasetFilters filters) {
+        return runtime.performInTransaction(() -> {
+            var context = runtime.newContext();
+            var identity = params(actor);
+            var parameters = new HashMap<>(identity);
+            parameters.put("offset", filters.page() * DATASET_PAGE_SIZE);
+            parameters.put("limit", DATASET_PAGE_SIZE + 1);
+            var sql = new StringBuilder(AuthorityService.ELIGIBLE + """
+                SELECT d.t_ili_tid AS id, d.identifier, d.title, d.akind AS kind, d.publicationstatus,
+                       d.accesslevel, to_char(d.modified, 'YYYY-MM-DD') AS modified,
+                       o.t_ili_tid AS office_id, o.aname AS office_name, o.abbreviation AS office_abbreviation,
+                       o.identifier AS office_identifier
+                FROM di_management.dataset d JOIN di_management.office o ON o.t_id = d.owneroffice
+                WHERE
+                """ + SCOPE);
+            if (!filters.search().isEmpty()) {
+                sql.append("""
+                     AND (position(lower(#bind($search)) in lower(d.title)) > 0
+                          OR position(lower(#bind($search)) in lower(d.identifier)) > 0)
+                    """);
+                parameters.put("search", filters.search());
+            }
+            if (!filters.publicationStatus().isEmpty()) {
+                sql.append(" AND d.publicationstatus = #bind($publicationStatus)");
+                parameters.put("publicationStatus", filters.publicationStatus());
+            }
+            if (!filters.accessLevel().isEmpty()) {
+                sql.append(" AND d.accesslevel = #bind($accessLevel)");
+                parameters.put("accessLevel", filters.accessLevel());
+            }
+            if (filters.ownerOffice() != null) {
+                sql.append(" AND o.t_ili_tid = CAST(#bind($ownerOffice) AS uuid)");
+                parameters.put("ownerOffice", filters.ownerOffice().toString());
+            }
+            sql.append(" ORDER BY d.title, d.t_ili_tid LIMIT #bind($limit) OFFSET #bind($offset)");
+
+            var results = rows(context, sql.toString(), parameters);
+            var datasets = results.stream().limit(DATASET_PAGE_SIZE).map(ManagementQueryService::datasetRow).toList();
+            var offices = scopedDatasetOffices(context, identity);
+            return new DatasetPage(datasets, filters.page() < MAX_PAGE && results.size() > DATASET_PAGE_SIZE,
+                filters.page() > 0, !offices.isEmpty(), offices, !offices(context, identity).isEmpty());
+        });
+    }
+
+    private List<DatasetOffice> scopedDatasetOffices(ObjectContext context, Map<String, ?> identity) {
+        return rows(context, AuthorityService.ELIGIBLE + """
+            SELECT o.t_ili_tid AS office_id, o.aname AS office_name, o.abbreviation AS office_abbreviation,
+                   o.identifier AS office_identifier
+            FROM di_management.office o
+            WHERE EXISTS (SELECT 1 FROM di_management.dataset d WHERE d.owneroffice = o.t_id AND
+            """ + SCOPE + ") ORDER BY o.aname, o.abbreviation, o.identifier", identity)
+            .stream().map(ManagementQueryService::datasetOffice).toList();
+    }
+
+    private static DatasetRow datasetRow(Map<String, Object> row) {
+        return new DatasetRow(uuid(row, "id"), (String) row.get("identifier"), (String) row.get("title"),
+            datasetOffice(row), (String) row.get("kind"), (String) row.get("publicationstatus"),
+            (String) row.get("accesslevel"), LocalDate.parse((String) row.get("modified")));
+    }
+
+    private static DatasetOffice datasetOffice(Map<String, Object> row) {
+        return new DatasetOffice(uuid(row, "office_id"), (String) row.get("office_name"),
+            (String) row.get("office_abbreviation"), (String) row.get("office_identifier"));
+    }
+
+    private static UUID uuid(Map<String, Object> row, String key) {
+        return UUID.fromString(row.get(key).toString());
+    }
+
     public Map<String,Object> detail(ActorContext actor,UUID id){return runtime.performInTransaction(()->{
         var ctx=runtime.newContext();authority.requireAny(actor,id);
         var result=rows(ctx,"SELECT t_ili_tid AS id,title,adescription AS description,contactname,contactemail,publicationstatus AS status,accesslevel AS access,row_version AS revision,akind AS kind FROM di_management.dataset WHERE t_ili_tid=CAST(#bind($id) AS uuid)",Map.of("id",id.toString()));
@@ -46,12 +145,18 @@ public final class ManagementQueryService {
           JOIN di_management.principal p ON p.t_id=r.applicant WHERE
           """+filter+" ORDER BY r.requestedat DESC,r.t_id DESC LIMIT 50 OFFSET #bind($offset)",p);
     });}
-    public List<Map<String,Object>> offices(ActorContext actor){return runtime.performInTransaction(()->rows(runtime.newContext(),AuthorityService.ELIGIBLE+"""
+    public List<Map<String,Object>> offices(ActorContext actor) {
+        return runtime.performInTransaction(() -> offices(runtime.newContext(), params(actor)));
+    }
+
+    private List<Map<String,Object>> offices(ObjectContext context, Map<String, ?> identity) {
+        return rows(context, AuthorityService.ELIGIBLE + """
         SELECT DISTINCT o.t_ili_tid AS id,o.aname AS title FROM di_management.office o
         JOIN di_management.authorityassignment aa ON aa.office=o.t_id JOIN eligible e ON e.t_id=aa.principal CROSS JOIN di_now n
         WHERE o.aactive AND aa.capability='manage_metadata' AND aa.revokedat IS NULL AND aa.validfrom<=n.observed_at
           AND (aa.validuntil IS NULL OR n.observed_at<aa.validuntil) ORDER BY title LIMIT 50
-        """,params(actor)));}
+        """, identity);
+    }
     public List<Map<String,Object>> principals(ActorContext actor,UUID dataset,String term){
         if(term==null || term.length()<2 || term.length()>100)throw BusinessException.invalid("Bitte 2 bis 100 Suchzeichen eingeben.");
         return runtime.performInTransaction(()->{var ctx=runtime.newContext();authority.require(ctx,actor,dataset,"manage_access");

@@ -29,13 +29,9 @@ public final class ManagementController {
         return "page";
     }
     private Entry entry(String title,String link,Map<String,Object> details,Form... forms){return new Entry(title,link,details,List.of(forms));}
-    @GetMapping({"/management","/management/datasets"}) String datasets(Authentication auth,Model model,HttpServletRequest req,@RequestParam(defaultValue="0")int page){
-        var entries=query.datasets(actor(auth),page).stream().map(r->entry(r.get("title").toString(),"/management/datasets/"+r.get("id"),r)).toList();
-        return page(model,NavigationSection.DATASETS,"Datensätze verwalten","Ihr aktueller Zuständigkeitsbereich. Entwürfe sind nicht öffentlich.",entries,List.of(),req);
-    }
     @GetMapping("/management/datasets/new") String createForm(Authentication auth,Model model,HttpServletRequest req){
         var entries=query.offices(actor(auth)).stream().map(o->entry(o.get("title").toString(),null,Map.of(),new Form("Entwurf erstellen","/management/datasets",List.of(hidden("ownerOffice",o.get("id")),field("identifier","Stabiler Identifikator","text",""),new Field("kind","Angebotstyp","select","standalone",List.of("standalone","series")),field("title","Titel","text",""),field("description","Beschreibung","textarea",""),field("contactName","Fachlicher Kontakt","text",""),field("contactEmail","E-Mail des Kontakts","email",""),field("themes","Themen (Codes, kommagetrennt)","text","Geografie"),field("keywords","Schlagwörter (kommagetrennt)","text","")),"Entwurf erstellen"))).toList();
-        return page(model,NavigationSection.CREATE_DATASET,"Neuer Datensatz","Neue Angebote beginnen mit eingeschränktem Datenzugang.",entries,List.of(),req);
+        return page(model,NavigationSection.DATASETS,"Neuer Datensatz","Neue Angebote beginnen mit eingeschränktem Datenzugang.",entries,List.of(),req);
     }
     @GetMapping("/management/datasets/{id}") String detail(Authentication auth,@PathVariable UUID id,Model model,HttpServletRequest req){
         var actor=actor(auth);var data=query.detail(actor,id);var caps=authority.describe(actor,id);var forms=new ArrayList<Form>();String base="/management/datasets/"+id;var revision=hidden("expectedVersion",data.get("revision"));String status=data.get("status").toString();
