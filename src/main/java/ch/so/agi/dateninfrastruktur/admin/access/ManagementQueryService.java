@@ -9,11 +9,16 @@ import ch.so.agi.dateninfrastruktur.admin.persistence.CayenneSql;
 
 /** Bounded read models. Every invocation creates a fresh context and checks current authority. */
 public final class ManagementQueryService {
-    public static final String SCOPE="""
+    private static final String DATASET_AUTHORITY = """
         EXISTS(SELECT 1 FROM di_management.authorityassignment aa JOIN eligible e ON e.t_id=aa.principal CROSS JOIN di_now n
           WHERE (aa.dataset=d.t_id OR aa.office=d.owneroffice) AND aa.revokedat IS NULL
-            AND aa.validfrom<=n.observed_at AND (aa.validuntil IS NULL OR n.observed_at<aa.validuntil))
+            AND aa.validfrom<=n.observed_at AND (aa.validuntil IS NULL OR n.observed_at<aa.validuntil)
+            AND %s)
         """;
+    private static final String DATASET_MANAGEMENT_SCOPE =
+        DATASET_AUTHORITY.formatted("aa.capability IN ('manage_metadata', 'publish', 'manage_access')");
+    private static final String REQUEST_DECISION_SCOPE =
+        DATASET_AUTHORITY.formatted("aa.capability = 'manage_access'");
     private final CayenneRuntime runtime;private final AuthorityService authority;private final DataSource audit;
     public ManagementQueryService(CayenneRuntime runtime,AuthorityService authority,DataSource audit){this.runtime=runtime;this.authority=authority;this.audit=audit;}
     private Map<String,Object> params(ActorContext actor){return new HashMap<>(Map.of("issuer",actor.issuer(),"subject",actor.subject()));}
@@ -68,7 +73,7 @@ public final class ManagementQueryService {
                        o.identifier AS office_identifier
                 FROM di_management.dataset d JOIN di_management.office o ON o.t_id = d.owneroffice
                 WHERE
-                """ + SCOPE);
+                """ + DATASET_MANAGEMENT_SCOPE);
             if (!filters.search().isEmpty()) {
                 sql.append("""
                      AND (position(lower(#bind($search)) in lower(d.title)) > 0
@@ -104,7 +109,7 @@ public final class ManagementQueryService {
                    o.identifier AS office_identifier
             FROM di_management.office o
             WHERE EXISTS (SELECT 1 FROM di_management.dataset d WHERE d.owneroffice = o.t_id AND
-            """ + SCOPE + ") ORDER BY o.aname, o.abbreviation, o.identifier", identity)
+            """ + DATASET_MANAGEMENT_SCOPE + ") ORDER BY o.aname, o.abbreviation, o.identifier", identity)
             .stream().map(ManagementQueryService::datasetOffice).toList();
     }
 
@@ -178,7 +183,7 @@ public final class ManagementQueryService {
     });}
     public List<Map<String,Object>> requests(ActorContext actor,boolean own,int page){return runtime.performInTransaction(()->{
         var p=params(actor);p.put("offset",offset(page));
-        String filter=own?"p.aissuer=#bind($issuer) AND p.asubject=#bind($subject)":SCOPE+" AND r.astatus='pending'";
+        String filter=own?"p.aissuer=#bind($issuer) AND p.asubject=#bind($subject)":REQUEST_DECISION_SCOPE+" AND r.astatus='pending'";
         return rows(runtime.newContext(),AuthorityService.ELIGIBLE+"""
           SELECT r.t_ili_tid AS id,d.t_ili_tid AS dataset,d.title,r.astatus AS status,r.reason,r.requestedat,r.requestedvaliduntil,
                  r.row_version AS revision,p.t_ili_tid AS applicant,p.displayname,p.asubject AS subject
