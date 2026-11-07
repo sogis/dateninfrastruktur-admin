@@ -23,3 +23,12 @@ Datenbanktests benötigen die im jeweiligen Einstieg beschriebenen Werkzeuge.
 - [Schema und Audit](docs/schema-lifecycle.md)
 - [Lieferrechte und CSV-Annahme](docs/delivery-authorization.md)
 - [Management und Dateizugang](docs/management-web.md)
+
+## Oberfläche lokal entwickeln
+
+Der Dev-Stack schaltet Admin mit `./scripts/dev.sh admin on` auf Gradle
+`bootRun` um. CSS unter `src/main/resources/static/assets` und JTE
+unter `src/main/jte` bearbeiten und die Seite im Gateway neu laden.
+Der Entwicklungsmodus kompiliert Java-Änderungen und startet danach den
+Spring-Anwendungskontext neu. Die [Stack-Bedienung](../dateninfrastruktur-dev-stack/docs/operations.md#admin-aus-lokalen-quellen-entwickeln)
+beschreibt den Wechsel und die Rückkehr zum bisherigen Admin-Image.

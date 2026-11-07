@@ -24,6 +24,7 @@ dependencies {
     testImplementation 'com.microsoft.playwright:playwright:1.60.0'
     implementation 'org.apache.cayenne:cayenne:5.0-M3'
     runtimeOnly 'org.postgresql:postgresql'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
@@ -103,5 +104,14 @@ tasks.named('processResources') {
     from(System.getenv('DI_CSV_BUNDLE_ROOT') ?: '../dateninfrastruktur-themenrepo') {
         include 'contracts/**', 'models/*.ili'
         into 'ingestion'
+    }
+}
+
+// The development container keeps Gradle and JTE output outside the source mount.
+if (providers.gradleProperty('adminDevBuild').isPresent()) {
+    layout.buildDirectory.set(file(providers.gradleProperty('adminDevBuild').get()))
+    tasks.named('bootRun') {
+        workingDir '/dev-state'
+        args '--spring.profiles.active=admin-dev'
     }
 }
