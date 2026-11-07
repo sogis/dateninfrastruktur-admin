@@ -40,7 +40,8 @@ class ManagementHttpSecurityIT {
             try(var connection=f.admin.getConnection();var ps=connection.prepareStatement("SELECT g.t_ili_tid FROM di_management.accessgrant g JOIN di_management.accessdecision d ON d.t_id=g.grantingdecision WHERE d.t_ili_tid=?")){ps.setObject(1,decision);try(var rs=ps.executeQuery()){assertTrue(rs.next());grantId=rs.getObject(1,UUID.class);}}
             f.workflow.revoke(f.manager,ManagementFixture.command("revoke"),grantId,f.version("accessgrant",grantId),"HTTP-Entzug");
             assertEquals(403,send(request("/internal/authorization/check",token).header("X-DI-Gateway-Credential",System.getenv("DI_TEST_GATEWAY_SECRET")).header("X-Forwarded-Uri",path).header("X-Forwarded-Method","GET").GET()));
-            assertEquals(405,send(request("/management/datasets/"+root+"/publish",token).GET()));
+            // The read-only confirmation route still requires publication authority.
+            assertEquals(403,send(request("/management/datasets/"+root+"/publish",token).GET()));
             assertEquals(403,send(request("/internal/authorization/check",null).header("X-Forwarded-Uri",path).header("X-Forwarded-Method","GET").GET()));
             assertEquals(401,send(request("/internal/authorization/check",null).header("X-DI-Gateway-Credential",System.getenv("DI_TEST_GATEWAY_SECRET")).header("X-Forwarded-Uri",path).header("X-Forwarded-Method","GET").GET()));
             assertEquals(400,send(request("/internal/authorization/check",token).header("X-DI-Gateway-Credential",System.getenv("DI_TEST_GATEWAY_SECRET")).header("X-Forwarded-Uri",path+"?override=1").header("X-Forwarded-Method","GET").GET()));
