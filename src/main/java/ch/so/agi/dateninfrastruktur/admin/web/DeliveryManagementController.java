@@ -19,7 +19,13 @@ public final class DeliveryManagementController {
     private static CommandContext command(HttpServletRequest req,UUID id,String action,String reason){return new CommandContext(id,(UUID)req.getAttribute(RequestCorrelationFilter.ATTRIBUTE),action,reason);}
     private static Field field(String name,String label,String type,Object value){return new Field(name,label,type,value);}
     private static Field hidden(String name,Object value){return field(name,"","hidden",value);}
-    private static String page(Model model,HttpServletRequest req,String title,String intro,List<Entry> entries,List<Form> forms){model.addAttribute("page",new UiPage(title,intro,entries,forms));model.addAttribute("csrf",req.getAttribute("_csrf"));return "page";}
+    private static String page(Model model, HttpServletRequest req, String title, String intro,
+                               List<Entry> entries, List<Form> forms) {
+        model.addAttribute("page", new UiPage(title, intro, entries, forms));
+        model.addAttribute("section", NavigationSection.DELIVERY);
+        model.addAttribute("csrf", req.getAttribute("_csrf"));
+        return "page";
+    }
     private static SubmitterAdministrationService.Scope scope(String kind,UUID id){return switch(kind){case "datasets"->new SubmitterAdministrationService.Scope(null,id);case "offices"->new SubmitterAdministrationService.Scope(id,null);default->throw IngestionProblem.forbidden();};}
     @GetMapping("/management/delivery") String index(Authentication auth,Model model,HttpServletRequest req){var entries=new ArrayList<Entry>();for(boolean office:List.of(true,false))for(var row:query.scopes(actor(auth),office)){
         String path="/management/delivery/"+(office?"offices/":"datasets/")+row.get("id");if(office || authority.describe(actor(auth),UUID.fromString(row.get("id").toString())).submitters())entries.add(new Entry(row.get("title").toString(),path,Map.of("kind",office?"Amt":"Datensatz"),List.of()));
@@ -29,6 +35,7 @@ public final class DeliveryManagementController {
         var scope=scope(kind,id);var actor=actor(auth);var data=query.scope(actor,scope);String base="/management/delivery/"+kind+"/"+id;var entries=new ArrayList<Entry>();
         for(var row:query.assignments(actor,scope)){List<Form> forms=row.get("revokedat")==null?List.of(new Form("Lieferrecht entziehen",base+"/revoke",List.of(hidden("assignmentId",row.get("id")),hidden("expectedVersion",row.get("revision")),field("reason","Begründung","textarea","")),"Lieferrecht entziehen")):List.of();entries.add(new Entry("Lieferrecht",null,row,forms));}
         for(var p:query.principals(actor,scope,search)){var fields=new ArrayList<Field>(List.of(hidden("beneficiary",p.get("id")),hidden("expectedVersion",data.get("revision")),field("from","Gültig ab (UTC, optional)","text",""),field("until","Gültig bis (UTC, optional)","text",""),field("reason","Begründung","textarea","")));if(kind.equals("offices"))fields.add(field("officeConsent","Für alle heutigen und künftigen Datensätze dieses Amts bestätigen","checkbox",false));entries.add(new Entry("Bekannte Identität",null,p,List.of(new Form("Lieferrecht erteilen",base+"/grant",fields,"Lieferrecht erteilen"))));}
+        model.addAttribute("identitySearch", true);
         return page(model,req,"Lieferrechte verwalten",data.get("title")+". "+(kind.equals("offices")?"Amtsrechte gelten für alle heutigen und künftigen Datensätze des Amts. ":"")+"Lieferrechte erlauben keine Dateilektüre, Metadatenbearbeitung oder Rechteverwaltung.",entries,List.of());
     }
     private static Instant instant(String value){return value==null || value.isBlank()?null:Instant.parse(value);}

@@ -38,6 +38,16 @@ class ComposeAcceptanceIT {
     }
     void login(Page p,String path,String user){p.navigate(gateway+path);p.locator("#username").fill(user);p.locator("#password").fill(password);p.locator("#kc-login").click();p.waitForURL(gateway+"/**");}
     void submit(Locator form){form.locator("button[type=submit]").click();}
+    private void editPublishedTitle(Page page, String datasetPath, String newTitle) {
+        page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Metadaten bearbeiten")).click();
+        var form = page.locator("form[action='" + datasetPath + "/edit']");
+        form.locator("input[name=title]").fill(newTitle);
+        submit(form);
+        page.waitForURL(url -> {
+            var destination = URI.create(url);
+            return datasetPath.equals(destination.getPath()) && "result=saved".equals(destination.getQuery());
+        });
+    }
     String token(Browser browser,String user)throws Exception{
         // Use the normal confidential standard-flow client, with PKCE. The test
         // intercepts its own registered callback before APISIX consumes the code.
@@ -77,16 +87,20 @@ class ComposeAcceptanceIT {
             String anna=token(browser,"anna"),ben=token(browser,"ben");
             Path sensitive=fixturePath.resolveSibling("f4-tokens.json");Files.writeString(sensitive,json.writeValueAsString(Map.of("anna",anna,"ben",ben)));Files.setPosixFilePermissions(sensitive,PosixFilePermissions.fromString("rw-------"));
             var restricted=files.stream().filter(f->f.get("kind").equals("restricted")).toList();var open=files.stream().filter(f->f.get("kind").equals("open")).findFirst().orElseThrow();String path=restricted.getFirst().get("path").toString();
+            String datasetPath = "/management/datasets/" + fixture.get("restricted");
             if("true".equals(System.getenv("DI_COMPOSE_VERIFY_ONLY"))){
                 for(var file:restricted){status(403,get(file.get("path").toString(),"GET",anna,Map.of()));bytes(file,ben);}bytes(open,null);
                 var manager=managerContext.newPage();login(manager,"/management/datasets/"+fixture.get("restricted")+"/audit","claudia");assertTrue(manager.locator("main").innerText().contains("revoke"));
                 assertTrue(new String(get("/datasets/"+slug,"GET",null,Map.of()).body(),StandardCharsets.UTF_8).contains(title));
-                manager.navigate(gateway+"/management/datasets/"+fixture.get("restricted"));var edit=manager.locator("form[action$='/save-published']");edit.locator("input[name=title]").fill(title+" nach Recreate");submit(edit);manager.waitForURL("**/management/datasets/"+fixture.get("restricted"));
+                manager.navigate(gateway + datasetPath);
+                editPublishedTitle(manager, datasetPath, title + " nach Recreate");
                 assertTrue(new String(get("/datasets/"+slug,"GET",null,Map.of()).body(),StandardCharsets.UTF_8).contains(title+" nach Recreate"));
                 System.out.println("PASS F19: fresh normal OIDC login, same identities, active/revoked rights, historical bytes and changed metadata after true recreate");return;
             }
             bytes(open,null);status(401,get(path,"GET",null,Map.of()));status(403,get(path,"GET",anna,Map.of()));status(403,get(path,"GET",ben,Map.of()));
-            var manager=managerContext.newPage();login(manager,"/management/datasets/"+fixture.get("restricted"),"claudia");var edit=manager.locator("form[action$='/save-published']");edit.locator("input[name=title]").fill(title);submit(edit);manager.waitForURL("**/management/datasets/"+fixture.get("restricted"));
+            var manager = managerContext.newPage();
+            login(manager, datasetPath, "claudia");
+            editPublishedTitle(manager, datasetPath, title);
             var page=applicant.newPage();page.navigate(gateway+"/datasets/"+slug);assertTrue(page.locator("main").innerText().contains(title));page.locator("a[href^='/access/requests/new']").first().click();page.locator("#username").fill("anna");page.locator("#password").fill(password);page.locator("#kc-login").click();page.waitForURL("**/access/requests/new?*");
             var request=page.locator("form[action='/access/requests']");request.locator("textarea[name=reason]").fill("Own final Compose acceptance "+slug);submit(request);page.waitForURL("**/access/me");assertTrue(page.locator("main").innerText().contains("Offen"));
             manager.navigate(gateway+"/management/requests");var article=manager.locator("article").filter(new Locator.FilterOptions().setHasText(title));assertEquals(1,article.count());var approve=article.locator("form[action$='/approve']");approve.locator("textarea[name=reason]").fill("Own acceptance approval");submit(approve);manager.waitForURL("**/management/requests");

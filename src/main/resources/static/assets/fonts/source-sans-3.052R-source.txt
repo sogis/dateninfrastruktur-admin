@@ -1,0 +1,7 @@
+Source Sans 3 by Adobe. Release 3.052R, licensed under the SIL OFL 1.1.
+https://github.com/adobe-fonts/source-sans/releases/tag/3.052R
+Release commit ed1808970eb3c7301c9a523bee26473ba0bb62fa.
+Original asset WOFF2/VF/SourceSans3VF-Upright.ttf.woff2, copied unchanged
+from sogis/dateninfrastruktur-datenwerkstatt at
+87b25af0f05171166483da2b44e11b88e3b3301d.
+SHA-256 5f16566f7a40d39b339ad26be151fa5a1ab1f0c2574c7a2e619765584a1acbd8.
