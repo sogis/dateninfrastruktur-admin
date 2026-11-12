@@ -11,9 +11,6 @@ ENV DI_CSV_BUNDLE_ROOT=/opt/csv-registry
 COPY gradlew settings.gradle build.gradle ./
 COPY gradle ./gradle
 COPY src ./src
-COPY db ./db
-COPY models ./models
-COPY scripts/setup_explicit.py scripts/audit_setup.py scripts/verify_physical_mapping.py scripts/persistence_contract.py scripts/database_target.py ./scripts/
 RUN --mount=type=cache,target=/root/.gradle ./gradlew --no-daemon bootJar
 
 FROM ${JRE_IMAGE} AS jvm-runtime
@@ -39,11 +36,9 @@ RUN mkdir -p /runtime/tools && python3 -c "import sys;sys.path.insert(0,'scripts
 COPY --from=jvm-build /workspace/build/libs/dateninfrastruktur-admin.jar /opt/admin/app.jar
 COPY --from=stack_source services/garage/setup-compose.py /opt/stack-tools/setup_garage.py
 COPY --from=stack_source services/postgres/initialize-compose.py /opt/stack-tools/initialize_postgres.py
-COPY scripts/audit_setup.py scripts/persistence_contract.py scripts/setup_explicit.py scripts/verify_physical_mapping.py ./scripts/
-COPY db/audit-policy.json db/mapping-profile.json db/model-mapping.json db/ili2pg-reference-metadata.json db/persistence-contract.properties ./db/
-COPY db/schema ./db/schema
+COPY scripts/setup_explicit.py ./scripts/
+COPY sql/public_views.sql ./sql/
 COPY models ./models
-COPY src/main/resources/cayenne ./src/main/resources/cayenne
 ENTRYPOINT ["python3","/opt/admin/scripts/setup_explicit.py"]
 
 FROM jvm-build AS test-build

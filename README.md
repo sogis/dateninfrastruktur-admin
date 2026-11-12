@@ -5,10 +5,10 @@ und nimmt verifizierte CSV-Lieferungen an. Die Anwendung verwendet Java 25,
 Spring Boot und Apache Cayenne. INTERLIS ist die Quelle des Fachschemas.
 
 Der [gemeinsame Compose-Betrieb](../dateninfrastruktur-dev-stack/docs/operations.md)
-richtet die Management-Datenbank explizit ein. Das Toolimage prüft bei einem
-vorhandenen Stand Mapping, Audit und Schema-Vertrag. Der Normalstart ist
-gegenüber dem Schema lesend. Die Konfiguration bleibt im gebundenen
-Runtimeordner des Stack.
+richtet die Management-Datenbank explizit ein. Das Setup importiert die
+vier Modelle in einem ili2pg-Aufruf. Die freigegebenen Sichten entstehen
+im PostScript. Eine vorhandene Management-Datenbank wird lesend geprüft.
+Der Normalstart führt keine Schemaänderungen aus.
 
 ```sh
 ./gradlew test
@@ -21,7 +21,7 @@ HTTP-Sicherheit und Sodata-Katalogmutation bereit. Modellerzeugung und
 Datenbanktests benötigen die im jeweiligen Einstieg beschriebenen Werkzeuge.
 
 - [Modellinvarianten](models/constraints.md)
-- [Schema und Audit](docs/schema-lifecycle.md)
+- [Schema und XTF-Bootstrap](docs/schema-lifecycle.md)
 - [Lieferrechte und CSV-Annahme](docs/delivery-authorization.md)
 - [Management und Dateizugang](docs/management-web.md)
 

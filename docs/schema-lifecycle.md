@@ -1,56 +1,39 @@
-# Managementschema, Mapping und Audit
+# Managementschema und XTF
 
-Die Fachquelle liegt in `models/`. Stock-ili2pg erzeugt das physische Schema
-`di_management` mit den Optionen aus `db/mapping-profile.json`. Der reale
-Mappingvertrag ist in `db/model-mapping.json` festgehalten. Physische Bezeichner
-wie `akind` und `adescription` folgen der Mapperausgabe.
+Das explizite Compose-Setup legt auf einer leeren Management-Datenbank
+`di_management` mit den vier Managementmodellen `20261112` an. Das
+Werkzeugimage verwendet die in `db/toolchain.json` gepinnten Werkzeuge.
+Ein ili2pg-Schemaimport legt Fach- und Basket-Tabellen an. Sein
+[`--postScript`](../sql/public_views.sql) korrigiert die Text-TID-Breite,
+erzwingt Pflicht und Eindeutigkeit von Objekt-TIDs und erstellt die
+read-only Sichten in `di_api_public`. Der PostgreSQL-Treiber von ili2pg
+5.5.2 fragt beim Start PostGIS ab. `--setupPgExt` installiert die
+benötigten Erweiterungen für diese neue Datenbank.
 
-Das fachliche UUIDOID liegt in `t_ili_tid`, der technische Schlüssel in
-`t_id`. Cayenne reserviert Werte aus der gemeinsamen `t_ili2db_seq` auf
-derselben Transaktionsconnection. Die DataMap verwendet die geprüften
-PostgreSQL-Typen. `normalize_cayenne_uuid.py` setzt den Java-Typ ausschliesslich
-für die nachgewiesenen UUID-Spalten. Die generierten Basisklassen sind von
-den handgeschriebenen Unterklassen getrennt. Der normale Build introspektiert
-die Datenbank nicht.
+Wiederholtes Setup prüft den vorhandenen Stand lesend. Fremde,
+unvollständige und frühere Managementschemas werden abgewiesen.
+Die normalen Dienste installieren oder migrieren keine Tabellen.
 
-## Explizites Setup und Prüfung
+Für einen neuen, ausdrücklich gewählten Compose-Kontext eine private
+XTF-Datei im gebundenen Runtimeordner bereitstellen. Die
+[synthetische Vorlage](../tests/fixtures/management-bootstrap.xtf) dient
+isolierten Tests. Aus dem Dev-Stack-Checkout ausführen:
 
-Der [Compose-Betrieb](../../dateninfrastruktur-dev-stack/docs/operations.md)
-richtet die leere Management-Datenbank ausdrücklich ein. Die Baseline
-`management-20261106` bindet die Modelle, das Mappingprofil, die
-ili2pg-Referenzmetadaten und die technischen SQL-Schritte über
-`db/schema/manifest.json`. Nach dem Modellimport installiert der Aufbau
-Audit, Constraints, öffentliche Sichten, Anlieferungszustände und Rechte.
+```sh
+python3 scripts/compose_operator.py import "$runtime/management-bootstrap.xtf" --project "$project"
+python3 scripts/compose_operator.py export "$runtime/management-export.xtf" --project "$project"
+```
 
-`python3 scripts/persistence_contract.py --check` prüft die kanonischen
-Package-Properties aus dem Manifest. Gradle führt dieselbe Prüfung vor dem
-Packen aus. Setup prüft zusätzlich den tatsächlich installierten Vertrag,
-bevor es das erste Baseline-Ereignis und den Artefaktmarker einträgt. Beim
-erneuten Setup werden Mapping, Modellmetadaten, Struktur, Rechte, Trigger
-und Marker lesend verglichen. Ein nichtleerer unbekannter Zustand bricht ab.
+Der Import ist auf einen leeren Management-Basket-Bestand begrenzt.
+Er prüft den Transfer und die BIDs an Referenzen gegen die tatsächlichen
+Zielobjekte, validiert ihn mit ilivalidator und importiert mit
+`--importBid --importTid`. Der Export schreibt in eine neue private Datei
+und erhält die Objekt-TIDs und die Basket-BIDs.
 
-Java vergleicht beim Start den verpackten Artefaktdigest und den
-physischen Fingerprint. Letzterer umfasst die relevanten PostgreSQL-Kataloge
-einschliesslich ACLs, Constraints, Views, Indizes, Triggern, Sequenzbindungen
-und ili2pg-Metadaten. Er sortiert ACLs und berücksichtigt gleichwertige
-Darstellungen der bekannten CHECK-Literalarrays. Fachzeilen, Auditdaten,
-Sequenzstände und Importzeitpunkte gehören zum separaten Erhaltungsnachweis.
+Die PostgreSQL-Qualifikation startet ein eigenes Compose-Projekt,
+führt den echten Import/Export aus und räumt dessen Volumes am Schluss
+auf. Aus dem Dev-Stack-Checkout:
 
-Der normale Start führt keine DDL, Migration oder Fachseeds aus. Der
-Audit-Owner liest die Fachziele aus dem durch das Audit aufgelösten Pfad
-und benötigt kein direktes Leserecht an der CSV-Konfiguration. Änderungen
-am externen Principal-Issuer bleiben gesperrt.
-
-## Rollen und Audit
-
-`di_owner` und `di_audit_owner` sind NOLOGIN. Das Webbackend nutzt
-`di_writer` mit den erforderlichen DML- und Sequenzrechten. `di_authz` liest
-gezielt die Autorisierungsgrundlagen, `di_public` nur freigegebene
-`api_public`-Sichten. Rollen für Setup und explizite technische Änderungen
-sind vom Anwendungszugriff getrennt.
-
-Fachoperationen verwenden neue Cayenne-Kontexte. Audit-Actor und
-Command-Kontext werden in derselben physischen Verbindung wie die
-Fachmutation an die Transaktion gebunden. Fehlende Auditkontexte verhindern
-die Mutation. Freigaben und wirksame Zuständigkeiten werden für die
-jeweilige Operation aus dem aktuellen PostgreSQL-Stand ermittelt.
+```sh
+python3 scripts/test_management_bootstrap.py
+```

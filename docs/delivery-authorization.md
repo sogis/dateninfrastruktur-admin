@@ -5,25 +5,12 @@ Scope. Ein Amtsrecht umfasst auch künftige Datensätze des Amtes. Die Oberfläc
 fordert dafür eine ausdrückliche Bestätigung. `read_data`, Publikation,
 Metadatenpflege und SQL-Rechte werden getrennt vergeben.
 
-Der lokale Betreiber vergibt den ersten Lieferantenmanager nach externer Prüfung
-von Issuer und Subject. Aus dem Stack wird `python3 scripts/compose_operator.py
-bootstrap-submitters <private-anfrage.json>` ausgeführt. Der Request liegt im
-gebundenen Runtimeordner, gehört dem aufrufenden Benutzer und hat Modus 0600.
-Genau einer der beiden Scopes muss gesetzt sein.
+Die erste begrenzte `manage_submitters`-Zuweisung erfolgt über den
+[Management-XTF-Bootstrap](schema-lifecycle.md). Der Betreiber prüft
+Issuer und Subject der Person und trägt genau einen Scope ein, ein Amt
+oder einen Datensatz. Die OID eines Amtes ist eine Text-TID.
 
-```json
-{
-  "schemaVersion": 1,
-  "commandId": "<UUID>",
-  "officeId": "<UUID>",
-  "datasetId": null,
-  "verifiedIssuer": "<geprüfter Issuer>",
-  "verifiedSubject": "<geprüftes sub>",
-  "reason": "<Begründung>"
-}
-```
-
-Eine inaktive Identität wird dabei nicht reaktiviert. Admin prüft aktuelle
+Admin prüft aktuelle
 Lieferberechtigung an den servergebundenen Submissions und Ausführungen. Der
 Jenkinsjob verarbeitet den gebundenen Plan. Technische Jobparameter begründen
 keine Fachrechte.

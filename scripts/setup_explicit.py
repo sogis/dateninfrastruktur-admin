@@ -1,167 +1,235 @@
 #!/usr/bin/env python3
-"""Explicit empty management setup and read-only verification of the current baseline."""
+"""Create or inspect the explicit management schema and transfer bootstrap XTF."""
 import argparse
+import fcntl
 import json
 import os
-import pathlib
+from pathlib import Path
 import subprocess
-import tempfile
+import stat
+import sys
+from tempfile import NamedTemporaryFile, TemporaryDirectory
+from uuid import UUID
+from xml.etree import ElementTree as ET
 
-from audit_setup import ident, installation_sql, literal, resolve, verify as verify_audit
-from management_db import D, R, TARGET_MODE, sql
-from persistence_contract import PROPERTIES, calculate, input_path, load_manifest, physical_expected
-from verify_physical_mapping import verify as verify_mapping
+from database_target import connection
+from management_db import D, R, sql
 
-WRITER_ROLES=('di_writer','di_authz','di_public','di_audit_reader')
-OWNERS=('di_owner','di_audit_owner')
-STRUCTURAL=('di_ops.runtime_contract() AND di_ops.single_storage_contract() '
-            'AND di_ops.ingestion_contract() AND di_ops.management_web_contract()')
-
-
-def verify_structure():
-    physical=sql('SELECT di_ops.physical_fingerprint();')
-    if physical!=physical_expected() or sql(f'SELECT {STRUCTURAL};')!='t':
-        raise RuntimeError('Management schema, grants or trigger definitions differ from the current baseline')
-    verify_mapping()
-    verify_audit(resolve())
+SCHEMA = 'di_management'
+TOPICS = ('Organization', 'Catalog', 'Access', 'Delivery')
+MODELS = [f'SO_AGI_DataInfrastructure_{name}_20261112' for name in TOPICS]
+XTF = 'http://www.interlis.ch/xtf/2.4/'
+ILI = '{' + XTF + 'INTERLIS}'
+ROLES = ('di_writer', 'di_public')
+POST_SCRIPT = R / 'sql/public_views.sql'
+MAX_XTF_BYTES = 2 * 1024 * 1024
 
 
-def packaged_contract():
-    body,artifact=calculate()
-    if (R/PROPERTIES).read_bytes()!=body.encode('utf-8'):
-        raise RuntimeError('Packaged schema inputs and persistence contract differ')
-    return artifact
+def literal(value):
+    return "'" + value.replace("'", "''") + "'"
 
 
-def verify_existing(manifest, artifact):
-    marker=sql('SELECT di_ops.contract_fingerprint();')
-    baseline=literal(manifest['baseline'])
-    if marker!=artifact or sql(f'SELECT EXISTS(SELECT 1 FROM di_ops.schema_revision WHERE revision={baseline});')!='t':
-        raise RuntimeError('Management database is not marked as the current baseline')
-    verify_structure()
-    print('Current management baseline verified read-only')
+def tools():
+    versions = json.loads((R / 'db/toolchain.json').read_text())
+    return R / '.runtime/tools', versions
 
 
-def prepare_roles():
-    names=','.join(map(literal,OWNERS+WRITER_ROLES))
-    if sql(f'SELECT count(*) FROM pg_roles WHERE rolname IN ({names});')!='0':
-        raise RuntimeError('Existing cluster roles require an explicitly verified management installation')
-    commands=[f'CREATE ROLE {ident(role)} NOLOGIN;' for role in OWNERS]
-    for role in WRITER_ROLES:
-        password=os.environ.get(role.upper()+'_PASSWORD')
+def ili2pg(action, *options):
+    versions_dir, versions = tools()
+    jar = versions_dir / 'ili2pg' / f"ili2pg-{versions['ili2pg']['version']}.jar"
+    target = connection()
+    args = [
+        '-jar', str(jar), action, '--dbschema', SCHEMA, '--modeldir', str(R / 'models'),
+        '--dbhost', target['PGHOST'], '--dbport', target['PGPORT'],
+        '--dbdatabase', target['PGDATABASE'], '--dbusr', target['PGUSER'],
+        '--dbpwd', target['PGPASSWORD'], *options,
+    ]
+    with NamedTemporaryFile(mode='w', dir=D, suffix='.args') as arguments:
+        for argument in args:
+            arguments.write('"' + argument.replace('\\', '\\\\').replace('"', '\\"')
+                            .replace('\n', '\\n').replace('\r', '\\r') + '"\n')
+        arguments.flush()
+        result = subprocess.run(['java', '@' + arguments.name], capture_output=True, text=True)
+    if result.returncode:
+        # ili2pg may include connection parameters in diagnostics.
+        raise RuntimeError(f'Pinned ili2pg {action} failed (diagnostics withheld)')
+
+
+def verify():
+    if schemas() != {SCHEMA, 'di_api_public'}:
+        raise RuntimeError('Unknown, incomplete or legacy management schema')
+    if sql("SELECT to_regclass('di_management.t_ili2db_model') IS NOT NULL "
+           "AND to_regclass('di_management.t_ili2db_basket') IS NOT NULL;") != 't':
+        raise RuntimeError('Management schema lacks ili2pg model or basket tables')
+    present = set(sql("SELECT trim(split_part(modelname, '{', 1)) "
+                      'FROM di_management.t_ili2db_model;').splitlines())
+    if present != set(MODELS):
+        raise RuntimeError('Management model generation differs from the expected four models')
+    if sql("""
+        SELECT to_regclass('di_management.office') IS NOT NULL
+           AND to_regclass('di_management.dataset') IS NOT NULL
+           AND to_regclass('di_management.principal') IS NOT NULL
+           AND to_regclass('di_management.submission') IS NOT NULL
+           AND to_regclass('di_api_public.datasets') IS NOT NULL;
+    """) != 't':
+        raise RuntimeError('Management schema lacks required tables or public views')
+    print('Management models and schemas verified read-only')
+
+
+def schemas():
+    return set(sql("""
+        SELECT nspname FROM pg_namespace
+        WHERE nspname NOT IN ('pg_catalog','information_schema','public')
+          AND nspname NOT LIKE 'pg_toast%' AND nspname NOT LIKE 'pg_temp%';
+    """).splitlines())
+
+
+def setup():
+    if schemas():
+        verify()
+        return
+    if sql("""
+        SELECT EXISTS (SELECT 1 FROM pg_class WHERE relnamespace='public'::regnamespace)
+            OR EXISTS (SELECT 1 FROM pg_proc WHERE pronamespace='public'::regnamespace)
+            OR EXISTS (SELECT 1 FROM pg_type WHERE typnamespace='public'::regnamespace)
+            OR EXISTS (SELECT 1 FROM pg_extension WHERE extnamespace='public'::regnamespace);
+    """) != 'f':
+        raise RuntimeError('Refusing setup on a nonempty management database')
+    commands = []
+    for role in ROLES:
+        password = os.environ.get(role.upper() + '_PASSWORD')
         if not password:
             raise RuntimeError(f'Missing credential for {role}')
-        commands.append(f'CREATE ROLE {ident(role)} LOGIN PASSWORD {literal(password)} '
+        commands.append(f'CREATE ROLE {role} LOGIN PASSWORD {literal(password)} '
                         'NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS;')
-    role_list=','.join(map(ident,WRITER_ROLES))
-    commands+=['REVOKE ALL ON DATABASE dateninfrastruktur_management FROM PUBLIC;',
-               f'GRANT CONNECT ON DATABASE dateninfrastruktur_management TO {role_list};']
-    sql('BEGIN;'+''.join(commands)+'COMMIT;')
+    commands.append('REVOKE ALL ON DATABASE dateninfrastruktur_management FROM PUBLIC;')
+    commands.append('GRANT CONNECT ON DATABASE dateninfrastruktur_management TO di_writer, di_public;')
+    sql('BEGIN;' + ''.join(commands) + 'COMMIT;')
+    ili2pg('--schemaimport', '--models', ';'.join(MODELS), '--createBasketCol',
+           '--createTidCol', '--createFk', '--createFkIdx', '--createUnique',
+           '--createNumChecks', '--setupPgExt', '--postScript', str(POST_SCRIPT))
+    verify()
 
 
-def import_models(manifest):
-    profile=json.loads(input_path(R,manifest['artifacts']['profile.sha256']).read_text())
-    version=profile['tools']['ili2pg']['version']
-    jar=R/'.runtime/tools/ili2pg'/f'ili2pg-{version}.jar'
-    models=';'.join(pathlib.Path(p).stem for p in manifest['models'])
-    args=['-jar',str(jar),'--schemaimport','--dbhost',os.environ['PGHOST'],'--dbport',os.environ['PGPORT'],
-          '--dbdatabase',os.environ['PGDATABASE'],'--dbusr',os.environ['PGUSER'],'--dbpwd',os.environ['PGPASSWORD'],
-          '--dbschema','di_management','--models',models,'--modeldir',str(R/'models'),*profile['options']]
-    with tempfile.NamedTemporaryFile(mode='w',dir=D,suffix='.args',delete=False) as f:
-        f.write('\n'.join('"'+a.replace('\\','\\\\').replace('"','\\"').replace('\n','\\n')+'"' for a in args))
-        path=pathlib.Path(f.name)
-    try:
-        result=subprocess.run(['java','@'+str(path)],capture_output=True,text=True)
+def runtime_path(raw, *, existing):
+    root = Path('/runtime').resolve()
+    path = Path(raw)
+    if not path.is_absolute() or path != path.resolve():
+        raise RuntimeError('Use an absolute regular file in the selected runtime')
+    if not path.resolve().is_relative_to(root):
+        raise RuntimeError('Transfer path must remain within the selected runtime')
+    if existing:
+        if not path.is_file() or not 0 < path.stat().st_size <= MAX_XTF_BYTES:
+            raise RuntimeError('Use a nonempty, bounded regular XTF file')
+    elif path.exists() or not path.parent.is_dir():
+        raise RuntimeError('Export requires a new file in an existing runtime directory')
+    return path
+
+
+def transfer_ids(path):
+    data = path.read_bytes()
+    if b'\x00' in data or b'<!DOCTYPE' in data.upper():
+        raise RuntimeError('Bootstrap XTF cannot contain a DOCTYPE')
+    document = ET.fromstring(data.decode('utf-8'))
+    section = document.find(ILI + 'datasection')
+    if document.tag != ILI + 'transfer' or section is None:
+        raise RuntimeError('Expected an INTERLIS 2.4 transfer')
+    expected = {f'{{{XTF}{model}}}{topic}': f'{model}.{topic}'
+                for model, topic in zip(MODELS, TOPICS)}
+    baskets = {}
+    objects = {}
+    for basket in section:
+        bid = basket.get(ILI + 'bid')
+        if (basket.tag not in expected or not bid or str(UUID(bid)) != bid
+                or bid in baskets or expected[basket.tag] in baskets.values()):
+            raise RuntimeError('Unexpected, invalid or duplicate bootstrap basket')
+        baskets[bid] = expected[basket.tag]
+        for obj in basket:
+            tid = obj.get(ILI + 'tid')
+            if obj.tag == f'{{{XTF}{MODELS[1]}}}DatasetContact' and tid is None:
+                continue
+            if not tid or tid in objects:
+                raise RuntimeError('Missing, empty or duplicate object TID')
+            if expected[basket.tag] != f'{MODELS[0]}.Organization' and str(UUID(tid)) != tid:
+                raise RuntimeError('Expected a canonical UUID object TID')
+            objects[tid] = (bid, obj.tag)
+    if set(baskets.values()) != set(expected.values()):
+        raise RuntimeError('Bootstrap requires exactly one basket per management topic')
+    for element in section.iter():
+        tid = element.get(ILI + 'ref')
+        if tid is None:
+            continue
+        ref_bid = element.get(ILI + 'bid')
+        if tid not in objects or (ref_bid is not None and ref_bid != objects[tid][0]):
+            raise RuntimeError('Reference BID does not match its target object in the bootstrap')
+    return baskets, objects
+
+
+def bootstrap(path):
+    verify()
+    if sql('SELECT count(*) FROM di_management.t_ili2db_basket;') != '0':
+        raise RuntimeError('Bootstrap requires empty management baskets')
+    with NamedTemporaryFile(dir=D, suffix='.xtf') as snapshot:
+        descriptor = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+        with os.fdopen(descriptor, 'rb') as source:
+            mode = os.fstat(source.fileno()).st_mode
+            if not stat.S_ISREG(mode) or mode & 0o077:
+                raise RuntimeError('Import requires a private regular XTF file')
+            contents = source.read(MAX_XTF_BYTES + 1)
+        if not 0 < len(contents) <= MAX_XTF_BYTES:
+            raise RuntimeError('Bootstrap XTF exceeds the permitted size')
+        snapshot.write(contents)
+        snapshot.flush()
+        try:
+            transfer_ids(Path(snapshot.name))
+        except (ValueError, ET.ParseError) as error:
+            raise RuntimeError('Invalid XML or management UUID in bootstrap XTF') from error
+        directory, versions = tools()
+        jar = directory / 'ilivalidator' / f"ilivalidator-{versions['ilivalidator']['version']}.jar"
+        result = subprocess.run(['java', '-jar', str(jar), '--modeldir', str(R / 'models'),
+                                 '--forceTypeValidation', snapshot.name], capture_output=True)
         if result.returncode:
-            raise RuntimeError('Pinned ili2pg schema import failed')
-    finally:
-        path.unlink()
+            raise RuntimeError('Bootstrap XTF failed the pinned ilivalidator')
+        ili2pg('--import', '--importBid', '--importTid', snapshot.name)
+    print('Management bootstrap imported')
 
 
-def catalog_keys(policies):
-    commands=[]
-    for policy in policies:
-        name=policy['table']
-        table='di_management.'+ident(name)
-        commands+=['ALTER TABLE '+table+' ALTER COLUMN t_ili_tid SET NOT NULL;',
-                   'CREATE UNIQUE INDEX '+ident('di_uuid_'+name)+' ON '+table+'(t_ili_tid);']
-    return '\n'.join(commands)
+def export(path):
+    verify()
+    with TemporaryDirectory(dir=path.parent, prefix='.management-export-') as directory:
+        temporary = Path(directory) / 'export.xtf'
+        ili2pg('--export', '--models', ';'.join(MODELS), '--exportTid', str(temporary))
+        temporary.chmod(0o600)
+        os.link(temporary, path)
+    print('Management transfer exported')
 
 
-def catalog_triggers(policies):
-    commands=[]
-    for p in policies:
-        name=p['table']
-        table='di_management.'+ident(name)
-        if name in {'dataset','datasetissue','dataversion','accessdecision','accessgrant','groupmembership','accessrequest'}:
-            commands.append('CREATE CONSTRAINT TRIGGER di_validate_model AFTER INSERT OR UPDATE ON '+table+
-                ' DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE FUNCTION di_ops.validate_references();')
-        if name in {'dataset','datasetissue','dataversion','distribution','dataschema','attributedefinition','accessrequest'}:
-            commands.append('CREATE TRIGGER di_protect_delivery BEFORE UPDATE OR DELETE ON '+table+
-                ' FOR EACH ROW EXECUTE FUNCTION di_ops.protect_delivery();')
-        if name!='dataset' and p['dataset_path']:
-            commands.append('CREATE TRIGGER di_aggregate_revision AFTER INSERT OR UPDATE OR DELETE ON '+table+
-                ' FOR EACH ROW EXECUTE FUNCTION di_ops.touch_aggregate();')
-    return '\n'.join(commands)
-
-
-def install(manifest):
-    prepare_roles()
-    import_models(manifest)
-    policies=resolve()
-    for step in manifest['steps']:
-        if step=='audit_mapping':
-            body=installation_sql(policies)
-        elif step=='catalog_keys':
-            body=catalog_keys(policies)
-        elif step=='catalog_triggers':
-            body=catalog_triggers(policies)
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('action', choices=('setup', 'verify', 'import', 'export'))
+    parser.add_argument('file', nargs='?')
+    args = parser.parse_args()
+    connection()
+    if bool(args.file) != (args.action in ('import', 'export')):
+        parser.error('import and export require exactly one XTF path')
+    with (D / 'management-setup.lock').open('a') as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        if args.action == 'setup':
+            setup()
+        elif args.action == 'verify':
+            verify()
+        elif args.action == 'import':
+            bootstrap(runtime_path(args.file, existing=True))
         else:
-            body=input_path(R,step).read_text()
-        sql('BEGIN;\n'+body+'\nCOMMIT;')
+            export(runtime_path(args.file, existing=False))
 
 
-def require_empty():
-    if os.environ.get('PGDATABASE')!='dateninfrastruktur_management':
-        raise RuntimeError('Setup requires the bound management database')
-    unknown=sql("""
-        SELECT count(*) FROM pg_namespace
-        WHERE nspname NOT IN ('pg_catalog','information_schema','public')
-        AND nspname NOT LIKE 'pg_toast%' AND nspname NOT LIKE 'pg_temp%';
-    """)
-    public_objects=sql("""
-        SELECT (SELECT count(*) FROM pg_class WHERE relnamespace='public'::regnamespace)
-             + (SELECT count(*) FROM pg_proc WHERE pronamespace='public'::regnamespace)
-             + (SELECT count(*) FROM pg_type WHERE typnamespace='public'::regnamespace)
-             + (SELECT count(*) FROM pg_extension WHERE extnamespace='public'::regnamespace);
-    """)
-    if unknown!='0' or public_objects!='0':
-        raise RuntimeError('Refusing to install on a nonempty or partial management database')
-
-
-def setup(manifest, artifact):
-    if sql("SELECT to_regclass('di_ops.contract_fingerprint') IS NOT NULL;")=='t':
-        verify_existing(manifest,artifact)
-        return
-    require_empty()
-    install(manifest)
-    verify_structure()
-    baseline=literal(manifest['baseline'])
-    sql(f'BEGIN; INSERT INTO di_ops.schema_revision(revision) VALUES({baseline}); '
-        f'INSERT INTO di_ops.contract_fingerprint(singleton,fingerprint) VALUES(true,{literal(artifact)}); COMMIT;')
-    verify_existing(manifest,artifact)
-    print('Current empty management schema installed')
-
-
-if __name__=='__main__':
-    parser=argparse.ArgumentParser()
-    parser.add_argument('action',choices=['setup','verify'])
-    args=parser.parse_args()
-    if not TARGET_MODE:
-        raise RuntimeError('Setup or verify requires an explicit management database target')
-    manifest=load_manifest()
-    fingerprint=packaged_contract()
-    if args.action=='setup':
-        setup(manifest,fingerprint)
-    else:
-        verify_existing(manifest,fingerprint)
+if __name__ == '__main__':
+    try:
+        main()
+    except RuntimeError as error:
+        print(error, file=sys.stderr)
+        sys.exit(1)
+    except OSError:
+        print('Management setup or transfer could not access its private file', file=sys.stderr)
+        sys.exit(1)
