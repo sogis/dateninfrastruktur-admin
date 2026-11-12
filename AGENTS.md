@@ -8,11 +8,12 @@ repoübergreifende Aufträge zuerst den verifizierten Workspace bereitstellen.
 Dieses Repo besitzt Management, fachliche Autorisierung, CSV-Annahme,
 Publikation und PostgreSQL-Verträge. Java, Spring Boot und Apache Cayenne
 folgen den gepinnten Versionen. INTERLIS und gepinntes ili2pg erzeugen das
-Fachschema. Das physische Mapping, Audit und technische SQL-Definitionen
-gehören zum aktuellen Schema-Vertrag.
+Fachschema. Das physische Mapping und die öffentlichen SQL-Sichten gehören
+zum aktuellen Schema-Vertrag.
 
-Audit-Actor, Command und DML laufen auf derselben physischen Connection in
-einer expliziten äusseren Cayenne-Transaktion. Aktuelle Fachrechte am ganzen
+Fachentscheidungen und ihre DML laufen in einer kurzen Cayenne-Transaktion.
+Der Abschluss einer Submission sperrt und vergleicht die Basisversion in
+derselben Transaktion, die den neuen Stand freigibt. Aktuelle Fachrechte am ganzen
 Datensatz in der jeweiligen Operation prüfen. OIDC/JWT mit Issuer/Audience,
 Browser-CSRF und interne API-Grenzen erhalten. Die Authorization-API trifft
 Entscheide, die Auslieferung übernimmt der Origin.

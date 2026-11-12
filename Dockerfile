@@ -42,4 +42,4 @@ FROM jvm-build AS test-build
 RUN --mount=type=cache,target=/root/.gradle ./gradlew --no-daemon composeTestRuntime
 FROM tooling AS test-tools
 COPY --from=test-build /workspace/build/compose-test /opt/compose-test
-ENTRYPOINT ["java","-cp","/opt/compose-test/classes:/opt/compose-test/lib/*","ch.so.agi.dateninfrastruktur.admin.ComposeFixtureCommand"]
+ENTRYPOINT ["java","-cp","/opt/compose-test/classes:/opt/compose-test/lib/*"]
