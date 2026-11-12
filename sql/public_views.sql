@@ -47,7 +47,7 @@ FROM di_management.datasetissue i
 JOIN di_management.dataset root ON root.t_id=i.dataset
 JOIN di_api_public.datasets d ON d.id=root.t_ili_tid
 LEFT JOIN di_management.dataversion v
-    ON v.t_id=i.currentversion AND v.issue=i.t_id AND v.availability='available'
+    ON v.t_id=i.currentversion AND v.issue=i.t_id AND v.availability='available' AND v.validationstatus='success'
 WHERE i.publicationstatus='published';
 
 CREATE VIEW di_api_public.versions WITH (security_barrier=true) AS
@@ -60,7 +60,7 @@ FROM di_management.dataversion v
 JOIN di_management.datasetissue issue ON issue.t_id=v.issue
 JOIN di_api_public.issues i ON i.id=issue.t_ili_tid
 JOIN di_management.dataschema s ON s.t_id=v.aschema
-WHERE v.availability='available';
+WHERE v.availability='available' AND v.validationstatus='success';
 
 CREATE VIEW di_api_public.distributions WITH (security_barrier=true) AS
 SELECT x.t_ili_tid AS id, v.id AS version_id, x.aformat AS format, x.filename AS file_name,
@@ -70,7 +70,9 @@ FROM di_management.distribution x
 JOIN di_management.dataversion version ON version.t_id=x.version
 JOIN di_api_public.versions v ON v.id=version.t_ili_tid
 WHERE x.availability='available' AND x.bytesize IS NOT NULL AND x.sha256 ~ '^[0-9a-f]{64}$'
-  AND x.filename ~ '^[A-Za-z0-9][A-Za-z0-9._-]*$';
+  AND x.bytesize >= 0
+  AND x.filename ~ '^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$'
+  AND x.objectkey = 'downloads/' || x.t_ili_tid || '/' || x.filename;
 
 CREATE VIEW di_api_public.offices WITH (security_barrier=true) AS
 SELECT o.t_ili_tid AS id, o.identifier, o.aname AS name, o.abbreviation, o.email, o.phone, o.website

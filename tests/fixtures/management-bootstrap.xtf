@@ -107,7 +107,7 @@
         <catalog:availability>available</catalog:availability>
         <catalog:byteSize>10</catalog:byteSize>
         <catalog:sha256>abababababababababababababababababababababababababababababababab</catalog:sha256>
-        <catalog:objectKey>test-only/synthetic.csv</catalog:objectKey>
+        <catalog:objectKey>downloads/7706c1f8-f0f4-5c8b-8981-2a925be1f730/synthetic.csv</catalog:objectKey>
         <catalog:version ili:ref="698760fc-3052-5b39-bdf1-747efb4fb180" />
       </catalog:Distribution>
       <catalog:DataSchema ili:tid="ea5ab3e2-8260-53c2-aea4-ad1bcf6fbd32">

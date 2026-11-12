@@ -16,7 +16,9 @@ public final class JdbcAuthorizationRepository {
             SELECT d.t_id AS dataset_pk,d.t_ili_tid AS dataset_id,d.accesslevel,x.t_ili_tid AS distribution_id,x.filename
             FROM di_management.distribution x JOIN di_management.dataversion v ON v.t_id=x.version
             JOIN di_management.datasetissue i ON i.t_id=v.issue JOIN di_management.dataset d ON d.t_id=i.dataset
-            WHERE x.t_ili_tid=? AND x.filename=? AND x.availability='available' AND v.availability='available'
+            WHERE x.t_ili_tid=? AND x.filename=? AND x.availability='available' AND v.availability='available' AND v.validationstatus='success'
+              AND x.bytesize >= 0 AND x.sha256 ~ '^[0-9a-f]{64}$'
+              AND x.objectkey = 'downloads/' || x.t_ili_tid || '/' || x.filename
               AND i.publicationstatus='published' AND d.publicationstatus='published'),
           actor AS (SELECT t_id FROM di_management.principal WHERE aissuer=? AND asubject=?
             AND aactive AND akind IN ('user','service')),

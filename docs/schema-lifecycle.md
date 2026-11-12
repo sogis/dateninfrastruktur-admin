@@ -10,6 +10,12 @@ read-only Sichten in `di_api_public`. Der PostgreSQL-Treiber von ili2pg
 5.5.2 fragt beim Start PostGIS ab. `--setupPgExt` installiert die
 benötigten Erweiterungen für diese neue Datenbank.
 
+Sodata liest die Sichten mit `di_public`. Eine Distribution erscheint
+mit einem Gateway-Pfad, wenn Dataset und Ausgabe publiziert, Version und
+Datei verfügbar sowie Prüfsumme und Grösse vorhanden sind. Der gespeicherte
+private Key muss zum Pfad `downloads/<distribution-tid>/<dateiname>`
+passen. APISIX holt die Freigabe für jeden Abruf beim Admin ein.
+
 Wiederholtes Setup prüft den vorhandenen Stand lesend. Fremde,
 unvollständige und frühere Managementschemas werden abgewiesen.
 Die normalen Dienste installieren oder migrieren keine Tabellen.
