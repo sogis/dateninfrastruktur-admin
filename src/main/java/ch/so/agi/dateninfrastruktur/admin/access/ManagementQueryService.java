@@ -29,7 +29,7 @@ public final class ManagementQueryService {
     private static final int DATASET_PAGE_SIZE = 50;
     private static final int MAX_PAGE = 10_000;
 
-    public record DatasetFilters(String search, String publicationStatus, String accessLevel, UUID ownerOffice, int page) {
+    public record DatasetFilters(String search, String publicationStatus, String accessLevel, String ownerOffice, int page) {
         public DatasetFilters {
             search = normalize(search);
             publicationStatus = normalize(publicationStatus);
@@ -53,7 +53,7 @@ public final class ManagementQueryService {
         }
     }
 
-    public record DatasetOffice(UUID id, String name, String abbreviation, String identifier) {}
+    public record DatasetOffice(String id, String name, String abbreviation, String identifier) {}
     public record DatasetRow(UUID id, String identifier, String title, DatasetOffice office, String kind,
                              String publicationStatus, String accessLevel, LocalDate modified) {}
     public record DatasetPage(List<DatasetRow> rows, boolean hasNext, boolean hasPrevious, boolean hasDatasets,
@@ -90,7 +90,7 @@ public final class ManagementQueryService {
                 parameters.put("accessLevel", filters.accessLevel());
             }
             if (filters.ownerOffice() != null) {
-                sql.append(" AND o.t_ili_tid = CAST(#bind($ownerOffice) AS uuid)");
+                sql.append(" AND o.t_ili_tid = #bind($ownerOffice)");
                 parameters.put("ownerOffice", filters.ownerOffice().toString());
             }
             sql.append(" ORDER BY d.title, d.t_ili_tid LIMIT #bind($limit) OFFSET #bind($offset)");
@@ -120,7 +120,7 @@ public final class ManagementQueryService {
     }
 
     private static DatasetOffice datasetOffice(Map<String, Object> row) {
-        return new DatasetOffice(uuid(row, "office_id"), (String) row.get("office_name"),
+        return new DatasetOffice((String) row.get("office_id"), (String) row.get("office_name"),
             (String) row.get("office_abbreviation"), (String) row.get("office_identifier"));
     }
 
@@ -166,7 +166,7 @@ public final class ManagementQueryService {
                 JOIN di_management.dataset d ON d.t_id = k.dataset
                 WHERE d.t_ili_tid = CAST(#bind($id) AS uuid) ORDER BY keyword
                 """, parameters).stream().map(keyword -> (String) keyword.get("keyword")).toList();
-            var publisher = new DatasetOffice(uuid(row, "publisher_id"), (String) row.get("publisher_name"),
+            var publisher = new DatasetOffice((String) row.get("publisher_id"), (String) row.get("publisher_name"),
                 (String) row.get("publisher_abbreviation"), (String) row.get("publisher_identifier"));
             return new DatasetDetail(id, (String) row.get("identifier"), (String) row.get("title"),
                 (String) row.get("description"), (String) row.get("contactname"), (String) row.get("contactemail"),

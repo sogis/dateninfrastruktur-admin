@@ -4,12 +4,12 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.List;
-import java.util.UUID;
 
 import org.apache.cayenne.PersistentObject;
 import org.apache.cayenne.exp.property.BaseProperty;
 import org.apache.cayenne.exp.property.ListProperty;
 import org.apache.cayenne.exp.property.NumericIdProperty;
+import org.apache.cayenne.exp.property.NumericProperty;
 import org.apache.cayenne.exp.property.PropertyFactory;
 import org.apache.cayenne.exp.property.SelfProperty;
 import org.apache.cayenne.exp.property.StringProperty;
@@ -39,7 +39,8 @@ public abstract class _Office extends PersistentObject {
     public static final StringProperty<String> EMAIL = PropertyFactory.createString("email", String.class);
     public static final StringProperty<String> IDENTIFIER = PropertyFactory.createString("identifier", String.class);
     public static final StringProperty<String> PHONE = PropertyFactory.createString("phone", String.class);
-    public static final BaseProperty<UUID> T_ILI_TID = PropertyFactory.createBase("tIliTid", UUID.class);
+    public static final NumericProperty<Long> T_BASKET = PropertyFactory.createNumeric("tBasket", Long.class);
+    public static final StringProperty<String> T_ILI_TID = PropertyFactory.createString("tIliTid", String.class);
     public static final StringProperty<String> WEBSITE = PropertyFactory.createString("website", String.class);
     public static final ListProperty<Authorityassignment> AUTHORITYASSIGNMENTS = PropertyFactory.createList("authorityassignments", Authorityassignment.class);
     public static final ListProperty<Dataset> DATASETS = PropertyFactory.createList("datasets", Dataset.class);
@@ -51,7 +52,8 @@ public abstract class _Office extends PersistentObject {
     protected String email;
     protected String identifier;
     protected String phone;
-    protected UUID tIliTid;
+    protected long tBasket;
+    protected String tIliTid;
     protected String website;
 
     protected Object authorityassignments;
@@ -118,12 +120,22 @@ public abstract class _Office extends PersistentObject {
         return this.phone;
     }
 
-    public void setTIliTid(UUID tIliTid) {
+    public void setTBasket(long tBasket) {
+        beforePropertyWrite("tBasket", this.tBasket, tBasket);
+        this.tBasket = tBasket;
+    }
+
+    public long getTBasket() {
+        beforePropertyRead("tBasket");
+        return this.tBasket;
+    }
+
+    public void setTIliTid(String tIliTid) {
         beforePropertyWrite("tIliTid", this.tIliTid, tIliTid);
         this.tIliTid = tIliTid;
     }
 
-    public UUID getTIliTid() {
+    public String getTIliTid() {
         beforePropertyRead("tIliTid");
         return this.tIliTid;
     }
@@ -196,6 +208,8 @@ public abstract class _Office extends PersistentObject {
                 return this.identifier;
             case "phone":
                 return this.phone;
+            case "tBasket":
+                return this.tBasket;
             case "tIliTid":
                 return this.tIliTid;
             case "website":
@@ -236,8 +250,11 @@ public abstract class _Office extends PersistentObject {
             case "phone":
                 this.phone = (String)val;
                 break;
+            case "tBasket":
+                this.tBasket = val == null ? 0 : (long)val;
+                break;
             case "tIliTid":
-                this.tIliTid = (UUID)val;
+                this.tIliTid = (String)val;
                 break;
             case "website":
                 this.website = (String)val;
@@ -273,6 +290,7 @@ public abstract class _Office extends PersistentObject {
         out.writeObject(this.email);
         out.writeObject(this.identifier);
         out.writeObject(this.phone);
+        out.writeLong(this.tBasket);
         out.writeObject(this.tIliTid);
         out.writeObject(this.website);
         out.writeObject(this.authorityassignments);
@@ -289,7 +307,8 @@ public abstract class _Office extends PersistentObject {
         this.email = (String)in.readObject();
         this.identifier = (String)in.readObject();
         this.phone = (String)in.readObject();
-        this.tIliTid = (UUID)in.readObject();
+        this.tBasket = in.readLong();
+        this.tIliTid = (String)in.readObject();
         this.website = (String)in.readObject();
         this.authorityassignments = in.readObject();
         this.datasets = in.readObject();

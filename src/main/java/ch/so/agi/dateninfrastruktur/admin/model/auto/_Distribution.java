@@ -42,6 +42,7 @@ public abstract class _Distribution extends PersistentObject {
     public static final StringProperty<String> MEDIATYPE = PropertyFactory.createString("mediatype", String.class);
     public static final StringProperty<String> OBJECTKEY = PropertyFactory.createString("objectkey", String.class);
     public static final StringProperty<String> SHA256 = PropertyFactory.createString("sha256", String.class);
+    public static final NumericProperty<Long> T_BASKET = PropertyFactory.createNumeric("tBasket", Long.class);
     public static final BaseProperty<UUID> T_ILI_TID = PropertyFactory.createBase("tIliTid", UUID.class);
     public static final ListProperty<Catalogaction> CATALOGACTIONS = PropertyFactory.createList("catalogactions", Catalogaction.class);
     public static final EntityProperty<Dataversion> VERSION1 = PropertyFactory.createEntity("version1", Dataversion.class);
@@ -53,6 +54,7 @@ public abstract class _Distribution extends PersistentObject {
     protected String mediatype;
     protected String objectkey;
     protected String sha256;
+    protected long tBasket;
     protected UUID tIliTid;
 
     protected Object catalogactions;
@@ -128,6 +130,16 @@ public abstract class _Distribution extends PersistentObject {
         return this.sha256;
     }
 
+    public void setTBasket(long tBasket) {
+        beforePropertyWrite("tBasket", this.tBasket, tBasket);
+        this.tBasket = tBasket;
+    }
+
+    public long getTBasket() {
+        beforePropertyRead("tBasket");
+        return this.tBasket;
+    }
+
     public void setTIliTid(UUID tIliTid) {
         beforePropertyWrite("tIliTid", this.tIliTid, tIliTid);
         this.tIliTid = tIliTid;
@@ -180,6 +192,8 @@ public abstract class _Distribution extends PersistentObject {
                 return this.objectkey;
             case "sha256":
                 return this.sha256;
+            case "tBasket":
+                return this.tBasket;
             case "tIliTid":
                 return this.tIliTid;
             case "catalogactions":
@@ -219,6 +233,9 @@ public abstract class _Distribution extends PersistentObject {
             case "sha256":
                 this.sha256 = (String)val;
                 break;
+            case "tBasket":
+                this.tBasket = val == null ? 0 : (long)val;
+                break;
             case "tIliTid":
                 this.tIliTid = (UUID)val;
                 break;
@@ -251,6 +268,7 @@ public abstract class _Distribution extends PersistentObject {
         out.writeObject(this.mediatype);
         out.writeObject(this.objectkey);
         out.writeObject(this.sha256);
+        out.writeLong(this.tBasket);
         out.writeObject(this.tIliTid);
         out.writeObject(this.catalogactions);
         out.writeObject(this.version1);
@@ -266,6 +284,7 @@ public abstract class _Distribution extends PersistentObject {
         this.mediatype = (String)in.readObject();
         this.objectkey = (String)in.readObject();
         this.sha256 = (String)in.readObject();
+        this.tBasket = in.readLong();
         this.tIliTid = (UUID)in.readObject();
         this.catalogactions = in.readObject();
         this.version1 = in.readObject();

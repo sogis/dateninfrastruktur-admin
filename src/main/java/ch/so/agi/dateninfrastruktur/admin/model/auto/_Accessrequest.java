@@ -13,6 +13,7 @@ import org.apache.cayenne.exp.property.DateProperty;
 import org.apache.cayenne.exp.property.EntityProperty;
 import org.apache.cayenne.exp.property.ListProperty;
 import org.apache.cayenne.exp.property.NumericIdProperty;
+import org.apache.cayenne.exp.property.NumericProperty;
 import org.apache.cayenne.exp.property.PropertyFactory;
 import org.apache.cayenne.exp.property.SelfProperty;
 import org.apache.cayenne.exp.property.StringProperty;
@@ -41,6 +42,7 @@ public abstract class _Accessrequest extends PersistentObject {
     public static final StringProperty<String> REASON = PropertyFactory.createString("reason", String.class);
     public static final DateProperty<LocalDateTime> REQUESTEDAT = PropertyFactory.createDate("requestedat", LocalDateTime.class);
     public static final DateProperty<LocalDateTime> REQUESTEDVALIDUNTIL = PropertyFactory.createDate("requestedvaliduntil", LocalDateTime.class);
+    public static final NumericProperty<Long> T_BASKET = PropertyFactory.createNumeric("tBasket", Long.class);
     public static final BaseProperty<UUID> T_ILI_TID = PropertyFactory.createBase("tIliTid", UUID.class);
     public static final ListProperty<Accessdecision> ACCESSDECISIONS = PropertyFactory.createList("accessdecisions", Accessdecision.class);
     public static final EntityProperty<Principal> APPLICANT1 = PropertyFactory.createEntity("applicant1", Principal.class);
@@ -50,6 +52,7 @@ public abstract class _Accessrequest extends PersistentObject {
     protected String reason;
     protected LocalDateTime requestedat;
     protected LocalDateTime requestedvaliduntil;
+    protected long tBasket;
     protected UUID tIliTid;
 
     protected Object accessdecisions;
@@ -94,6 +97,16 @@ public abstract class _Accessrequest extends PersistentObject {
     public LocalDateTime getRequestedvaliduntil() {
         beforePropertyRead("requestedvaliduntil");
         return this.requestedvaliduntil;
+    }
+
+    public void setTBasket(long tBasket) {
+        beforePropertyWrite("tBasket", this.tBasket, tBasket);
+        this.tBasket = tBasket;
+    }
+
+    public long getTBasket() {
+        beforePropertyRead("tBasket");
+        return this.tBasket;
     }
 
     public void setTIliTid(UUID tIliTid) {
@@ -150,6 +163,8 @@ public abstract class _Accessrequest extends PersistentObject {
                 return this.requestedat;
             case "requestedvaliduntil":
                 return this.requestedvaliduntil;
+            case "tBasket":
+                return this.tBasket;
             case "tIliTid":
                 return this.tIliTid;
             case "accessdecisions":
@@ -181,6 +196,9 @@ public abstract class _Accessrequest extends PersistentObject {
                 break;
             case "requestedvaliduntil":
                 this.requestedvaliduntil = (LocalDateTime)val;
+                break;
+            case "tBasket":
+                this.tBasket = val == null ? 0 : (long)val;
                 break;
             case "tIliTid":
                 this.tIliTid = (UUID)val;
@@ -214,6 +232,7 @@ public abstract class _Accessrequest extends PersistentObject {
         out.writeObject(this.reason);
         out.writeObject(this.requestedat);
         out.writeObject(this.requestedvaliduntil);
+        out.writeLong(this.tBasket);
         out.writeObject(this.tIliTid);
         out.writeObject(this.accessdecisions);
         out.writeObject(this.applicant1);
@@ -227,6 +246,7 @@ public abstract class _Accessrequest extends PersistentObject {
         this.reason = (String)in.readObject();
         this.requestedat = (LocalDateTime)in.readObject();
         this.requestedvaliduntil = (LocalDateTime)in.readObject();
+        this.tBasket = in.readLong();
         this.tIliTid = (UUID)in.readObject();
         this.accessdecisions = in.readObject();
         this.applicant1 = in.readObject();

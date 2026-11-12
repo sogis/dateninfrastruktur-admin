@@ -30,14 +30,14 @@ public final class AuthorityService {
             """,Map.of("issuer",actor.issuer(),"subject",actor.subject(),"dataset",dataset.toString(),"capability",capability)).getFirst();
         return Boolean.TRUE.equals(row.get("allowed"));
     }
-    public void requireOffice(ObjectContext context,ActorContext actor,UUID office,String capability){
+    public void requireOffice(ObjectContext context,ActorContext actor,String office,String capability){
         boolean allowed=Boolean.TRUE.equals(CayenneSql.rows(context,ELIGIBLE+"""
             SELECT EXISTS(SELECT 1 FROM di_management.authorityassignment aa JOIN eligible e ON e.t_id=aa.principal
             JOIN di_management.office o ON o.t_id=aa.office CROSS JOIN di_now n
-            WHERE o.t_ili_tid=CAST(#bind($office) AS uuid) AND o.aactive AND aa.capability=#bind($capability)
+            WHERE o.t_ili_tid=#bind($office) AND o.aactive AND aa.capability=#bind($capability)
             AND aa.revokedat IS NULL AND aa.validfrom<=n.observed_at
             AND (aa.validuntil IS NULL OR n.observed_at<aa.validuntil)) AS allowed
-            """,Map.of("issuer",actor.issuer(),"subject",actor.subject(),"office",office.toString(),"capability",capability)).getFirst().get("allowed"));
+            """,Map.of("issuer",actor.issuer(),"subject",actor.subject(),"office",office,"capability",capability)).getFirst().get("allowed"));
         if(!allowed)throw BusinessException.forbidden();
     }
     public void require(ObjectContext context,ActorContext actor,UUID dataset,String capability){

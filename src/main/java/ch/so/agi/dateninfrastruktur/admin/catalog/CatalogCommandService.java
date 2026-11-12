@@ -23,7 +23,7 @@ public final class CatalogCommandService {
                 throw BusinessException.invalid("Bitte Titel, Beschreibung, gültigen E-Mail-Kontakt und erlaubte Themen/Schlagwörter angeben.");
         }
     }
-    public record Create(UUID ownerOffice,String identifier,String kind,Metadata metadata){}
+    public record Create(String ownerOffice,String identifier,String kind,Metadata metadata){}
     private final AuditedUnitOfWork unit;private final AuthorityService authority;
     private final AggregateWriteGuard guard=new AggregateWriteGuard();
     private final CommandReceiptRepository receipts=new CommandReceiptRepository();
@@ -38,14 +38,49 @@ public final class CatalogCommandService {
         authority.require(ctx,actor,id,capability);guard.lockDataset(ctx,id,version);authority.require(ctx,actor,id,capability);return ObjectSelect.query(Dataset.class).where(Dataset.T_ILI_TID.eq(id)).selectOne(ctx);
     }
     private void metadata(ObjectContext ctx,Dataset root,Metadata value){
-        root.setTitle(value.title());root.setAdescription(value.description());root.setContactname(value.contactName());root.setContactemail(value.contactEmail());
+        root.setTitle(value.title());
+        root.setAdescription(value.description());
         root.setModified(CayenneSql.now(ctx).toLocalDate());
-        for(var theme:new ArrayList<>(root.getDatasetthemes()))if(!value.themes().contains(theme.getTheme()))ctx.deleteObject(theme);
-        var existingThemes=root.getDatasetthemes().stream().map(Datasettheme::getTheme).collect(java.util.stream.Collectors.toSet());
-        for(String theme:value.themes())if(!existingThemes.contains(theme)){var row=ctx.newObject(Datasettheme.class);row.setTIliTid(UUID.randomUUID());row.setTheme(theme);row.setDataset1(root);}
-        for(var keyword:new ArrayList<>(root.getDatasetkeywords()))if(!value.keywords().contains(keyword.getKeyword()))ctx.deleteObject(keyword);
-        var existingKeywords=root.getDatasetkeywords().stream().map(Datasetkeyword::getKeyword).collect(java.util.stream.Collectors.toSet());
-        for(String keyword:value.keywords())if(!existingKeywords.contains(keyword)){var row=ctx.newObject(Datasetkeyword.class);row.setTIliTid(UUID.randomUUID());row.setKeyword(keyword);row.setDataset1(root);}
+        var current = root.primaryContact();
+        String name = value.contactName() == null || value.contactName().isBlank() ? value.contactEmail() : value.contactName();
+        if (current == null || !Objects.equals(current.getAname(), name)
+                || !Objects.equals(current.getEmail(), value.contactEmail())) {
+            var contact = ctx.newObject(Contactpoint.class);
+            contact.setTBasket(ManagementBaskets.require(ctx, ManagementBaskets.Topic.Organization));
+            contact.setTIliTid(UUID.randomUUID().toString());
+            contact.setAname(name);
+            contact.setEmail(value.contactEmail());
+            if (current != null) {
+                root.getDatasetcontacts().stream().filter(link -> link.getContactpoints1() == current)
+                    .findFirst().ifPresent(ctx::deleteObject);
+            }
+            var link = ctx.newObject(Datasetcontact.class);
+            link.setTBasket(root.getTBasket());
+            link.setDatasets1(root);
+            link.setContactpoints1(contact);
+        }
+        for (var entry : new ArrayList<>(root.getThemeentries())) {
+            if (!value.themes().contains(entry.getAcode())) ctx.deleteObject(entry);
+        }
+        var existingThemes = root.getThemeentries().stream().map(Themeentry::getAcode).collect(java.util.stream.Collectors.toSet());
+        for (String theme : value.themes()) {
+            if (existingThemes.contains(theme)) continue;
+            var entry = ctx.newObject(Themeentry.class);
+            entry.setTBasket(root.getTBasket());
+            entry.setAcode(theme);
+            entry.setDatasetThemes(root);
+        }
+        for (var entry : new ArrayList<>(root.getKeywordentries())) {
+            if (!value.keywords().contains(entry.getAvalue())) ctx.deleteObject(entry);
+        }
+        var existingKeywords = root.getKeywordentries().stream().map(Keywordentry::getAvalue).collect(java.util.stream.Collectors.toSet());
+        for (String keyword : value.keywords()) {
+            if (existingKeywords.contains(keyword)) continue;
+            var entry = ctx.newObject(Keywordentry.class);
+            entry.setTBasket(root.getTBasket());
+            entry.setAvalue(keyword);
+            entry.setDatasetKeywords(root);
+        }
     }
     public UUID createDraft(ActorContext actor,CommandContext command,Create input){
         if(input.identifier()==null || !input.identifier().matches("[A-Za-z0-9][A-Za-z0-9._-]{0,254}") || !Set.of("standalone","series").contains(input.kind()))throw BusinessException.invalid("Ungültiger Identifikator oder Datensatztyp.");
@@ -55,9 +90,9 @@ public final class CatalogCommandService {
                 throw new BusinessException(409, "DUPLICATE_DATASET_IDENTIFIER", "Diese Kennung ist bereits vergeben.");
             }
             var office=ObjectSelect.query(Office.class).where(Office.T_ILI_TID.eq(input.ownerOffice())).selectOne(ctx);
-            var root=ctx.newObject(Dataset.class);root.setTIliTid(UUID.randomUUID());root.setIdentifier(input.identifier());root.setAkind(input.kind());
+            var root=ctx.newObject(Dataset.class);root.setTBasket(ManagementBaskets.require(ctx, ManagementBaskets.Topic.Catalog));root.setTIliTid(UUID.randomUUID());root.setIdentifier(input.identifier());root.setAkind(input.kind());
             root.setOwneroffice1(office);root.setPublisheroffice1(office);root.setAccesslevel("restricted");root.setPublicationstatus("draft");metadata(ctx,root,input.metadata());
-            if("standalone".equals(input.kind())){var issue=ctx.newObject(Datasetissue.class);issue.setTIliTid(UUID.randomUUID());issue.setDataset1(root);issue.setIssuekey("default");issue.setLabel("Einzelangebot");issue.setPublicationstatus("draft");issue.setModified(CayenneSql.now(ctx).toLocalDate());root.setCurrentissue1(issue);}
+            if("standalone".equals(input.kind())){var issue=ctx.newObject(Datasetissue.class);issue.setTBasket(root.getTBasket());issue.setTIliTid(UUID.randomUUID());issue.setDataset1(root);issue.setIssuekey("default");issue.setLabel("Einzelangebot");issue.setPublicationstatus("draft");issue.setModified(CayenneSql.now(ctx).toLocalDate());root.setCurrentissue1(issue);}
             return root.getTIliTid();
         });
     }
@@ -78,7 +113,7 @@ public final class CatalogCommandService {
                 if(!"draft".equals(current))throw BusinessException.conflict("Nur Entwürfe können zur Prüfung eingereicht werden.");root.setPublicationstatus("in_review");
             }else if("publish".equals(action)){
                 if(!Set.of("draft","in_review").contains(current))throw BusinessException.conflict("Dieser Status kann nicht publiziert werden.");
-                new Metadata(root.getTitle(),root.getAdescription(),root.getContactname(),root.getContactemail(),new TreeSet<>(root.getDatasetthemes().stream().map(Datasettheme::getTheme).toList()),new TreeSet<>(root.getDatasetkeywords().stream().map(Datasetkeyword::getKeyword).toList()));
+                new Metadata(root.getTitle(),root.getAdescription(),root.primaryContact() == null ? null : root.primaryContact().getAname(),root.primaryContact() == null ? null : root.primaryContact().getEmail(),new TreeSet<>(root.getThemeentries().stream().map(Themeentry::getAcode).toList()),new TreeSet<>(root.getKeywordentries().stream().map(Keywordentry::getAvalue).toList()));
                 if(root.getDatasetissues().isEmpty())throw BusinessException.invalid("Vor der Publikation ist mindestens eine Ausgabe nötig.");
                 root.setPublicationstatus("published");
                 // Only the internal standalone issue follows the root's initial publication.
@@ -100,6 +135,6 @@ public final class CatalogCommandService {
     }
     private void action(ObjectContext ctx,ActorContext actor,CommandContext command,Dataset root,String code,String reason){
         if(reason==null || reason.isBlank() || reason.length()>4000)throw BusinessException.invalid("Bitte eine Begründung angeben.");
-        var row=ctx.newObject(Catalogaction.class);row.setTIliTid(UUID.randomUUID());row.setDataset1(root);row.setActor1(new PrincipalRepository().requireActive(ctx,actor));row.setCommandid(command.commandId());row.setActioncode(code);row.setReason(reason);row.setPerformedat(CayenneSql.now(ctx));
+        var row=ctx.newObject(Catalogaction.class);row.setTBasket(ManagementBaskets.require(ctx, ManagementBaskets.Topic.Access));row.setTIliTid(UUID.randomUUID());row.setDataset1(root);row.setActor1(new PrincipalRepository().requireActive(ctx,actor));row.setCommandid(command.commandId());row.setActioncode(code);row.setReason(reason);row.setPerformedat(CayenneSql.now(ctx));
     }
 }

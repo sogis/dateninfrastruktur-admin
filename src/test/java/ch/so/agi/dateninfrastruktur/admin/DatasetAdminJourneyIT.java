@@ -53,7 +53,7 @@ class DatasetAdminJourneyIT {
             assertEquals(1, create.count());
             assertEquals(fixture.office.toString(), create.locator("input[type=hidden][name=ownerOffice]").inputValue());
 
-            UUID secondOffice = grantSameNameOffice(fixture);
+            String secondOffice = grantSameNameOffice(fixture);
             assertEquals(200, manager.reload().status());
             assertEquals(1, create.count());
             var office = create.locator("select[name=ownerOffice]");
@@ -130,12 +130,12 @@ class DatasetAdminJourneyIT {
 
             var saved = dataset(fixture, series);
             assertEquals("Zeitreihe aus der Browserprüfung", saved.getTitle());
-            assertEquals("mailto:pflege@example.invalid", saved.getContactemail());
+            assertEquals("mailto:pflege@example.invalid", saved.primaryContact().getEmail());
             assertEquals("Importierter Erhebungsvermerk", saved.getSurveymethod());
             assertEquals("draft", saved.getPublicationstatus());
             assertEquals("restricted", saved.getAccesslevel());
-            assertEquals(2, saved.getDatasetkeywords().size());
-            assertEquals("Energie", saved.getDatasetthemes().getFirst().getTheme());
+            assertEquals(2, saved.getKeywordentries().size());
+            assertEquals("Energie", saved.getThemeentries().getFirst().getAcode());
 
             String issuePath = detailPath + "/issues";
             link(manager, "Ausgaben").click();
@@ -256,7 +256,7 @@ class DatasetAdminJourneyIT {
         assertEquals(Boolean.TRUE, page.evaluate("document.documentElement.scrollWidth <= innerWidth"));
     }
 
-    private static void assertForgedCreateForbidden(Page page, Locator request, ManagementFixture fixture, UUID office) {
+    private static void assertForgedCreateForbidden(Page page, Locator request, ManagementFixture fixture, String office) {
         UUID id = UUID.randomUUID();
         String identifier = "unbefugt-" + fixture.suffix;
         var reply = (Map<?, ?>) page.evaluate("""
@@ -284,12 +284,12 @@ class DatasetAdminJourneyIT {
             .selectCount(fixture.runtime.newContext()));
     }
 
-    private static UUID grantSameNameOffice(ManagementFixture fixture) {
+    private static String grantSameNameOffice(ManagementFixture fixture) {
         return fixture.unit.execute(fixture.manager, command("operator.bootstrap"), context -> {
             var principal = ObjectSelect.query(Principal.class).where(Principal.T_ILI_TID.eq(fixture.managerId))
                 .selectOne(context);
             var office = context.newObject(Office.class);
-            office.setTIliTid(UUID.randomUUID());
+            office.setTIliTid(UUID.randomUUID().toString());
             office.setIdentifier("office-journey-" + fixture.suffix);
             office.setAbbreviation("J" + fixture.suffix.substring(0, 7));
             office.setAname("Prüfamt");

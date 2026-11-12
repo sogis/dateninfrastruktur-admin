@@ -1,23 +1,30 @@
-"""Resolve M3 reverse-engineering's untyped PostgreSQL UUID attributes from verified SQL metadata."""
+"""Map PostgreSQL UUID attributes omitted by Cayenne reverse engineering."""
 from pathlib import Path
-import json, xml.etree.ElementTree as E
-R=Path(__file__).resolve().parents[1];p=R/'src/main/resources/cayenne/management.map.xml'
-n='http://cayenne.apache.org/schema/13/modelMap';E.register_namespace('',n);ns='{'+n+'}'
-m=json.loads((R/'db/model-mapping.json').read_text());types={(x['table_name'],x['column_name']):x['data_type'] for x in m['columns']}
-t=E.parse(p)
-for entity in t.getroot().findall(ns+'db-entity'):
- for a in entity.findall(ns+'db-attribute'):
-  if a.get('name')=='t_id':
-   column=next(x for x in m['columns'] if x['table_name']==entity.get('name') and x['column_name']=='t_id')
-   if column['data_type']!='bigint' or column['column_default']!="nextval('di_management.t_ili2db_seq'::regclass)":raise RuntimeError('Unknown ili2pg PK strategy')
-   a.attrib.pop('isGenerated',None)
-for entity in t.getroot().findall(ns+'obj-entity'):
- for a in entity.findall(ns+'obj-attribute'):
-  if a.get('db-attribute-path') in ('t_createdate','t_lastchange','t_user','row_version'):
-   entity.remove(a)
-   continue
-  if not a.get('type'):
-   key=(entity.get('dbEntityName'),a.get('db-attribute-path'))
-   if types.get(key)!='uuid':raise RuntimeError('Unresolved non-UUID mapping: '+str(key))
-   a.set('type','java.util.UUID')
-E.indent(t,space='\t');t.write(p,encoding='utf-8',xml_declaration=True)
+from xml.etree import ElementTree as ET
+
+MAP = Path(__file__).resolve().parents[1] / 'src/main/resources/cayenne/management.map.xml'
+NAMESPACE = 'http://cayenne.apache.org/schema/13/modelMap'
+NS = '{' + NAMESPACE + '}'
+ET.register_namespace('', NAMESPACE)
+
+tree = ET.parse(MAP)
+root = tree.getroot()
+columns = {}
+for entity in root.findall(NS + 'db-entity'):
+    if entity.get('schema') != 'di_management':
+        raise RuntimeError('Unexpected Cayenne schema')
+    for attribute in entity.findall(NS + 'db-attribute'):
+        name = attribute.get('name')
+        columns[entity.get('name'), name] = attribute.get('type')
+
+for entity in root.findall(NS + 'obj-entity'):
+    for attribute in entity.findall(NS + 'obj-attribute'):
+        if attribute.get('type') is None:
+            table = entity.get('dbEntityName')
+            column = attribute.get('db-attribute-path')
+            if column not in ('t_ili_tid', 'commandid') or columns[table, column] != 'OTHER':
+                raise RuntimeError(f'Unexpected unmapped JDBC type: {table}.{column}')
+            attribute.set('type', 'java.util.UUID')
+
+ET.indent(tree, space='\t')
+tree.write(MAP, encoding='utf-8', xml_declaration=True)

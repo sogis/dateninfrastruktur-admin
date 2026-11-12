@@ -11,6 +11,7 @@ import org.apache.cayenne.exp.property.BaseProperty;
 import org.apache.cayenne.exp.property.DateProperty;
 import org.apache.cayenne.exp.property.EntityProperty;
 import org.apache.cayenne.exp.property.NumericIdProperty;
+import org.apache.cayenne.exp.property.NumericProperty;
 import org.apache.cayenne.exp.property.PropertyFactory;
 import org.apache.cayenne.exp.property.SelfProperty;
 import org.apache.cayenne.exp.property.StringProperty;
@@ -39,6 +40,7 @@ public abstract class _Authorityassignment extends PersistentObject {
     public static final StringProperty<String> REASON = PropertyFactory.createString("reason", String.class);
     public static final StringProperty<String> REVOCATIONREASON = PropertyFactory.createString("revocationreason", String.class);
     public static final DateProperty<LocalDateTime> REVOKEDAT = PropertyFactory.createDate("revokedat", LocalDateTime.class);
+    public static final NumericProperty<Long> T_BASKET = PropertyFactory.createNumeric("tBasket", Long.class);
     public static final BaseProperty<UUID> T_ILI_TID = PropertyFactory.createBase("tIliTid", UUID.class);
     public static final DateProperty<LocalDateTime> VALIDFROM = PropertyFactory.createDate("validfrom", LocalDateTime.class);
     public static final DateProperty<LocalDateTime> VALIDUNTIL = PropertyFactory.createDate("validuntil", LocalDateTime.class);
@@ -52,6 +54,7 @@ public abstract class _Authorityassignment extends PersistentObject {
     protected String reason;
     protected String revocationreason;
     protected LocalDateTime revokedat;
+    protected long tBasket;
     protected UUID tIliTid;
     protected LocalDateTime validfrom;
     protected LocalDateTime validuntil;
@@ -100,6 +103,16 @@ public abstract class _Authorityassignment extends PersistentObject {
     public LocalDateTime getRevokedat() {
         beforePropertyRead("revokedat");
         return this.revokedat;
+    }
+
+    public void setTBasket(long tBasket) {
+        beforePropertyWrite("tBasket", this.tBasket, tBasket);
+        this.tBasket = tBasket;
+    }
+
+    public long getTBasket() {
+        beforePropertyRead("tBasket");
+        return this.tBasket;
     }
 
     public void setTIliTid(UUID tIliTid) {
@@ -187,6 +200,8 @@ public abstract class _Authorityassignment extends PersistentObject {
                 return this.revocationreason;
             case "revokedat":
                 return this.revokedat;
+            case "tBasket":
+                return this.tBasket;
             case "tIliTid":
                 return this.tIliTid;
             case "validfrom":
@@ -226,6 +241,9 @@ public abstract class _Authorityassignment extends PersistentObject {
                 break;
             case "revokedat":
                 this.revokedat = (LocalDateTime)val;
+                break;
+            case "tBasket":
+                this.tBasket = val == null ? 0 : (long)val;
                 break;
             case "tIliTid":
                 this.tIliTid = (UUID)val;
@@ -271,6 +289,7 @@ public abstract class _Authorityassignment extends PersistentObject {
         out.writeObject(this.reason);
         out.writeObject(this.revocationreason);
         out.writeObject(this.revokedat);
+        out.writeLong(this.tBasket);
         out.writeObject(this.tIliTid);
         out.writeObject(this.validfrom);
         out.writeObject(this.validuntil);
@@ -288,6 +307,7 @@ public abstract class _Authorityassignment extends PersistentObject {
         this.reason = (String)in.readObject();
         this.revocationreason = (String)in.readObject();
         this.revokedat = (LocalDateTime)in.readObject();
+        this.tBasket = in.readLong();
         this.tIliTid = (UUID)in.readObject();
         this.validfrom = (LocalDateTime)in.readObject();
         this.validuntil = (LocalDateTime)in.readObject();

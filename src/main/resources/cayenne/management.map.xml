@@ -11,13 +11,10 @@
 		<db-attribute name="decidedat" type="TIMESTAMP" isMandatory="true" length="29" />
 		<db-attribute name="reason" type="VARCHAR" isMandatory="true" />
 		<db-attribute name="request" type="BIGINT" length="19" />
-		<db-attribute name="row_version" type="BIGINT" isMandatory="true" length="19" />
 		<db-attribute name="supersedes" type="BIGINT" length="19" />
-		<db-attribute name="t_createdate" type="TIMESTAMP" isMandatory="true" length="29" />
-		<db-attribute name="t_id" type="BIGINT" isPrimaryKey="true" isMandatory="true" length="19" />
+		<db-attribute name="t_basket" type="BIGINT" isMandatory="true" length="19" />
+		<db-attribute name="t_id" type="BIGINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="19" />
 		<db-attribute name="t_ili_tid" type="OTHER" isMandatory="true" length="2147483647" />
-		<db-attribute name="t_lastchange" type="TIMESTAMP" isMandatory="true" length="29" />
-		<db-attribute name="t_user" type="VARCHAR" isMandatory="true" length="40" />
 	</db-entity>
 	<db-entity name="accessgrant" schema="di_management">
 		<db-attribute name="beneficiary" type="BIGINT" isMandatory="true" length="19" />
@@ -26,12 +23,9 @@
 		<db-attribute name="permission" type="VARCHAR" isMandatory="true" length="255" />
 		<db-attribute name="revocationdecision" type="BIGINT" length="19" />
 		<db-attribute name="revokedat" type="TIMESTAMP" length="29" />
-		<db-attribute name="row_version" type="BIGINT" isMandatory="true" length="19" />
-		<db-attribute name="t_createdate" type="TIMESTAMP" isMandatory="true" length="29" />
-		<db-attribute name="t_id" type="BIGINT" isPrimaryKey="true" isMandatory="true" length="19" />
+		<db-attribute name="t_basket" type="BIGINT" isMandatory="true" length="19" />
+		<db-attribute name="t_id" type="BIGINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="19" />
 		<db-attribute name="t_ili_tid" type="OTHER" isMandatory="true" length="2147483647" />
-		<db-attribute name="t_lastchange" type="TIMESTAMP" isMandatory="true" length="29" />
-		<db-attribute name="t_user" type="VARCHAR" isMandatory="true" length="40" />
 		<db-attribute name="validfrom" type="TIMESTAMP" isMandatory="true" length="29" />
 		<db-attribute name="validuntil" type="TIMESTAMP" length="29" />
 	</db-entity>
@@ -42,12 +36,9 @@
 		<db-attribute name="reason" type="VARCHAR" isMandatory="true" />
 		<db-attribute name="requestedat" type="TIMESTAMP" isMandatory="true" length="29" />
 		<db-attribute name="requestedvaliduntil" type="TIMESTAMP" length="29" />
-		<db-attribute name="row_version" type="BIGINT" isMandatory="true" length="19" />
-		<db-attribute name="t_createdate" type="TIMESTAMP" isMandatory="true" length="29" />
-		<db-attribute name="t_id" type="BIGINT" isPrimaryKey="true" isMandatory="true" length="19" />
+		<db-attribute name="t_basket" type="BIGINT" isMandatory="true" length="19" />
+		<db-attribute name="t_id" type="BIGINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="19" />
 		<db-attribute name="t_ili_tid" type="OTHER" isMandatory="true" length="2147483647" />
-		<db-attribute name="t_lastchange" type="TIMESTAMP" isMandatory="true" length="29" />
-		<db-attribute name="t_user" type="VARCHAR" isMandatory="true" length="40" />
 	</db-entity>
 	<db-entity name="attributedefinition" schema="di_management">
 		<db-attribute name="adescription" type="VARCHAR" />
@@ -55,15 +46,27 @@
 		<db-attribute name="aschema" type="BIGINT" isMandatory="true" length="19" />
 		<db-attribute name="codelist" type="VARCHAR" length="1023" />
 		<db-attribute name="datatype" type="VARCHAR" isMandatory="true" length="255" />
+		<db-attribute name="datemaximum" type="DATE" length="13" />
+		<db-attribute name="dateminimum" type="DATE" length="13" />
+		<db-attribute name="datetimemaximum" type="TIMESTAMP" length="29" />
+		<db-attribute name="datetimeminimum" type="TIMESTAMP" length="29" />
+		<db-attribute name="decimalplaces" type="INTEGER" length="10" />
 		<db-attribute name="mandatory" type="BIT" isMandatory="true" length="1" />
+		<db-attribute name="maxlength" type="INTEGER" length="10" />
+		<db-attribute name="numericmaximum" type="NUMERIC" length="27" scale="9" />
+		<db-attribute name="numericminimum" type="NUMERIC" length="27" scale="9" />
 		<db-attribute name="ordinal" type="INTEGER" isMandatory="true" length="10" />
-		<db-attribute name="row_version" type="BIGINT" isMandatory="true" length="19" />
-		<db-attribute name="t_createdate" type="TIMESTAMP" isMandatory="true" length="29" />
-		<db-attribute name="t_id" type="BIGINT" isPrimaryKey="true" isMandatory="true" length="19" />
+		<db-attribute name="t_basket" type="BIGINT" isMandatory="true" length="19" />
+		<db-attribute name="t_id" type="BIGINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="19" />
 		<db-attribute name="t_ili_tid" type="OTHER" isMandatory="true" length="2147483647" />
-		<db-attribute name="t_lastchange" type="TIMESTAMP" isMandatory="true" length="29" />
-		<db-attribute name="t_user" type="VARCHAR" isMandatory="true" length="40" />
 		<db-attribute name="unit" type="VARCHAR" length="255" />
+	</db-entity>
+	<db-entity name="attributedefinition_enumvalues" schema="di_management">
+		<db-attribute name="attributedefinition_enumvalues" type="BIGINT" isMandatory="true" length="19" />
+		<db-attribute name="enumvalues" type="VARCHAR" length="255" />
+		<db-attribute name="t_basket" type="BIGINT" isMandatory="true" length="19" />
+		<db-attribute name="t_id" type="BIGINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="19" />
+		<db-attribute name="t_seq" type="BIGINT" length="19" />
 	</db-entity>
 	<db-entity name="authorityassignment" schema="di_management">
 		<db-attribute name="assignedby" type="BIGINT" isMandatory="true" length="19" />
@@ -75,12 +78,9 @@
 		<db-attribute name="revocationreason" type="VARCHAR" />
 		<db-attribute name="revokedat" type="TIMESTAMP" length="29" />
 		<db-attribute name="revokedby" type="BIGINT" length="19" />
-		<db-attribute name="row_version" type="BIGINT" isMandatory="true" length="19" />
-		<db-attribute name="t_createdate" type="TIMESTAMP" isMandatory="true" length="29" />
-		<db-attribute name="t_id" type="BIGINT" isPrimaryKey="true" isMandatory="true" length="19" />
+		<db-attribute name="t_basket" type="BIGINT" isMandatory="true" length="19" />
+		<db-attribute name="t_id" type="BIGINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="19" />
 		<db-attribute name="t_ili_tid" type="OTHER" isMandatory="true" length="2147483647" />
-		<db-attribute name="t_lastchange" type="TIMESTAMP" isMandatory="true" length="29" />
-		<db-attribute name="t_user" type="VARCHAR" isMandatory="true" length="40" />
 		<db-attribute name="validfrom" type="TIMESTAMP" isMandatory="true" length="29" />
 		<db-attribute name="validuntil" type="TIMESTAMP" length="29" />
 	</db-entity>
@@ -94,52 +94,37 @@
 		<db-attribute name="initiator" type="BIGINT" length="19" />
 		<db-attribute name="performedat" type="TIMESTAMP" isMandatory="true" length="29" />
 		<db-attribute name="reason" type="VARCHAR" isMandatory="true" />
-		<db-attribute name="row_version" type="BIGINT" isMandatory="true" length="19" />
-		<db-attribute name="t_createdate" type="TIMESTAMP" isMandatory="true" length="29" />
-		<db-attribute name="t_id" type="BIGINT" isPrimaryKey="true" isMandatory="true" length="19" />
+		<db-attribute name="t_basket" type="BIGINT" isMandatory="true" length="19" />
+		<db-attribute name="t_id" type="BIGINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="19" />
 		<db-attribute name="t_ili_tid" type="OTHER" isMandatory="true" length="2147483647" />
-		<db-attribute name="t_lastchange" type="TIMESTAMP" isMandatory="true" length="29" />
-		<db-attribute name="t_user" type="VARCHAR" isMandatory="true" length="40" />
 	</db-entity>
-	<db-entity name="csvdeliveryconfiguration" schema="di_management">
-		<db-attribute name="allowedmodes" type="VARCHAR" isMandatory="true" length="255" />
-		<db-attribute name="aschema" type="BIGINT" isMandatory="true" length="19" />
-		<db-attribute name="automaticpublication" type="BIT" isMandatory="true" length="1" />
-		<db-attribute name="dataset" type="BIGINT" isMandatory="true" length="19" />
-		<db-attribute name="definitionkey" type="VARCHAR" isMandatory="true" length="128" />
-		<db-attribute name="definitionsha256" type="VARCHAR" isMandatory="true" length="64" />
-		<db-attribute name="enabled" type="BIT" isMandatory="true" length="1" />
-		<db-attribute name="row_version" type="BIGINT" isMandatory="true" length="19" />
-		<db-attribute name="t_createdate" type="TIMESTAMP" isMandatory="true" length="29" />
-		<db-attribute name="t_id" type="BIGINT" isPrimaryKey="true" isMandatory="true" length="19" />
-		<db-attribute name="t_ili_tid" type="OTHER" isMandatory="true" length="2147483647" />
-		<db-attribute name="t_lastchange" type="TIMESTAMP" isMandatory="true" length="29" />
-		<db-attribute name="t_user" type="VARCHAR" isMandatory="true" length="40" />
+	<db-entity name="contactpoint" schema="di_management">
+		<db-attribute name="aname" type="VARCHAR" isMandatory="true" length="255" />
+		<db-attribute name="email" type="VARCHAR" length="1023" />
+		<db-attribute name="phone" type="VARCHAR" length="64" />
+		<db-attribute name="t_basket" type="BIGINT" isMandatory="true" length="19" />
+		<db-attribute name="t_id" type="BIGINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="19" />
+		<db-attribute name="t_ili_tid" type="VARCHAR" isMandatory="true" length="1024" />
+		<db-attribute name="unit" type="VARCHAR" length="255" />
+		<db-attribute name="url" type="VARCHAR" length="1023" />
 	</db-entity>
 	<db-entity name="dataschema" schema="di_management">
 		<db-attribute name="adescription" type="VARCHAR" />
+		<db-attribute name="akind" type="VARCHAR" isMandatory="true" length="255" />
 		<db-attribute name="identifier" type="VARCHAR" isMandatory="true" length="255" />
-		<db-attribute name="modelname" type="VARCHAR" length="255" />
-		<db-attribute name="modelsha256" type="VARCHAR" length="64" />
+		<db-attribute name="minimumobjectcount" type="INTEGER" length="10" />
+		<db-attribute name="modelname" type="VARCHAR" isMandatory="true" length="255" />
 		<db-attribute name="modeluri" type="VARCHAR" length="1023" />
 		<db-attribute name="modelversion" type="VARCHAR" length="100" />
-		<db-attribute name="row_version" type="BIGINT" isMandatory="true" length="19" />
-		<db-attribute name="t_createdate" type="TIMESTAMP" isMandatory="true" length="29" />
-		<db-attribute name="t_id" type="BIGINT" isPrimaryKey="true" isMandatory="true" length="19" />
+		<db-attribute name="t_basket" type="BIGINT" isMandatory="true" length="19" />
+		<db-attribute name="t_id" type="BIGINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="19" />
 		<db-attribute name="t_ili_tid" type="OTHER" isMandatory="true" length="2147483647" />
-		<db-attribute name="t_lastchange" type="TIMESTAMP" isMandatory="true" length="29" />
-		<db-attribute name="t_user" type="VARCHAR" isMandatory="true" length="40" />
 	</db-entity>
 	<db-entity name="dataset" schema="di_management">
 		<db-attribute name="accesslevel" type="VARCHAR" isMandatory="true" length="255" />
 		<db-attribute name="adescription" type="VARCHAR" isMandatory="true" />
 		<db-attribute name="akind" type="VARCHAR" isMandatory="true" length="255" />
 		<db-attribute name="auxiliarydata" type="VARCHAR" />
-		<db-attribute name="contactemail" type="VARCHAR" isMandatory="true" length="1023" />
-		<db-attribute name="contactname" type="VARCHAR" length="255" />
-		<db-attribute name="contactphone" type="VARCHAR" length="64" />
-		<db-attribute name="contactunit" type="VARCHAR" length="255" />
-		<db-attribute name="contacturl" type="VARCHAR" length="1023" />
 		<db-attribute name="currentissue" type="BIGINT" length="19" />
 		<db-attribute name="dataavailablefrom" type="VARCHAR" length="255" />
 		<db-attribute name="frequency" type="VARCHAR" length="255" />
@@ -152,16 +137,20 @@
 		<db-attribute name="owneroffice" type="BIGINT" isMandatory="true" length="19" />
 		<db-attribute name="publicationstatus" type="VARCHAR" isMandatory="true" length="255" />
 		<db-attribute name="publisheroffice" type="BIGINT" isMandatory="true" length="19" />
-		<db-attribute name="row_version" type="BIGINT" isMandatory="true" length="19" />
 		<db-attribute name="surveymethod" type="VARCHAR" />
-		<db-attribute name="t_createdate" type="TIMESTAMP" isMandatory="true" length="29" />
-		<db-attribute name="t_id" type="BIGINT" isPrimaryKey="true" isMandatory="true" length="19" />
+		<db-attribute name="t_basket" type="BIGINT" isMandatory="true" length="19" />
+		<db-attribute name="t_id" type="BIGINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="19" />
 		<db-attribute name="t_ili_tid" type="OTHER" isMandatory="true" length="2147483647" />
-		<db-attribute name="t_lastchange" type="TIMESTAMP" isMandatory="true" length="29" />
-		<db-attribute name="t_user" type="VARCHAR" isMandatory="true" length="40" />
 		<db-attribute name="title" type="VARCHAR" isMandatory="true" length="255" />
 	</db-entity>
+	<db-entity name="datasetcontact" schema="di_management">
+		<db-attribute name="contactpoints" type="BIGINT" isMandatory="true" length="19" />
+		<db-attribute name="datasets" type="BIGINT" isMandatory="true" length="19" />
+		<db-attribute name="t_basket" type="BIGINT" isMandatory="true" length="19" />
+		<db-attribute name="t_id" type="BIGINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="19" />
+	</db-entity>
 	<db-entity name="datasetissue" schema="di_management">
+		<db-attribute name="aschema" type="BIGINT" length="19" />
 		<db-attribute name="currentversion" type="BIGINT" length="19" />
 		<db-attribute name="dataset" type="BIGINT" isMandatory="true" length="19" />
 		<db-attribute name="enddate" type="DATE" length="13" />
@@ -172,55 +161,38 @@
 		<db-attribute name="note" type="VARCHAR" />
 		<db-attribute name="publicationstatus" type="VARCHAR" isMandatory="true" length="255" />
 		<db-attribute name="referencedate" type="DATE" length="13" />
-		<db-attribute name="row_version" type="BIGINT" isMandatory="true" length="19" />
 		<db-attribute name="startdate" type="DATE" length="13" />
-		<db-attribute name="t_createdate" type="TIMESTAMP" isMandatory="true" length="29" />
-		<db-attribute name="t_id" type="BIGINT" isPrimaryKey="true" isMandatory="true" length="19" />
+		<db-attribute name="t_basket" type="BIGINT" isMandatory="true" length="19" />
+		<db-attribute name="t_id" type="BIGINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="19" />
 		<db-attribute name="t_ili_tid" type="OTHER" isMandatory="true" length="2147483647" />
-		<db-attribute name="t_lastchange" type="TIMESTAMP" isMandatory="true" length="29" />
-		<db-attribute name="t_user" type="VARCHAR" isMandatory="true" length="40" />
-	</db-entity>
-	<db-entity name="datasetkeyword" schema="di_management">
-		<db-attribute name="dataset" type="BIGINT" isMandatory="true" length="19" />
-		<db-attribute name="keyword" type="VARCHAR" isMandatory="true" length="255" />
-		<db-attribute name="row_version" type="BIGINT" isMandatory="true" length="19" />
-		<db-attribute name="t_createdate" type="TIMESTAMP" isMandatory="true" length="29" />
-		<db-attribute name="t_id" type="BIGINT" isPrimaryKey="true" isMandatory="true" length="19" />
-		<db-attribute name="t_ili_tid" type="OTHER" isMandatory="true" length="2147483647" />
-		<db-attribute name="t_lastchange" type="TIMESTAMP" isMandatory="true" length="29" />
-		<db-attribute name="t_user" type="VARCHAR" isMandatory="true" length="40" />
-	</db-entity>
-	<db-entity name="datasettheme" schema="di_management">
-		<db-attribute name="dataset" type="BIGINT" isMandatory="true" length="19" />
-		<db-attribute name="row_version" type="BIGINT" isMandatory="true" length="19" />
-		<db-attribute name="t_createdate" type="TIMESTAMP" isMandatory="true" length="29" />
-		<db-attribute name="t_id" type="BIGINT" isPrimaryKey="true" isMandatory="true" length="19" />
-		<db-attribute name="t_ili_tid" type="OTHER" isMandatory="true" length="2147483647" />
-		<db-attribute name="t_lastchange" type="TIMESTAMP" isMandatory="true" length="29" />
-		<db-attribute name="t_user" type="VARCHAR" isMandatory="true" length="40" />
-		<db-attribute name="theme" type="VARCHAR" isMandatory="true" length="255" />
 	</db-entity>
 	<db-entity name="dataversion" schema="di_management">
-		<db-attribute name="acceptedat" type="TIMESTAMP" length="29" />
-		<db-attribute name="aschema" type="BIGINT" length="19" />
+		<db-attribute name="acceptedat" type="TIMESTAMP" isMandatory="true" length="29" />
+		<db-attribute name="aschema" type="BIGINT" isMandatory="true" length="19" />
 		<db-attribute name="asequence" type="INTEGER" isMandatory="true" length="10" />
 		<db-attribute name="attributecount" type="BIGINT" length="19" />
 		<db-attribute name="availability" type="VARCHAR" isMandatory="true" length="255" />
 		<db-attribute name="issue" type="BIGINT" isMandatory="true" length="19" />
 		<db-attribute name="objectcount" type="BIGINT" length="19" />
-		<db-attribute name="row_version" type="BIGINT" isMandatory="true" length="19" />
 		<db-attribute name="sourcereference" type="VARCHAR" length="1024" />
 		<db-attribute name="sourcesha256" type="VARCHAR" length="64" />
-		<db-attribute name="t_createdate" type="TIMESTAMP" isMandatory="true" length="29" />
-		<db-attribute name="t_id" type="BIGINT" isPrimaryKey="true" isMandatory="true" length="19" />
+		<db-attribute name="t_basket" type="BIGINT" isMandatory="true" length="19" />
+		<db-attribute name="t_id" type="BIGINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="19" />
 		<db-attribute name="t_ili_tid" type="OTHER" isMandatory="true" length="2147483647" />
-		<db-attribute name="t_lastchange" type="TIMESTAMP" isMandatory="true" length="29" />
-		<db-attribute name="t_user" type="VARCHAR" isMandatory="true" length="40" />
 		<db-attribute name="validationat" type="TIMESTAMP" length="29" />
 		<db-attribute name="validationerrors" type="BIGINT" length="19" />
 		<db-attribute name="validationreportkey" type="VARCHAR" length="1024" />
 		<db-attribute name="validationstatus" type="VARCHAR" isMandatory="true" length="255" />
 		<db-attribute name="versionkey" type="VARCHAR" isMandatory="true" length="128" />
+	</db-entity>
+	<db-entity name="deliveryconfiguration" schema="di_management">
+		<db-attribute name="aformat" type="VARCHAR" isMandatory="true" length="255" />
+		<db-attribute name="allowedmodes" type="VARCHAR" isMandatory="true" length="255" />
+		<db-attribute name="dataset" type="BIGINT" isMandatory="true" length="19" />
+		<db-attribute name="enabled" type="BIT" isMandatory="true" length="1" />
+		<db-attribute name="t_basket" type="BIGINT" isMandatory="true" length="19" />
+		<db-attribute name="t_id" type="BIGINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="19" />
+		<db-attribute name="t_ili_tid" type="OTHER" isMandatory="true" length="2147483647" />
 	</db-entity>
 	<db-entity name="distribution" schema="di_management">
 		<db-attribute name="aformat" type="VARCHAR" isMandatory="true" length="255" />
@@ -229,13 +201,10 @@
 		<db-attribute name="filename" type="VARCHAR" isMandatory="true" length="128" />
 		<db-attribute name="mediatype" type="VARCHAR" isMandatory="true" length="255" />
 		<db-attribute name="objectkey" type="VARCHAR" isMandatory="true" length="1024" />
-		<db-attribute name="row_version" type="BIGINT" isMandatory="true" length="19" />
 		<db-attribute name="sha256" type="VARCHAR" length="64" />
-		<db-attribute name="t_createdate" type="TIMESTAMP" isMandatory="true" length="29" />
-		<db-attribute name="t_id" type="BIGINT" isPrimaryKey="true" isMandatory="true" length="19" />
+		<db-attribute name="t_basket" type="BIGINT" isMandatory="true" length="19" />
+		<db-attribute name="t_id" type="BIGINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="19" />
 		<db-attribute name="t_ili_tid" type="OTHER" isMandatory="true" length="2147483647" />
-		<db-attribute name="t_lastchange" type="TIMESTAMP" isMandatory="true" length="29" />
-		<db-attribute name="t_user" type="VARCHAR" isMandatory="true" length="40" />
 		<db-attribute name="version" type="BIGINT" isMandatory="true" length="19" />
 	</db-entity>
 	<db-entity name="groupmembership" schema="di_management">
@@ -244,14 +213,19 @@
 		<db-attribute name="reason" type="VARCHAR" isMandatory="true" />
 		<db-attribute name="revokedat" type="TIMESTAMP" length="29" />
 		<db-attribute name="revokedby" type="BIGINT" length="19" />
-		<db-attribute name="row_version" type="BIGINT" isMandatory="true" length="19" />
-		<db-attribute name="t_createdate" type="TIMESTAMP" isMandatory="true" length="29" />
-		<db-attribute name="t_id" type="BIGINT" isPrimaryKey="true" isMandatory="true" length="19" />
+		<db-attribute name="t_basket" type="BIGINT" isMandatory="true" length="19" />
+		<db-attribute name="t_id" type="BIGINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="19" />
 		<db-attribute name="t_ili_tid" type="OTHER" isMandatory="true" length="2147483647" />
-		<db-attribute name="t_lastchange" type="TIMESTAMP" isMandatory="true" length="29" />
-		<db-attribute name="t_user" type="VARCHAR" isMandatory="true" length="40" />
 		<db-attribute name="validfrom" type="TIMESTAMP" isMandatory="true" length="29" />
 		<db-attribute name="validuntil" type="TIMESTAMP" length="29" />
+	</db-entity>
+	<db-entity name="keywordentry" schema="di_management">
+		<db-attribute name="avalue" type="VARCHAR" isMandatory="true" length="255" />
+		<db-attribute name="dataset_keywords" type="BIGINT" length="19" />
+		<db-attribute name="t_basket" type="BIGINT" isMandatory="true" length="19" />
+		<db-attribute name="t_id" type="BIGINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="19" />
+		<db-attribute name="t_ili_tid" type="OTHER" length="2147483647" />
+		<db-attribute name="t_seq" type="BIGINT" length="19" />
 	</db-entity>
 	<db-entity name="office" schema="di_management">
 		<db-attribute name="aactive" type="BIT" isMandatory="true" length="1" />
@@ -260,12 +234,9 @@
 		<db-attribute name="email" type="VARCHAR" length="1023" />
 		<db-attribute name="identifier" type="VARCHAR" isMandatory="true" length="255" />
 		<db-attribute name="phone" type="VARCHAR" length="64" />
-		<db-attribute name="row_version" type="BIGINT" isMandatory="true" length="19" />
-		<db-attribute name="t_createdate" type="TIMESTAMP" isMandatory="true" length="29" />
-		<db-attribute name="t_id" type="BIGINT" isPrimaryKey="true" isMandatory="true" length="19" />
-		<db-attribute name="t_ili_tid" type="OTHER" isMandatory="true" length="2147483647" />
-		<db-attribute name="t_lastchange" type="TIMESTAMP" isMandatory="true" length="29" />
-		<db-attribute name="t_user" type="VARCHAR" isMandatory="true" length="40" />
+		<db-attribute name="t_basket" type="BIGINT" isMandatory="true" length="19" />
+		<db-attribute name="t_id" type="BIGINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="19" />
+		<db-attribute name="t_ili_tid" type="VARCHAR" isMandatory="true" length="1024" />
 		<db-attribute name="website" type="VARCHAR" length="1023" />
 	</db-entity>
 	<db-entity name="principal" schema="di_management">
@@ -275,24 +246,67 @@
 		<db-attribute name="asubject" type="VARCHAR" isMandatory="true" length="255" />
 		<db-attribute name="displayname" type="VARCHAR" length="255" />
 		<db-attribute name="provisionedat" type="TIMESTAMP" isMandatory="true" length="29" />
-		<db-attribute name="row_version" type="BIGINT" isMandatory="true" length="19" />
-		<db-attribute name="t_createdate" type="TIMESTAMP" isMandatory="true" length="29" />
-		<db-attribute name="t_id" type="BIGINT" isPrimaryKey="true" isMandatory="true" length="19" />
+		<db-attribute name="t_basket" type="BIGINT" isMandatory="true" length="19" />
+		<db-attribute name="t_id" type="BIGINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="19" />
 		<db-attribute name="t_ili_tid" type="OTHER" isMandatory="true" length="2147483647" />
-		<db-attribute name="t_lastchange" type="TIMESTAMP" isMandatory="true" length="29" />
-		<db-attribute name="t_user" type="VARCHAR" isMandatory="true" length="40" />
+	</db-entity>
+	<db-entity name="submission" schema="di_management">
+		<db-attribute name="acceptedversion" type="BIGINT" length="19" />
+		<db-attribute name="amode" type="VARCHAR" isMandatory="true" length="255" />
+		<db-attribute name="aschema" type="BIGINT" length="19" />
+		<db-attribute name="astatus" type="VARCHAR" isMandatory="true" length="255" />
+		<db-attribute name="baseversion" type="BIGINT" length="19" />
+		<db-attribute name="completedat" type="TIMESTAMP" length="29" />
+		<db-attribute name="createdat" type="TIMESTAMP" isMandatory="true" length="29" />
+		<db-attribute name="dataset" type="BIGINT" isMandatory="true" length="19" />
+		<db-attribute name="inputsha256" type="VARCHAR" length="64" />
+		<db-attribute name="inputsize" type="BIGINT" length="19" />
+		<db-attribute name="issue" type="BIGINT" isMandatory="true" length="19" />
+		<db-attribute name="originalfilename" type="VARCHAR" length="255" />
+		<db-attribute name="resultmessage" type="VARCHAR" length="512" />
+		<db-attribute name="startedat" type="TIMESTAMP" length="29" />
+		<db-attribute name="submittedby" type="BIGINT" isMandatory="true" length="19" />
+		<db-attribute name="t_basket" type="BIGINT" isMandatory="true" length="19" />
+		<db-attribute name="t_id" type="BIGINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="19" />
+		<db-attribute name="t_ili_tid" type="OTHER" isMandatory="true" length="2147483647" />
+	</db-entity>
+	<db-entity name="themeentry" schema="di_management">
+		<db-attribute name="acode" type="VARCHAR" isMandatory="true" length="255" />
+		<db-attribute name="dataset_themes" type="BIGINT" length="19" />
+		<db-attribute name="t_basket" type="BIGINT" isMandatory="true" length="19" />
+		<db-attribute name="t_id" type="BIGINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="19" />
+		<db-attribute name="t_ili_tid" type="OTHER" length="2147483647" />
+		<db-attribute name="t_seq" type="BIGINT" length="19" />
+	</db-entity>
+	<db-entity name="uniquedefinition" schema="di_management">
+		<db-attribute name="adescription" type="VARCHAR" />
+		<db-attribute name="aname" type="VARCHAR" isMandatory="true" length="128" />
+		<db-attribute name="aschema" type="BIGINT" isMandatory="true" length="19" />
+		<db-attribute name="t_basket" type="BIGINT" isMandatory="true" length="19" />
+		<db-attribute name="t_id" type="BIGINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="19" />
+		<db-attribute name="t_ili_tid" type="OTHER" isMandatory="true" length="2147483647" />
+	</db-entity>
+	<db-entity name="uniquefield" schema="di_management">
+		<db-attribute name="aattribute" type="BIGINT" isMandatory="true" length="19" />
+		<db-attribute name="ordinal" type="INTEGER" isMandatory="true" length="10" />
+		<db-attribute name="t_basket" type="BIGINT" isMandatory="true" length="19" />
+		<db-attribute name="t_id" type="BIGINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="19" />
+		<db-attribute name="t_ili_tid" type="OTHER" isMandatory="true" length="2147483647" />
+		<db-attribute name="uniquedefinition" type="BIGINT" isMandatory="true" length="19" />
 	</db-entity>
 	<obj-entity name="Accessdecision" className="ch.so.agi.dateninfrastruktur.admin.model.Accessdecision" dbEntityName="accessdecision">
 		<obj-attribute name="akind" type="java.lang.String" db-attribute-path="akind" />
-		<obj-attribute name="commandid" type="java.util.UUID" db-attribute-path="commandid" />
+		<obj-attribute name="commandid" db-attribute-path="commandid" type="java.util.UUID" />
 		<obj-attribute name="decidedat" type="java.time.LocalDateTime" db-attribute-path="decidedat" />
 		<obj-attribute name="reason" type="java.lang.String" db-attribute-path="reason" />
-		<obj-attribute name="tIliTid" type="java.util.UUID" db-attribute-path="t_ili_tid" />
+		<obj-attribute name="tBasket" type="long" db-attribute-path="t_basket" />
+		<obj-attribute name="tIliTid" db-attribute-path="t_ili_tid" type="java.util.UUID" />
 	</obj-entity>
 	<obj-entity name="Accessgrant" className="ch.so.agi.dateninfrastruktur.admin.model.Accessgrant" dbEntityName="accessgrant">
 		<obj-attribute name="permission" type="java.lang.String" db-attribute-path="permission" />
 		<obj-attribute name="revokedat" type="java.time.LocalDateTime" db-attribute-path="revokedat" />
-		<obj-attribute name="tIliTid" type="java.util.UUID" db-attribute-path="t_ili_tid" />
+		<obj-attribute name="tBasket" type="long" db-attribute-path="t_basket" />
+		<obj-attribute name="tIliTid" db-attribute-path="t_ili_tid" type="java.util.UUID" />
 		<obj-attribute name="validfrom" type="java.time.LocalDateTime" db-attribute-path="validfrom" />
 		<obj-attribute name="validuntil" type="java.time.LocalDateTime" db-attribute-path="validuntil" />
 	</obj-entity>
@@ -301,61 +315,76 @@
 		<obj-attribute name="reason" type="java.lang.String" db-attribute-path="reason" />
 		<obj-attribute name="requestedat" type="java.time.LocalDateTime" db-attribute-path="requestedat" />
 		<obj-attribute name="requestedvaliduntil" type="java.time.LocalDateTime" db-attribute-path="requestedvaliduntil" />
-		<obj-attribute name="tIliTid" type="java.util.UUID" db-attribute-path="t_ili_tid" />
+		<obj-attribute name="tBasket" type="long" db-attribute-path="t_basket" />
+		<obj-attribute name="tIliTid" db-attribute-path="t_ili_tid" type="java.util.UUID" />
 	</obj-entity>
 	<obj-entity name="Attributedefinition" className="ch.so.agi.dateninfrastruktur.admin.model.Attributedefinition" dbEntityName="attributedefinition">
 		<obj-attribute name="adescription" type="java.lang.String" db-attribute-path="adescription" />
 		<obj-attribute name="aname" type="java.lang.String" db-attribute-path="aname" />
 		<obj-attribute name="codelist" type="java.lang.String" db-attribute-path="codelist" />
 		<obj-attribute name="datatype" type="java.lang.String" db-attribute-path="datatype" />
+		<obj-attribute name="datemaximum" type="java.time.LocalDate" db-attribute-path="datemaximum" />
+		<obj-attribute name="dateminimum" type="java.time.LocalDate" db-attribute-path="dateminimum" />
+		<obj-attribute name="datetimemaximum" type="java.time.LocalDateTime" db-attribute-path="datetimemaximum" />
+		<obj-attribute name="datetimeminimum" type="java.time.LocalDateTime" db-attribute-path="datetimeminimum" />
+		<obj-attribute name="decimalplaces" type="java.lang.Integer" db-attribute-path="decimalplaces" />
 		<obj-attribute name="mandatory" type="boolean" db-attribute-path="mandatory" />
+		<obj-attribute name="maxlength" type="java.lang.Integer" db-attribute-path="maxlength" />
+		<obj-attribute name="numericmaximum" type="java.math.BigDecimal" db-attribute-path="numericmaximum" />
+		<obj-attribute name="numericminimum" type="java.math.BigDecimal" db-attribute-path="numericminimum" />
 		<obj-attribute name="ordinal" type="int" db-attribute-path="ordinal" />
-		<obj-attribute name="tIliTid" type="java.util.UUID" db-attribute-path="t_ili_tid" />
+		<obj-attribute name="tBasket" type="long" db-attribute-path="t_basket" />
+		<obj-attribute name="tIliTid" db-attribute-path="t_ili_tid" type="java.util.UUID" />
 		<obj-attribute name="unit" type="java.lang.String" db-attribute-path="unit" />
+	</obj-entity>
+	<obj-entity name="AttributedefinitionEnumvalues" className="ch.so.agi.dateninfrastruktur.admin.model.AttributedefinitionEnumvalues" dbEntityName="attributedefinition_enumvalues">
+		<obj-attribute name="enumvalues" type="java.lang.String" db-attribute-path="enumvalues" />
+		<obj-attribute name="tBasket" type="long" db-attribute-path="t_basket" />
+		<obj-attribute name="tSeq" type="java.lang.Long" db-attribute-path="t_seq" />
 	</obj-entity>
 	<obj-entity name="Authorityassignment" className="ch.so.agi.dateninfrastruktur.admin.model.Authorityassignment" dbEntityName="authorityassignment">
 		<obj-attribute name="capability" type="java.lang.String" db-attribute-path="capability" />
 		<obj-attribute name="reason" type="java.lang.String" db-attribute-path="reason" />
 		<obj-attribute name="revocationreason" type="java.lang.String" db-attribute-path="revocationreason" />
 		<obj-attribute name="revokedat" type="java.time.LocalDateTime" db-attribute-path="revokedat" />
-		<obj-attribute name="tIliTid" type="java.util.UUID" db-attribute-path="t_ili_tid" />
+		<obj-attribute name="tBasket" type="long" db-attribute-path="t_basket" />
+		<obj-attribute name="tIliTid" db-attribute-path="t_ili_tid" type="java.util.UUID" />
 		<obj-attribute name="validfrom" type="java.time.LocalDateTime" db-attribute-path="validfrom" />
 		<obj-attribute name="validuntil" type="java.time.LocalDateTime" db-attribute-path="validuntil" />
 	</obj-entity>
 	<obj-entity name="Catalogaction" className="ch.so.agi.dateninfrastruktur.admin.model.Catalogaction" dbEntityName="catalogaction">
 		<obj-attribute name="actioncode" type="java.lang.String" db-attribute-path="actioncode" />
-		<obj-attribute name="commandid" type="java.util.UUID" db-attribute-path="commandid" />
+		<obj-attribute name="commandid" db-attribute-path="commandid" type="java.util.UUID" />
 		<obj-attribute name="performedat" type="java.time.LocalDateTime" db-attribute-path="performedat" />
 		<obj-attribute name="reason" type="java.lang.String" db-attribute-path="reason" />
-		<obj-attribute name="tIliTid" type="java.util.UUID" db-attribute-path="t_ili_tid" />
+		<obj-attribute name="tBasket" type="long" db-attribute-path="t_basket" />
+		<obj-attribute name="tIliTid" db-attribute-path="t_ili_tid" type="java.util.UUID" />
 	</obj-entity>
-	<obj-entity name="Csvdeliveryconfiguration" className="ch.so.agi.dateninfrastruktur.admin.model.Csvdeliveryconfiguration" dbEntityName="csvdeliveryconfiguration">
-		<obj-attribute name="allowedmodes" type="java.lang.String" db-attribute-path="allowedmodes" />
-		<obj-attribute name="automaticpublication" type="boolean" db-attribute-path="automaticpublication" />
-		<obj-attribute name="definitionkey" type="java.lang.String" db-attribute-path="definitionkey" />
-		<obj-attribute name="definitionsha256" type="java.lang.String" db-attribute-path="definitionsha256" />
-		<obj-attribute name="enabled" type="boolean" db-attribute-path="enabled" />
-		<obj-attribute name="tIliTid" type="java.util.UUID" db-attribute-path="t_ili_tid" />
+	<obj-entity name="Contactpoint" className="ch.so.agi.dateninfrastruktur.admin.model.Contactpoint" dbEntityName="contactpoint">
+		<obj-attribute name="aname" type="java.lang.String" db-attribute-path="aname" />
+		<obj-attribute name="email" type="java.lang.String" db-attribute-path="email" />
+		<obj-attribute name="phone" type="java.lang.String" db-attribute-path="phone" />
+		<obj-attribute name="tBasket" type="long" db-attribute-path="t_basket" />
+		<obj-attribute name="tIliTid" type="java.lang.String" db-attribute-path="t_ili_tid" />
+		<obj-attribute name="unit" type="java.lang.String" db-attribute-path="unit" />
+		<obj-attribute name="url" type="java.lang.String" db-attribute-path="url" />
 	</obj-entity>
 	<obj-entity name="Dataschema" className="ch.so.agi.dateninfrastruktur.admin.model.Dataschema" dbEntityName="dataschema">
 		<obj-attribute name="adescription" type="java.lang.String" db-attribute-path="adescription" />
+		<obj-attribute name="akind" type="java.lang.String" db-attribute-path="akind" />
 		<obj-attribute name="identifier" type="java.lang.String" db-attribute-path="identifier" />
+		<obj-attribute name="minimumobjectcount" type="java.lang.Integer" db-attribute-path="minimumobjectcount" />
 		<obj-attribute name="modelname" type="java.lang.String" db-attribute-path="modelname" />
-		<obj-attribute name="modelsha256" type="java.lang.String" db-attribute-path="modelsha256" />
 		<obj-attribute name="modeluri" type="java.lang.String" db-attribute-path="modeluri" />
 		<obj-attribute name="modelversion" type="java.lang.String" db-attribute-path="modelversion" />
-		<obj-attribute name="tIliTid" type="java.util.UUID" db-attribute-path="t_ili_tid" />
+		<obj-attribute name="tBasket" type="long" db-attribute-path="t_basket" />
+		<obj-attribute name="tIliTid" db-attribute-path="t_ili_tid" type="java.util.UUID" />
 	</obj-entity>
 	<obj-entity name="Dataset" className="ch.so.agi.dateninfrastruktur.admin.model.Dataset" dbEntityName="dataset">
 		<obj-attribute name="accesslevel" type="java.lang.String" db-attribute-path="accesslevel" />
 		<obj-attribute name="adescription" type="java.lang.String" db-attribute-path="adescription" />
 		<obj-attribute name="akind" type="java.lang.String" db-attribute-path="akind" />
 		<obj-attribute name="auxiliarydata" type="java.lang.String" db-attribute-path="auxiliarydata" />
-		<obj-attribute name="contactemail" type="java.lang.String" db-attribute-path="contactemail" />
-		<obj-attribute name="contactname" type="java.lang.String" db-attribute-path="contactname" />
-		<obj-attribute name="contactphone" type="java.lang.String" db-attribute-path="contactphone" />
-		<obj-attribute name="contactunit" type="java.lang.String" db-attribute-path="contactunit" />
-		<obj-attribute name="contacturl" type="java.lang.String" db-attribute-path="contacturl" />
 		<obj-attribute name="dataavailablefrom" type="java.lang.String" db-attribute-path="dataavailablefrom" />
 		<obj-attribute name="frequency" type="java.lang.String" db-attribute-path="frequency" />
 		<obj-attribute name="furtheruses" type="java.lang.String" db-attribute-path="furtheruses" />
@@ -366,8 +395,12 @@
 		<obj-attribute name="origin" type="java.lang.String" db-attribute-path="origin" />
 		<obj-attribute name="publicationstatus" type="java.lang.String" db-attribute-path="publicationstatus" />
 		<obj-attribute name="surveymethod" type="java.lang.String" db-attribute-path="surveymethod" />
-		<obj-attribute name="tIliTid" type="java.util.UUID" db-attribute-path="t_ili_tid" />
+		<obj-attribute name="tBasket" type="long" db-attribute-path="t_basket" />
+		<obj-attribute name="tIliTid" db-attribute-path="t_ili_tid" type="java.util.UUID" />
 		<obj-attribute name="title" type="java.lang.String" db-attribute-path="title" />
+	</obj-entity>
+	<obj-entity name="Datasetcontact" className="ch.so.agi.dateninfrastruktur.admin.model.Datasetcontact" dbEntityName="datasetcontact">
+		<obj-attribute name="tBasket" type="long" db-attribute-path="t_basket" />
 	</obj-entity>
 	<obj-entity name="Datasetissue" className="ch.so.agi.dateninfrastruktur.admin.model.Datasetissue" dbEntityName="datasetissue">
 		<obj-attribute name="enddate" type="java.time.LocalDate" db-attribute-path="enddate" />
@@ -379,15 +412,8 @@
 		<obj-attribute name="publicationstatus" type="java.lang.String" db-attribute-path="publicationstatus" />
 		<obj-attribute name="referencedate" type="java.time.LocalDate" db-attribute-path="referencedate" />
 		<obj-attribute name="startdate" type="java.time.LocalDate" db-attribute-path="startdate" />
-		<obj-attribute name="tIliTid" type="java.util.UUID" db-attribute-path="t_ili_tid" />
-	</obj-entity>
-	<obj-entity name="Datasetkeyword" className="ch.so.agi.dateninfrastruktur.admin.model.Datasetkeyword" dbEntityName="datasetkeyword">
-		<obj-attribute name="keyword" type="java.lang.String" db-attribute-path="keyword" />
-		<obj-attribute name="tIliTid" type="java.util.UUID" db-attribute-path="t_ili_tid" />
-	</obj-entity>
-	<obj-entity name="Datasettheme" className="ch.so.agi.dateninfrastruktur.admin.model.Datasettheme" dbEntityName="datasettheme">
-		<obj-attribute name="tIliTid" type="java.util.UUID" db-attribute-path="t_ili_tid" />
-		<obj-attribute name="theme" type="java.lang.String" db-attribute-path="theme" />
+		<obj-attribute name="tBasket" type="long" db-attribute-path="t_basket" />
+		<obj-attribute name="tIliTid" db-attribute-path="t_ili_tid" type="java.util.UUID" />
 	</obj-entity>
 	<obj-entity name="Dataversion" className="ch.so.agi.dateninfrastruktur.admin.model.Dataversion" dbEntityName="dataversion">
 		<obj-attribute name="acceptedat" type="java.time.LocalDateTime" db-attribute-path="acceptedat" />
@@ -397,12 +423,20 @@
 		<obj-attribute name="objectcount" type="java.lang.Long" db-attribute-path="objectcount" />
 		<obj-attribute name="sourcereference" type="java.lang.String" db-attribute-path="sourcereference" />
 		<obj-attribute name="sourcesha256" type="java.lang.String" db-attribute-path="sourcesha256" />
-		<obj-attribute name="tIliTid" type="java.util.UUID" db-attribute-path="t_ili_tid" />
+		<obj-attribute name="tBasket" type="long" db-attribute-path="t_basket" />
+		<obj-attribute name="tIliTid" db-attribute-path="t_ili_tid" type="java.util.UUID" />
 		<obj-attribute name="validationat" type="java.time.LocalDateTime" db-attribute-path="validationat" />
 		<obj-attribute name="validationerrors" type="java.lang.Long" db-attribute-path="validationerrors" />
 		<obj-attribute name="validationreportkey" type="java.lang.String" db-attribute-path="validationreportkey" />
 		<obj-attribute name="validationstatus" type="java.lang.String" db-attribute-path="validationstatus" />
 		<obj-attribute name="versionkey" type="java.lang.String" db-attribute-path="versionkey" />
+	</obj-entity>
+	<obj-entity name="Deliveryconfiguration" className="ch.so.agi.dateninfrastruktur.admin.model.Deliveryconfiguration" dbEntityName="deliveryconfiguration">
+		<obj-attribute name="aformat" type="java.lang.String" db-attribute-path="aformat" />
+		<obj-attribute name="allowedmodes" type="java.lang.String" db-attribute-path="allowedmodes" />
+		<obj-attribute name="enabled" type="boolean" db-attribute-path="enabled" />
+		<obj-attribute name="tBasket" type="long" db-attribute-path="t_basket" />
+		<obj-attribute name="tIliTid" db-attribute-path="t_ili_tid" type="java.util.UUID" />
 	</obj-entity>
 	<obj-entity name="Distribution" className="ch.so.agi.dateninfrastruktur.admin.model.Distribution" dbEntityName="distribution">
 		<obj-attribute name="aformat" type="java.lang.String" db-attribute-path="aformat" />
@@ -412,14 +446,22 @@
 		<obj-attribute name="mediatype" type="java.lang.String" db-attribute-path="mediatype" />
 		<obj-attribute name="objectkey" type="java.lang.String" db-attribute-path="objectkey" />
 		<obj-attribute name="sha256" type="java.lang.String" db-attribute-path="sha256" />
-		<obj-attribute name="tIliTid" type="java.util.UUID" db-attribute-path="t_ili_tid" />
+		<obj-attribute name="tBasket" type="long" db-attribute-path="t_basket" />
+		<obj-attribute name="tIliTid" db-attribute-path="t_ili_tid" type="java.util.UUID" />
 	</obj-entity>
 	<obj-entity name="Groupmembership" className="ch.so.agi.dateninfrastruktur.admin.model.Groupmembership" dbEntityName="groupmembership">
 		<obj-attribute name="reason" type="java.lang.String" db-attribute-path="reason" />
 		<obj-attribute name="revokedat" type="java.time.LocalDateTime" db-attribute-path="revokedat" />
-		<obj-attribute name="tIliTid" type="java.util.UUID" db-attribute-path="t_ili_tid" />
+		<obj-attribute name="tBasket" type="long" db-attribute-path="t_basket" />
+		<obj-attribute name="tIliTid" db-attribute-path="t_ili_tid" type="java.util.UUID" />
 		<obj-attribute name="validfrom" type="java.time.LocalDateTime" db-attribute-path="validfrom" />
 		<obj-attribute name="validuntil" type="java.time.LocalDateTime" db-attribute-path="validuntil" />
+	</obj-entity>
+	<obj-entity name="Keywordentry" className="ch.so.agi.dateninfrastruktur.admin.model.Keywordentry" dbEntityName="keywordentry">
+		<obj-attribute name="avalue" type="java.lang.String" db-attribute-path="avalue" />
+		<obj-attribute name="tBasket" type="long" db-attribute-path="t_basket" />
+		<obj-attribute name="tIliTid" db-attribute-path="t_ili_tid" type="java.util.UUID" />
+		<obj-attribute name="tSeq" type="java.lang.Long" db-attribute-path="t_seq" />
 	</obj-entity>
 	<obj-entity name="Office" className="ch.so.agi.dateninfrastruktur.admin.model.Office" dbEntityName="office">
 		<obj-attribute name="aactive" type="boolean" db-attribute-path="aactive" />
@@ -428,7 +470,8 @@
 		<obj-attribute name="email" type="java.lang.String" db-attribute-path="email" />
 		<obj-attribute name="identifier" type="java.lang.String" db-attribute-path="identifier" />
 		<obj-attribute name="phone" type="java.lang.String" db-attribute-path="phone" />
-		<obj-attribute name="tIliTid" type="java.util.UUID" db-attribute-path="t_ili_tid" />
+		<obj-attribute name="tBasket" type="long" db-attribute-path="t_basket" />
+		<obj-attribute name="tIliTid" type="java.lang.String" db-attribute-path="t_ili_tid" />
 		<obj-attribute name="website" type="java.lang.String" db-attribute-path="website" />
 	</obj-entity>
 	<obj-entity name="Principal" className="ch.so.agi.dateninfrastruktur.admin.model.Principal" dbEntityName="principal">
@@ -438,7 +481,38 @@
 		<obj-attribute name="asubject" type="java.lang.String" db-attribute-path="asubject" />
 		<obj-attribute name="displayname" type="java.lang.String" db-attribute-path="displayname" />
 		<obj-attribute name="provisionedat" type="java.time.LocalDateTime" db-attribute-path="provisionedat" />
-		<obj-attribute name="tIliTid" type="java.util.UUID" db-attribute-path="t_ili_tid" />
+		<obj-attribute name="tBasket" type="long" db-attribute-path="t_basket" />
+		<obj-attribute name="tIliTid" db-attribute-path="t_ili_tid" type="java.util.UUID" />
+	</obj-entity>
+	<obj-entity name="Submission" className="ch.so.agi.dateninfrastruktur.admin.model.Submission" dbEntityName="submission">
+		<obj-attribute name="amode" type="java.lang.String" db-attribute-path="amode" />
+		<obj-attribute name="astatus" type="java.lang.String" db-attribute-path="astatus" />
+		<obj-attribute name="completedat" type="java.time.LocalDateTime" db-attribute-path="completedat" />
+		<obj-attribute name="createdat" type="java.time.LocalDateTime" db-attribute-path="createdat" />
+		<obj-attribute name="inputsha256" type="java.lang.String" db-attribute-path="inputsha256" />
+		<obj-attribute name="inputsize" type="java.lang.Long" db-attribute-path="inputsize" />
+		<obj-attribute name="originalfilename" type="java.lang.String" db-attribute-path="originalfilename" />
+		<obj-attribute name="resultmessage" type="java.lang.String" db-attribute-path="resultmessage" />
+		<obj-attribute name="startedat" type="java.time.LocalDateTime" db-attribute-path="startedat" />
+		<obj-attribute name="tBasket" type="long" db-attribute-path="t_basket" />
+		<obj-attribute name="tIliTid" db-attribute-path="t_ili_tid" type="java.util.UUID" />
+	</obj-entity>
+	<obj-entity name="Themeentry" className="ch.so.agi.dateninfrastruktur.admin.model.Themeentry" dbEntityName="themeentry">
+		<obj-attribute name="acode" type="java.lang.String" db-attribute-path="acode" />
+		<obj-attribute name="tBasket" type="long" db-attribute-path="t_basket" />
+		<obj-attribute name="tIliTid" db-attribute-path="t_ili_tid" type="java.util.UUID" />
+		<obj-attribute name="tSeq" type="java.lang.Long" db-attribute-path="t_seq" />
+	</obj-entity>
+	<obj-entity name="Uniquedefinition" className="ch.so.agi.dateninfrastruktur.admin.model.Uniquedefinition" dbEntityName="uniquedefinition">
+		<obj-attribute name="adescription" type="java.lang.String" db-attribute-path="adescription" />
+		<obj-attribute name="aname" type="java.lang.String" db-attribute-path="aname" />
+		<obj-attribute name="tBasket" type="long" db-attribute-path="t_basket" />
+		<obj-attribute name="tIliTid" db-attribute-path="t_ili_tid" type="java.util.UUID" />
+	</obj-entity>
+	<obj-entity name="Uniquefield" className="ch.so.agi.dateninfrastruktur.admin.model.Uniquefield" dbEntityName="uniquefield">
+		<obj-attribute name="ordinal" type="int" db-attribute-path="ordinal" />
+		<obj-attribute name="tBasket" type="long" db-attribute-path="t_basket" />
+		<obj-attribute name="tIliTid" db-attribute-path="t_ili_tid" type="java.util.UUID" />
 	</obj-entity>
 	<db-relationship name="accessdecisions" source="accessdecision" target="accessdecision" toMany="true">
 		<db-attribute-pair source="t_id" target="supersedes" />
@@ -488,6 +562,15 @@
 	<db-relationship name="aschema1" source="attributedefinition" target="dataschema">
 		<db-attribute-pair source="aschema" target="t_id" />
 	</db-relationship>
+	<db-relationship name="enumvalueses" source="attributedefinition" target="attributedefinition_enumvalues" toMany="true">
+		<db-attribute-pair source="t_id" target="attributedefinition_enumvalues" />
+	</db-relationship>
+	<db-relationship name="uniquefields" source="attributedefinition" target="uniquefield" toMany="true">
+		<db-attribute-pair source="t_id" target="aattribute" />
+	</db-relationship>
+	<db-relationship name="attributedefinitionEnumvalues" source="attributedefinition_enumvalues" target="attributedefinition">
+		<db-attribute-pair source="attributedefinition_enumvalues" target="t_id" />
+	</db-relationship>
 	<db-relationship name="assignedby1" source="authorityassignment" target="principal">
 		<db-attribute-pair source="assignedby" target="t_id" />
 	</db-relationship>
@@ -518,19 +601,22 @@
 	<db-relationship name="initiator1" source="catalogaction" target="principal">
 		<db-attribute-pair source="initiator" target="t_id" />
 	</db-relationship>
-	<db-relationship name="aschema1" source="csvdeliveryconfiguration" target="dataschema">
-		<db-attribute-pair source="aschema" target="t_id" />
-	</db-relationship>
-	<db-relationship name="dataset1" source="csvdeliveryconfiguration" target="dataset">
-		<db-attribute-pair source="dataset" target="t_id" />
+	<db-relationship name="datasetcontacts" source="contactpoint" target="datasetcontact" toMany="true">
+		<db-attribute-pair source="t_id" target="contactpoints" />
 	</db-relationship>
 	<db-relationship name="attributedefinitions" source="dataschema" target="attributedefinition" toMany="true">
 		<db-attribute-pair source="t_id" target="aschema" />
 	</db-relationship>
-	<db-relationship name="csvdeliveryconfigurations" source="dataschema" target="csvdeliveryconfiguration" toMany="true">
+	<db-relationship name="datasetissues" source="dataschema" target="datasetissue" toMany="true">
 		<db-attribute-pair source="t_id" target="aschema" />
 	</db-relationship>
 	<db-relationship name="dataversions" source="dataschema" target="dataversion" toMany="true">
+		<db-attribute-pair source="t_id" target="aschema" />
+	</db-relationship>
+	<db-relationship name="submissions" source="dataschema" target="submission" toMany="true">
+		<db-attribute-pair source="t_id" target="aschema" />
+	</db-relationship>
+	<db-relationship name="uniquedefinitions" source="dataschema" target="uniquedefinition" toMany="true">
 		<db-attribute-pair source="t_id" target="aschema" />
 	</db-relationship>
 	<db-relationship name="accessdecisions" source="dataset" target="accessdecision" toMany="true">
@@ -548,26 +634,41 @@
 	<db-relationship name="catalogactions" source="dataset" target="catalogaction" toMany="true">
 		<db-attribute-pair source="t_id" target="dataset" />
 	</db-relationship>
-	<db-relationship name="csvdeliveryconfigurations" source="dataset" target="csvdeliveryconfiguration" toMany="true">
-		<db-attribute-pair source="t_id" target="dataset" />
-	</db-relationship>
 	<db-relationship name="currentissue1" source="dataset" target="datasetissue">
 		<db-attribute-pair source="currentissue" target="t_id" />
+	</db-relationship>
+	<db-relationship name="datasetcontacts" source="dataset" target="datasetcontact" toMany="true">
+		<db-attribute-pair source="t_id" target="datasets" />
 	</db-relationship>
 	<db-relationship name="datasetissues" source="dataset" target="datasetissue" toMany="true">
 		<db-attribute-pair source="t_id" target="dataset" />
 	</db-relationship>
-	<db-relationship name="datasetkeywords" source="dataset" target="datasetkeyword" toMany="true">
+	<db-relationship name="deliveryconfigurations" source="dataset" target="deliveryconfiguration" toMany="true">
 		<db-attribute-pair source="t_id" target="dataset" />
 	</db-relationship>
-	<db-relationship name="datasetthemes" source="dataset" target="datasettheme" toMany="true">
-		<db-attribute-pair source="t_id" target="dataset" />
+	<db-relationship name="keywordentries" source="dataset" target="keywordentry" toMany="true">
+		<db-attribute-pair source="t_id" target="dataset_keywords" />
 	</db-relationship>
 	<db-relationship name="owneroffice1" source="dataset" target="office">
 		<db-attribute-pair source="owneroffice" target="t_id" />
 	</db-relationship>
 	<db-relationship name="publisheroffice1" source="dataset" target="office">
 		<db-attribute-pair source="publisheroffice" target="t_id" />
+	</db-relationship>
+	<db-relationship name="submissions" source="dataset" target="submission" toMany="true">
+		<db-attribute-pair source="t_id" target="dataset" />
+	</db-relationship>
+	<db-relationship name="themeentries" source="dataset" target="themeentry" toMany="true">
+		<db-attribute-pair source="t_id" target="dataset_themes" />
+	</db-relationship>
+	<db-relationship name="contactpoints1" source="datasetcontact" target="contactpoint">
+		<db-attribute-pair source="contactpoints" target="t_id" />
+	</db-relationship>
+	<db-relationship name="datasets1" source="datasetcontact" target="dataset">
+		<db-attribute-pair source="datasets" target="t_id" />
+	</db-relationship>
+	<db-relationship name="aschema1" source="datasetissue" target="dataschema">
+		<db-attribute-pair source="aschema" target="t_id" />
 	</db-relationship>
 	<db-relationship name="currentversion1" source="datasetissue" target="dataversion">
 		<db-attribute-pair source="currentversion" target="t_id" />
@@ -581,11 +682,8 @@
 	<db-relationship name="dataversions" source="datasetissue" target="dataversion" toMany="true">
 		<db-attribute-pair source="t_id" target="issue" />
 	</db-relationship>
-	<db-relationship name="dataset1" source="datasetkeyword" target="dataset">
-		<db-attribute-pair source="dataset" target="t_id" />
-	</db-relationship>
-	<db-relationship name="dataset1" source="datasettheme" target="dataset">
-		<db-attribute-pair source="dataset" target="t_id" />
+	<db-relationship name="submissions" source="datasetissue" target="submission" toMany="true">
+		<db-attribute-pair source="t_id" target="issue" />
 	</db-relationship>
 	<db-relationship name="aschema1" source="dataversion" target="dataschema">
 		<db-attribute-pair source="aschema" target="t_id" />
@@ -602,6 +700,15 @@
 	<db-relationship name="issue1" source="dataversion" target="datasetissue">
 		<db-attribute-pair source="issue" target="t_id" />
 	</db-relationship>
+	<db-relationship name="submissions" source="dataversion" target="submission" toMany="true">
+		<db-attribute-pair source="t_id" target="acceptedversion" />
+	</db-relationship>
+	<db-relationship name="submissions1" source="dataversion" target="submission" toMany="true">
+		<db-attribute-pair source="t_id" target="baseversion" />
+	</db-relationship>
+	<db-relationship name="dataset1" source="deliveryconfiguration" target="dataset">
+		<db-attribute-pair source="dataset" target="t_id" />
+	</db-relationship>
 	<db-relationship name="catalogactions" source="distribution" target="catalogaction" toMany="true">
 		<db-attribute-pair source="t_id" target="affecteddistribution" />
 	</db-relationship>
@@ -616,6 +723,9 @@
 	</db-relationship>
 	<db-relationship name="revokedby1" source="groupmembership" target="principal">
 		<db-attribute-pair source="revokedby" target="t_id" />
+	</db-relationship>
+	<db-relationship name="datasetKeywords" source="keywordentry" target="dataset">
+		<db-attribute-pair source="dataset_keywords" target="t_id" />
 	</db-relationship>
 	<db-relationship name="authorityassignments" source="office" target="authorityassignment" toMany="true">
 		<db-attribute-pair source="t_id" target="office" />
@@ -662,6 +772,42 @@
 	<db-relationship name="groupmemberships2" source="principal" target="groupmembership" toMany="true">
 		<db-attribute-pair source="t_id" target="revokedby" />
 	</db-relationship>
+	<db-relationship name="submissions" source="principal" target="submission" toMany="true">
+		<db-attribute-pair source="t_id" target="submittedby" />
+	</db-relationship>
+	<db-relationship name="acceptedversion1" source="submission" target="dataversion">
+		<db-attribute-pair source="acceptedversion" target="t_id" />
+	</db-relationship>
+	<db-relationship name="aschema1" source="submission" target="dataschema">
+		<db-attribute-pair source="aschema" target="t_id" />
+	</db-relationship>
+	<db-relationship name="baseversion1" source="submission" target="dataversion">
+		<db-attribute-pair source="baseversion" target="t_id" />
+	</db-relationship>
+	<db-relationship name="dataset1" source="submission" target="dataset">
+		<db-attribute-pair source="dataset" target="t_id" />
+	</db-relationship>
+	<db-relationship name="issue1" source="submission" target="datasetissue">
+		<db-attribute-pair source="issue" target="t_id" />
+	</db-relationship>
+	<db-relationship name="submittedby1" source="submission" target="principal">
+		<db-attribute-pair source="submittedby" target="t_id" />
+	</db-relationship>
+	<db-relationship name="datasetThemes" source="themeentry" target="dataset">
+		<db-attribute-pair source="dataset_themes" target="t_id" />
+	</db-relationship>
+	<db-relationship name="aschema1" source="uniquedefinition" target="dataschema">
+		<db-attribute-pair source="aschema" target="t_id" />
+	</db-relationship>
+	<db-relationship name="uniquefields" source="uniquedefinition" target="uniquefield" toMany="true">
+		<db-attribute-pair source="t_id" target="uniquedefinition" />
+	</db-relationship>
+	<db-relationship name="aattribute1" source="uniquefield" target="attributedefinition">
+		<db-attribute-pair source="aattribute" target="t_id" />
+	</db-relationship>
+	<db-relationship name="uniquedefinition1" source="uniquefield" target="uniquedefinition">
+		<db-attribute-pair source="uniquedefinition" target="t_id" />
+	</db-relationship>
 	<obj-relationship name="accessdecisions" source="Accessdecision" target="Accessdecision" deleteRule="Deny" db-relationship-path="accessdecisions" />
 	<obj-relationship name="accessgrants" source="Accessdecision" target="Accessgrant" deleteRule="Deny" db-relationship-path="accessgrants" />
 	<obj-relationship name="accessgrants1" source="Accessdecision" target="Accessgrant" deleteRule="Deny" db-relationship-path="accessgrants1" />
@@ -678,6 +824,9 @@
 	<obj-relationship name="applicant1" source="Accessrequest" target="Principal" deleteRule="Nullify" db-relationship-path="applicant1" />
 	<obj-relationship name="dataset1" source="Accessrequest" target="Dataset" deleteRule="Nullify" db-relationship-path="dataset1" />
 	<obj-relationship name="aschema1" source="Attributedefinition" target="Dataschema" deleteRule="Nullify" db-relationship-path="aschema1" />
+	<obj-relationship name="enumvalueses" source="Attributedefinition" target="AttributedefinitionEnumvalues" deleteRule="Deny" db-relationship-path="enumvalueses" />
+	<obj-relationship name="uniquefields" source="Attributedefinition" target="Uniquefield" deleteRule="Deny" db-relationship-path="uniquefields" />
+	<obj-relationship name="attributedefinitionEnumvalues" source="AttributedefinitionEnumvalues" target="Attributedefinition" deleteRule="Nullify" db-relationship-path="attributedefinitionEnumvalues" />
 	<obj-relationship name="assignedby1" source="Authorityassignment" target="Principal" deleteRule="Nullify" db-relationship-path="assignedby1" />
 	<obj-relationship name="dataset1" source="Authorityassignment" target="Dataset" deleteRule="Nullify" db-relationship-path="dataset1" />
 	<obj-relationship name="office1" source="Authorityassignment" target="Office" deleteRule="Nullify" db-relationship-path="office1" />
@@ -688,39 +837,48 @@
 	<obj-relationship name="affectedversion1" source="Catalogaction" target="Dataversion" deleteRule="Nullify" db-relationship-path="affectedversion1" />
 	<obj-relationship name="dataset1" source="Catalogaction" target="Dataset" deleteRule="Nullify" db-relationship-path="dataset1" />
 	<obj-relationship name="initiator1" source="Catalogaction" target="Principal" deleteRule="Nullify" db-relationship-path="initiator1" />
-	<obj-relationship name="aschema1" source="Csvdeliveryconfiguration" target="Dataschema" deleteRule="Nullify" db-relationship-path="aschema1" />
-	<obj-relationship name="dataset1" source="Csvdeliveryconfiguration" target="Dataset" deleteRule="Nullify" db-relationship-path="dataset1" />
+	<obj-relationship name="datasetcontacts" source="Contactpoint" target="Datasetcontact" deleteRule="Deny" db-relationship-path="datasetcontacts" />
 	<obj-relationship name="attributedefinitions" source="Dataschema" target="Attributedefinition" deleteRule="Deny" db-relationship-path="attributedefinitions" />
-	<obj-relationship name="csvdeliveryconfigurations" source="Dataschema" target="Csvdeliveryconfiguration" deleteRule="Deny" db-relationship-path="csvdeliveryconfigurations" />
+	<obj-relationship name="datasetissues" source="Dataschema" target="Datasetissue" deleteRule="Deny" db-relationship-path="datasetissues" />
 	<obj-relationship name="dataversions" source="Dataschema" target="Dataversion" deleteRule="Deny" db-relationship-path="dataversions" />
+	<obj-relationship name="submissions" source="Dataschema" target="Submission" deleteRule="Deny" db-relationship-path="submissions" />
+	<obj-relationship name="uniquedefinitions" source="Dataschema" target="Uniquedefinition" deleteRule="Deny" db-relationship-path="uniquedefinitions" />
 	<obj-relationship name="accessdecisions" source="Dataset" target="Accessdecision" deleteRule="Deny" db-relationship-path="accessdecisions" />
 	<obj-relationship name="accessgrants" source="Dataset" target="Accessgrant" deleteRule="Deny" db-relationship-path="accessgrants" />
 	<obj-relationship name="accessrequests" source="Dataset" target="Accessrequest" deleteRule="Deny" db-relationship-path="accessrequests" />
 	<obj-relationship name="authorityassignments" source="Dataset" target="Authorityassignment" deleteRule="Deny" db-relationship-path="authorityassignments" />
 	<obj-relationship name="catalogactions" source="Dataset" target="Catalogaction" deleteRule="Deny" db-relationship-path="catalogactions" />
-	<obj-relationship name="csvdeliveryconfigurations" source="Dataset" target="Csvdeliveryconfiguration" deleteRule="Deny" db-relationship-path="csvdeliveryconfigurations" />
 	<obj-relationship name="currentissue1" source="Dataset" target="Datasetissue" deleteRule="Nullify" db-relationship-path="currentissue1" />
+	<obj-relationship name="datasetcontacts" source="Dataset" target="Datasetcontact" deleteRule="Deny" db-relationship-path="datasetcontacts" />
 	<obj-relationship name="datasetissues" source="Dataset" target="Datasetissue" deleteRule="Deny" db-relationship-path="datasetissues" />
-	<obj-relationship name="datasetkeywords" source="Dataset" target="Datasetkeyword" deleteRule="Deny" db-relationship-path="datasetkeywords" />
-	<obj-relationship name="datasetthemes" source="Dataset" target="Datasettheme" deleteRule="Deny" db-relationship-path="datasetthemes" />
+	<obj-relationship name="deliveryconfigurations" source="Dataset" target="Deliveryconfiguration" deleteRule="Deny" db-relationship-path="deliveryconfigurations" />
+	<obj-relationship name="keywordentries" source="Dataset" target="Keywordentry" deleteRule="Deny" db-relationship-path="keywordentries" />
 	<obj-relationship name="owneroffice1" source="Dataset" target="Office" deleteRule="Nullify" db-relationship-path="owneroffice1" />
 	<obj-relationship name="publisheroffice1" source="Dataset" target="Office" deleteRule="Nullify" db-relationship-path="publisheroffice1" />
+	<obj-relationship name="submissions" source="Dataset" target="Submission" deleteRule="Deny" db-relationship-path="submissions" />
+	<obj-relationship name="themeentries" source="Dataset" target="Themeentry" deleteRule="Deny" db-relationship-path="themeentries" />
+	<obj-relationship name="contactpoints1" source="Datasetcontact" target="Contactpoint" deleteRule="Nullify" db-relationship-path="contactpoints1" />
+	<obj-relationship name="datasets1" source="Datasetcontact" target="Dataset" deleteRule="Nullify" db-relationship-path="datasets1" />
+	<obj-relationship name="aschema1" source="Datasetissue" target="Dataschema" deleteRule="Nullify" db-relationship-path="aschema1" />
 	<obj-relationship name="currentversion1" source="Datasetissue" target="Dataversion" deleteRule="Nullify" db-relationship-path="currentversion1" />
 	<obj-relationship name="dataset1" source="Datasetissue" target="Dataset" deleteRule="Nullify" db-relationship-path="dataset1" />
 	<obj-relationship name="datasets" source="Datasetissue" target="Dataset" deleteRule="Deny" db-relationship-path="datasets" />
 	<obj-relationship name="dataversions" source="Datasetissue" target="Dataversion" deleteRule="Deny" db-relationship-path="dataversions" />
-	<obj-relationship name="dataset1" source="Datasetkeyword" target="Dataset" deleteRule="Nullify" db-relationship-path="dataset1" />
-	<obj-relationship name="dataset1" source="Datasettheme" target="Dataset" deleteRule="Nullify" db-relationship-path="dataset1" />
+	<obj-relationship name="submissions" source="Datasetissue" target="Submission" deleteRule="Deny" db-relationship-path="submissions" />
 	<obj-relationship name="aschema1" source="Dataversion" target="Dataschema" deleteRule="Nullify" db-relationship-path="aschema1" />
 	<obj-relationship name="catalogactions" source="Dataversion" target="Catalogaction" deleteRule="Deny" db-relationship-path="catalogactions" />
 	<obj-relationship name="datasetissues" source="Dataversion" target="Datasetissue" deleteRule="Deny" db-relationship-path="datasetissues" />
 	<obj-relationship name="distributions" source="Dataversion" target="Distribution" deleteRule="Deny" db-relationship-path="distributions" />
 	<obj-relationship name="issue1" source="Dataversion" target="Datasetissue" deleteRule="Nullify" db-relationship-path="issue1" />
+	<obj-relationship name="submissions" source="Dataversion" target="Submission" deleteRule="Deny" db-relationship-path="submissions" />
+	<obj-relationship name="submissions1" source="Dataversion" target="Submission" deleteRule="Deny" db-relationship-path="submissions1" />
+	<obj-relationship name="dataset1" source="Deliveryconfiguration" target="Dataset" deleteRule="Nullify" db-relationship-path="dataset1" />
 	<obj-relationship name="catalogactions" source="Distribution" target="Catalogaction" deleteRule="Deny" db-relationship-path="catalogactions" />
 	<obj-relationship name="version1" source="Distribution" target="Dataversion" deleteRule="Nullify" db-relationship-path="version1" />
 	<obj-relationship name="agroup1" source="Groupmembership" target="Principal" deleteRule="Nullify" db-relationship-path="agroup1" />
 	<obj-relationship name="amember1" source="Groupmembership" target="Principal" deleteRule="Nullify" db-relationship-path="amember1" />
 	<obj-relationship name="revokedby1" source="Groupmembership" target="Principal" deleteRule="Nullify" db-relationship-path="revokedby1" />
+	<obj-relationship name="datasetKeywords" source="Keywordentry" target="Dataset" deleteRule="Nullify" db-relationship-path="datasetKeywords" />
 	<obj-relationship name="authorityassignments" source="Office" target="Authorityassignment" deleteRule="Deny" db-relationship-path="authorityassignments" />
 	<obj-relationship name="datasets" source="Office" target="Dataset" deleteRule="Deny" db-relationship-path="datasets" />
 	<obj-relationship name="datasets1" source="Office" target="Dataset" deleteRule="Deny" db-relationship-path="datasets1" />
@@ -736,4 +894,16 @@
 	<obj-relationship name="groupmemberships" source="Principal" target="Groupmembership" deleteRule="Deny" db-relationship-path="groupmemberships" />
 	<obj-relationship name="groupmemberships1" source="Principal" target="Groupmembership" deleteRule="Deny" db-relationship-path="groupmemberships1" />
 	<obj-relationship name="groupmemberships2" source="Principal" target="Groupmembership" deleteRule="Deny" db-relationship-path="groupmemberships2" />
+	<obj-relationship name="submissions" source="Principal" target="Submission" deleteRule="Deny" db-relationship-path="submissions" />
+	<obj-relationship name="acceptedversion1" source="Submission" target="Dataversion" deleteRule="Nullify" db-relationship-path="acceptedversion1" />
+	<obj-relationship name="aschema1" source="Submission" target="Dataschema" deleteRule="Nullify" db-relationship-path="aschema1" />
+	<obj-relationship name="baseversion1" source="Submission" target="Dataversion" deleteRule="Nullify" db-relationship-path="baseversion1" />
+	<obj-relationship name="dataset1" source="Submission" target="Dataset" deleteRule="Nullify" db-relationship-path="dataset1" />
+	<obj-relationship name="issue1" source="Submission" target="Datasetissue" deleteRule="Nullify" db-relationship-path="issue1" />
+	<obj-relationship name="submittedby1" source="Submission" target="Principal" deleteRule="Nullify" db-relationship-path="submittedby1" />
+	<obj-relationship name="datasetThemes" source="Themeentry" target="Dataset" deleteRule="Nullify" db-relationship-path="datasetThemes" />
+	<obj-relationship name="aschema1" source="Uniquedefinition" target="Dataschema" deleteRule="Nullify" db-relationship-path="aschema1" />
+	<obj-relationship name="uniquefields" source="Uniquedefinition" target="Uniquefield" deleteRule="Deny" db-relationship-path="uniquefields" />
+	<obj-relationship name="aattribute1" source="Uniquefield" target="Attributedefinition" deleteRule="Nullify" db-relationship-path="aattribute1" />
+	<obj-relationship name="uniquedefinition1" source="Uniquefield" target="Uniquedefinition" deleteRule="Nullify" db-relationship-path="uniquedefinition1" />
 </data-map>

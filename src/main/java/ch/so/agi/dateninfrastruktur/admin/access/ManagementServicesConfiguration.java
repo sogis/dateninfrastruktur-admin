@@ -17,15 +17,5 @@ public class ManagementServicesConfiguration {
     @Bean(destroyMethod="close") @ConfigurationProperties("di.management.audit")
     HikariDataSource managementAuditDataSource(){var ds=new HikariDataSource();ds.setMaximumPoolSize(3);ds.setMinimumIdle(0);ds.setReadOnly(true);ds.setPoolName("management-audit-reader");return ds;}
     @Bean ManagementQueryService managementQueryService(CayenneRuntime runtime,AuthorityService authority,@Qualifier("managementAuditDataSource")HikariDataSource audit){return new ManagementQueryService(runtime,authority,audit);}
-    @Bean org.springframework.boot.ApplicationRunner verifyWebContract(@Qualifier("managementAuditDataSource")HikariDataSource audit,@Qualifier("managementWriterDataSource")HikariDataSource writer){
-        return args->{
-            try(var c=audit.getConnection();var s=c.createStatement();var r=s.executeQuery("SELECT current_user")){
-                if(!r.next() || !"di_audit_reader".equals(r.getString(1)))throw new IllegalStateException("Audit views require their dedicated read-only role");
-            }
-            try(var c=writer.getConnection();var s=c.createStatement();var r=s.executeQuery("SELECT di_ops.management_web_contract()")){
-                if(!r.next() || !r.getBoolean(1))throw new IllegalStateException("Current management web contract is required before web startup");
-            }
-        };
-    }
-    @Bean DownloadAuthorizationService downloadAuthorizationService(@Qualifier("managementAuthorizationDataSource")HikariDataSource source){return new DownloadAuthorizationService(new JdbcAuthorizationRepository(source));}
+    @Bean DownloadAuthorizationService downloadAuthorizationService(@Qualifier("managementWriterDataSource")HikariDataSource source){return new DownloadAuthorizationService(new JdbcAuthorizationRepository(source));}
 }

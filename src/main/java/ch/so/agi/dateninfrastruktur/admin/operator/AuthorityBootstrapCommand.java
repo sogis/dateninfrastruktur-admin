@@ -13,12 +13,12 @@ public final class AuthorityBootstrapCommand {
         var actor=new ActorContext(required("DI_OPERATOR_ISSUER"),required("DI_OPERATOR_SUBJECT"),"service",null);
         try(var ds=new HikariDataSource()){
             ds.setJdbcUrl(required("DI_MANAGEMENT_WRITER_JDBCURL"));ds.setUsername("di_writer");ds.setPassword(required("DI_MANAGEMENT_WRITER_PASSWORD"));ds.setMaximumPoolSize(1);
-            RuntimeContractVerifier.require(ds);var runtime=ManagementRuntime.create(ds);
+            var runtime=ManagementRuntime.create(ds);
             try{
                 var office=new AuditedUnitOfWork(runtime).execute(actor,new CommandContext(UUID.randomUUID(),UUID.randomUUID(),"operator.bootstrap_office","Explicit local operator setup"),ctx->{
                     var operator=principal(ctx,actor.issuer(),actor.subject(),"service");var user=principal(ctx,args[1],args[2],"user");
                     var row=ObjectSelect.query(Office.class).where(Office.IDENTIFIER.eq(args[3])).selectOne(ctx);
-                    if(row==null){row=ctx.newObject(Office.class);row.setTIliTid(UUID.randomUUID());row.setIdentifier(args[3]);row.setAname(args[4]);row.setAbbreviation(args[3].substring(0,Math.min(32,args[3].length())));row.setAactive(true);}
+                    if(row==null){row=ctx.newObject(Office.class);row.setTIliTid(args[3]);row.setIdentifier(args[3]);row.setAname(args[4]);row.setAbbreviation(args[3].substring(0,Math.min(32,args[3].length())));row.setAactive(true);}
                     // Resolve existing assignments by stable OIDs, including a safe first bootstrap before the ORM flush.
                     for(String capability:List.of("manage_metadata","publish","manage_access")){
                         var found=ObjectSelect.query(Authorityassignment.class).where(Authorityassignment.OFFICE1.dot(Office.T_ILI_TID).eq(row.getTIliTid()).andExp(Authorityassignment.PRINCIPAL1.dot(Principal.T_ILI_TID).eq(user.getTIliTid())).andExp(Authorityassignment.CAPABILITY.eq(capability))).select(ctx);

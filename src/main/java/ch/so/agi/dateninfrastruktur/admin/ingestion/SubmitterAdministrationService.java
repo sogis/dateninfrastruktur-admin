@@ -12,7 +12,7 @@ import ch.so.agi.dateninfrastruktur.admin.persistence.*;
 
 /** Delegates only submit_data; manage_submitters has no delegation endpoint. */
 public final class SubmitterAdministrationService {
-    public record Scope(UUID officeId,UUID datasetId){public Scope{if((officeId==null)==(datasetId==null))throw IngestionProblem.invalid("INVALID_SCOPE");}}
+    public record Scope(String officeId,UUID datasetId){public Scope{if((officeId==null)==(datasetId==null))throw IngestionProblem.invalid("INVALID_SCOPE");}}
     public record Grant(Scope scope,UUID beneficiary,long expectedScopeVersion,Instant validFrom,Instant validUntil,String reason){}
     private final AuditedUnitOfWork unit;private final AuthorityService authority;private final SubmissionAuthorizationService authorization;
     private final CommandReceiptRepository receipts=new CommandReceiptRepository();private final PrincipalRepository principals=new PrincipalRepository();
@@ -23,8 +23,8 @@ public final class SubmitterAdministrationService {
         else try{authority.requireOffice(context,actor,scope.officeId(),"manage_submitters");}catch(BusinessException error){throw IngestionProblem.forbidden();}
     }
     private static void lockScope(ObjectContext context,Scope scope,Long expected){
-        String table=scope.datasetId()!=null?"dataset":"office";UUID id=scope.datasetId()!=null?scope.datasetId():scope.officeId();
-        var rows=CayenneSql.rows(context,"SELECT row_version FROM di_management."+table+" WHERE t_ili_tid=CAST(#bind($id) AS uuid) FOR UPDATE",Map.of("id",id.toString()));
+        String table=scope.datasetId()!=null?"dataset":"office";String id=scope.datasetId()!=null?scope.datasetId().toString():scope.officeId();
+        var rows=CayenneSql.rows(context,"SELECT row_version FROM di_management."+table+" WHERE t_ili_tid=#bind($id)::"+(scope.datasetId()!=null?"uuid":"text")+" FOR UPDATE",Map.of("id",id));
         if(rows.size()!=1)throw IngestionProblem.forbidden();
         if(expected!=null && ((Number)rows.getFirst().get("row_version")).longValue()!=expected)throw IngestionProblem.conflict("STALE_REVISION");
     }

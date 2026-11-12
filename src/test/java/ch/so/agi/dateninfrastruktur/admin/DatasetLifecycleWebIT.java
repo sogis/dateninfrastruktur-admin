@@ -124,7 +124,7 @@ class DatasetLifecycleWebIT {
 
             var saved = dataset(fixture, id);
             assertEquals("Speicherstand", saved.getTitle());
-            assertEquals("mailto:pflege@example.invalid", saved.getContactemail());
+            assertEquals("mailto:pflege@example.invalid", saved.primaryContact().getEmail());
             assertEquals("Importierter Wert", saved.getSurveymethod());
             assertEquals(previousIdentifier, saved.getIdentifier());
             assertEquals("standalone", saved.getAkind());
@@ -133,9 +133,9 @@ class DatasetLifecycleWebIT {
             assertEquals("published", saved.getPublicationstatus());
             assertEquals("restricted", saved.getAccesslevel());
             assertEquals(List.of("Energie", "Raum_und_Umwelt"),
-                saved.getDatasetthemes().stream().map(theme -> theme.getTheme()).sorted().toList());
+                saved.getThemeentries().stream().map(theme -> theme.getAcode()).sorted().toList());
             assertEquals(List.of("Messreihe", "Zweite Zeile"),
-                saved.getDatasetkeywords().stream().map(word -> word.getKeyword()).sorted().toList());
+                saved.getKeywordentries().stream().map(word -> word.getAvalue()).sorted().toList());
         }
     }
 

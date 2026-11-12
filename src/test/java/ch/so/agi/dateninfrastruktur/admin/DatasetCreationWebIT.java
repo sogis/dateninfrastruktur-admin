@@ -151,7 +151,7 @@ class DatasetCreationWebIT {
             assertTrue(form.innerText().contains("Prüfamt — " + fixture.suffix.substring(0, 8)
                 + " (office-" + fixture.suffix + ")"));
 
-            UUID otherOffice = grantSecondOfficeWithSameName();
+            String otherOffice = grantSecondOfficeWithSameName();
             assertEquals(200, page.reload().status());
             assertEquals(1, form.count());
             assertEquals(0, form.locator("input[name=ownerOffice]").count());
@@ -239,12 +239,12 @@ class DatasetCreationWebIT {
         }
     }
 
-    private UUID grantSecondOfficeWithSameName() {
+    private String grantSecondOfficeWithSameName() {
         return fixture.unit.execute(fixture.manager, command("operator.bootstrap"), context -> {
             var principal = ObjectSelect.query(Principal.class).where(Principal.T_ILI_TID.eq(fixture.managerId))
                 .selectOne(context);
             var office = context.newObject(Office.class);
-            office.setTIliTid(UUID.randomUUID());
+            office.setTIliTid(UUID.randomUUID().toString());
             office.setIdentifier("office-second-" + fixture.suffix);
             office.setAbbreviation("T" + fixture.suffix.substring(0, 7));
             office.setAname("Prüfamt");
@@ -270,7 +270,7 @@ class DatasetCreationWebIT {
             .setExtraHTTPHeaders(Map.of("Authorization", "Bearer " + actor.subject()));
     }
 
-    private static Map<String, String> payload(Page page, UUID office, String identifier, String kind) {
+    private static Map<String, String> payload(Page page, String office, String identifier, String kind) {
         var form = page.locator(FORM);
         return new LinkedHashMap<>(Map.of(
             "commandId", form.locator("input[name=commandId]").inputValue(),
@@ -354,7 +354,7 @@ class DatasetCreationWebIT {
             query.setObject(1, id);
             try (var rows = query.executeQuery()) {
                 assertTrue(rows.next());
-                return new Created(rows.getObject("owner", UUID.class), rows.getObject("publisher", UUID.class),
+                return new Created(rows.getString("owner"), rows.getString("publisher"),
                     rows.getString("akind"), rows.getString("publicationstatus"), rows.getString("accesslevel"),
                     rows.getString("contactemail"), rows.getInt("issues"), rows.getString("issuekey"));
             }
@@ -368,6 +368,6 @@ class DatasetCreationWebIT {
         }
     }
 
-    private record Created(UUID owner, UUID publisher, String kind, String publicationStatus, String access,
+    private record Created(String owner, String publisher, String kind, String publicationStatus, String access,
                            String contactEmail, int issues, String currentIssue) {}
 }

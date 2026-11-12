@@ -221,7 +221,7 @@ class ManagementBrowserIT {
 
     @Test
     void datasetListRendersScopedRowsAndPreservesFiltersOnPageAndDetailLinks() throws Exception {
-        var office = new DatasetOffice(UUID.fromString("4080f38d-9f4d-46c0-ad5e-e9835c891c59"),
+        var office = new DatasetOffice("4080f38d-9f4d-46c0-ad5e-e9835c891c59",
             "Prüfamt", "AGI", "agi-pruefung");
         String search = "50%_ + &";
         String queryString = "search=" + URLEncoder.encode(search, StandardCharsets.UTF_8)

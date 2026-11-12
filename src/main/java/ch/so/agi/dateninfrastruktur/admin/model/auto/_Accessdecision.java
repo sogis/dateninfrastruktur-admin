@@ -13,6 +13,7 @@ import org.apache.cayenne.exp.property.DateProperty;
 import org.apache.cayenne.exp.property.EntityProperty;
 import org.apache.cayenne.exp.property.ListProperty;
 import org.apache.cayenne.exp.property.NumericIdProperty;
+import org.apache.cayenne.exp.property.NumericProperty;
 import org.apache.cayenne.exp.property.PropertyFactory;
 import org.apache.cayenne.exp.property.SelfProperty;
 import org.apache.cayenne.exp.property.StringProperty;
@@ -42,6 +43,7 @@ public abstract class _Accessdecision extends PersistentObject {
     public static final BaseProperty<UUID> COMMANDID = PropertyFactory.createBase("commandid", UUID.class);
     public static final DateProperty<LocalDateTime> DECIDEDAT = PropertyFactory.createDate("decidedat", LocalDateTime.class);
     public static final StringProperty<String> REASON = PropertyFactory.createString("reason", String.class);
+    public static final NumericProperty<Long> T_BASKET = PropertyFactory.createNumeric("tBasket", Long.class);
     public static final BaseProperty<UUID> T_ILI_TID = PropertyFactory.createBase("tIliTid", UUID.class);
     public static final ListProperty<Accessdecision> ACCESSDECISIONS = PropertyFactory.createList("accessdecisions", Accessdecision.class);
     public static final ListProperty<Accessgrant> ACCESSGRANTS = PropertyFactory.createList("accessgrants", Accessgrant.class);
@@ -56,6 +58,7 @@ public abstract class _Accessdecision extends PersistentObject {
     protected UUID commandid;
     protected LocalDateTime decidedat;
     protected String reason;
+    protected long tBasket;
     protected UUID tIliTid;
 
     protected Object accessdecisions;
@@ -105,6 +108,16 @@ public abstract class _Accessdecision extends PersistentObject {
     public String getReason() {
         beforePropertyRead("reason");
         return this.reason;
+    }
+
+    public void setTBasket(long tBasket) {
+        beforePropertyWrite("tBasket", this.tBasket, tBasket);
+        this.tBasket = tBasket;
+    }
+
+    public long getTBasket() {
+        beforePropertyRead("tBasket");
+        return this.tBasket;
     }
 
     public void setTIliTid(UUID tIliTid) {
@@ -211,6 +224,8 @@ public abstract class _Accessdecision extends PersistentObject {
                 return this.decidedat;
             case "reason":
                 return this.reason;
+            case "tBasket":
+                return this.tBasket;
             case "tIliTid":
                 return this.tIliTid;
             case "accessdecisions":
@@ -252,6 +267,9 @@ public abstract class _Accessdecision extends PersistentObject {
                 break;
             case "reason":
                 this.reason = (String)val;
+                break;
+            case "tBasket":
+                this.tBasket = val == null ? 0 : (long)val;
                 break;
             case "tIliTid":
                 this.tIliTid = (UUID)val;
@@ -300,6 +318,7 @@ public abstract class _Accessdecision extends PersistentObject {
         out.writeObject(this.commandid);
         out.writeObject(this.decidedat);
         out.writeObject(this.reason);
+        out.writeLong(this.tBasket);
         out.writeObject(this.tIliTid);
         out.writeObject(this.accessdecisions);
         out.writeObject(this.accessgrants);
@@ -318,6 +337,7 @@ public abstract class _Accessdecision extends PersistentObject {
         this.commandid = (UUID)in.readObject();
         this.decidedat = (LocalDateTime)in.readObject();
         this.reason = (String)in.readObject();
+        this.tBasket = in.readLong();
         this.tIliTid = (UUID)in.readObject();
         this.accessdecisions = in.readObject();
         this.accessgrants = in.readObject();

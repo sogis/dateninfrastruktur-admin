@@ -6,6 +6,7 @@ import org.apache.cayenne.query.ObjectSelect;
 import ch.so.agi.dateninfrastruktur.admin.audit.*;
 import ch.so.agi.dateninfrastruktur.admin.model.Principal;
 import ch.so.agi.dateninfrastruktur.admin.persistence.CayenneSql;
+import ch.so.agi.dateninfrastruktur.admin.persistence.ManagementBaskets;
 import ch.so.agi.dateninfrastruktur.admin.access.BusinessException;
 public final class PrincipalRepository {
     public Principal findByExternalIdentity(ObjectContext context,String issuer,String subject){
@@ -27,6 +28,7 @@ public final class PrincipalRepository {
         var found=findByExternalIdentity(context,actor.issuer(),actor.subject());
         if(found!=null){if(!found.isAactive() || !"user".equals(found.getAkind()))throw BusinessException.forbidden();return found;}
         var created=context.newObject(Principal.class);created.setTIliTid(UUID.randomUUID());
+        created.setTBasket(ManagementBaskets.require(context, ManagementBaskets.Topic.Access));
         created.setAissuer(actor.issuer());created.setAsubject(actor.subject());created.setAkind("user");
         created.setAactive(true);created.setProvisionedat(CayenneSql.now(context));
         new AuditContextWriter().bind(context,new ActorContext(actor.issuer(),actor.subject(),"user",created.getTIliTid()),command);

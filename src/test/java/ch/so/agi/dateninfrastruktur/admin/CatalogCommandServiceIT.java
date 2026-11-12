@@ -22,7 +22,7 @@ class CatalogCommandServiceIT {
             f.catalog.changeAccessLevel(f.manager,command("change_access_level"),root,f.version("dataset",root),"open","Öffentlich freigegeben");
             var fresh=ObjectSelect.query(Dataset.class).where(Dataset.T_ILI_TID.eq(root)).selectOne(f.runtime.newContext());
             assertEquals("Importiertes Feld behalten",fresh.getSurveymethod());assertEquals("open",fresh.getAccesslevel());assertEquals("published",fresh.getPublicationstatus());
-            assertEquals("published",fresh.getDatasetissues().getFirst().getPublicationstatus());assertEquals(1,fresh.getDatasetthemes().size());assertEquals(1,fresh.getDatasetkeywords().size());
+            assertEquals("published",fresh.getDatasetissues().getFirst().getPublicationstatus());assertEquals(1,fresh.getThemeentries().size());assertEquals(1,fresh.getKeywordentries().size());
             f.catalog.transition(f.manager,command("archive"),root,f.version("dataset",root),"archive","Angebot beendet");
             assertEquals(3,f.count("SELECT count(*) FROM di_management.catalogaction a JOIN di_management.dataset d ON d.t_id=a.dataset WHERE d.t_ili_tid=?",root));
         }

@@ -37,3 +37,27 @@ auf. Aus dem Dev-Stack-Checkout:
 ```sh
 python3 scripts/test_management_bootstrap.py
 ```
+
+## Cayenne-Mapping
+
+Die Anwendung startet eine CayenneRuntime für den eingeschränkten
+`di_writer`. Die Start- und Readiness-Prüfung lesen die Rolle und die
+erforderlichen Basisrelationen. Schreibvorgänge erhalten einen eigenen
+ObjectContext in einer Cayenne-Transaktion. Neue Fachobjekte erhalten
+die Text- oder UUID-TID und den einzigen vorhandenen Basket ihres Topics.
+Fehlende oder mehrdeutige Baskets verhindern den Schreibvorgang.
+
+Für das Mapping führt `cdbimport` den expliziten JDBC-Zugriff auf eine
+eigene Management-Datenbank aus. `DI_MAPPING_URL`, `DI_MAPPING_USER`
+und `DI_MAPPING_PASSWORD` binden dieses Ziel. `cgen` erzeugt die
+Klassen aus der DataMap. Die UUID-Normalisierung ergänzt ausschliesslich
+Typen für PostgreSQL-UUID-Spalten, die Cayenne als JDBC OTHER liest.
+
+Im Dev-Stack-Checkout prüft der folgende Befehl die Reproduzierbarkeit
+beider Generatoren in einem eigenen Compose-Projekt, den Start der
+Persistence-Konfiguration und den Export der über Cayenne eingefügten
+Objekte:
+
+```sh
+python3 scripts/test_cayenne_mapping.py
+```

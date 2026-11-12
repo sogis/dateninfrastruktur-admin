@@ -28,8 +28,8 @@ class AuditedUnitOfWorkIT {
                 uow.execute(actor("anna"),cmd,ctx->{
                     var result=SQLExec.query("SELECT pg_current_xact_id()::text AS tx").execute(ctx).firstList();
                     tx[0]=((Map<?,?>)result.getFirst()).get("tx").toString();
-                    var office=ctx.newObject(Office.class);office.setTIliTid(officeId);office.setIdentifier("office-"+officeId);office.setAname("Testamt");office.setAbbreviation(officeId.toString().substring(0,8));office.setAactive(true);
-                    var root=ctx.newObject(Dataset.class);root.setTIliTid(rootId);root.setIdentifier("dataset-"+rootId);root.setAkind("standalone");root.setTitle("Statistik");root.setAdescription("Grüezi\n\nMehrzeilig — vollständig");root.setContactemail("mailto:demo@example.invalid");root.setAccesslevel("restricted");root.setPublicationstatus("draft");root.setModified(LocalDate.of(2026,11,4));root.setOwneroffice1(office);root.setPublisheroffice1(office);
+                    var office=ctx.newObject(Office.class);office.setTIliTid(officeId.toString());office.setIdentifier("office-"+officeId);office.setAname("Testamt");office.setAbbreviation(officeId.toString().substring(0,8));office.setAactive(true);
+                    var root=ctx.newObject(Dataset.class);root.setTIliTid(rootId);root.setIdentifier("dataset-"+rootId);root.setAkind("standalone");root.setTitle("Statistik");root.setAdescription("Grüezi\n\nMehrzeilig — vollständig");root.setAccesslevel("restricted");root.setPublicationstatus("draft");root.setModified(LocalDate.of(2026,11,4));root.setOwneroffice1(office);root.setPublisheroffice1(office);
                     var issue=ctx.newObject(Datasetissue.class);issue.setTIliTid(issueId);issue.setIssuekey("default");issue.setLabel("Einzelangebot");issue.setPublicationstatus("draft");issue.setModified(LocalDate.of(2026,11,4));issue.setDataset1(root);
                     return rootId;
                 });
@@ -57,8 +57,8 @@ class AuditedUnitOfWorkIT {
                 try(var c=admin.getConnection();var ps=c.prepareStatement("SELECT jsonb_exists(new_values,'displayname'),new_values->>'aissuer' FROM audit.row_change WHERE command_id=?")){ps.setObject(1,redaction.commandId());try(var rs=ps.executeQuery()){assertTrue(rs.next());assertFalse(rs.getBoolean(1));assertEquals("urn:test",rs.getString(2));}}
                 var principal=ObjectSelect.query(Principal.class).where(Principal.T_ILI_TID.eq(principalId)).selectOne(runtime.newContext());
                 assertEquals(Instant.parse("2026-11-04T12:00:00Z"),UtcTime.fromDatabase(principal.getProvisionedat()));
-                var del=command("keyword.remove");UUID keywordId=UUID.randomUUID();uow.execute(actor("anna"),command("keyword.add"),ctx->{var k=ctx.newObject(Datasetkeyword.class);k.setTIliTid(keywordId);k.setKeyword("demo");k.setDataset1(ObjectSelect.query(Dataset.class).where(Dataset.T_ILI_TID.eq(rootId)).selectOne(ctx));return keywordId;});
-                uow.execute(actor("ben"),del,ctx->{ctx.deleteObject(ObjectSelect.query(Datasetkeyword.class).where(Datasetkeyword.T_ILI_TID.eq(keywordId)).selectOne(ctx));return keywordId;});
+                var del=command("keyword.remove");UUID keywordId=UUID.randomUUID();uow.execute(actor("anna"),command("keyword.add"),ctx->{var k=ctx.newObject(Keywordentry.class);k.setTIliTid(keywordId);k.setAvalue("demo");k.setDatasetKeywords(ObjectSelect.query(Dataset.class).where(Dataset.T_ILI_TID.eq(rootId)).selectOne(ctx));return keywordId;});
+                uow.execute(actor("ben"),del,ctx->{ctx.deleteObject(ObjectSelect.query(Keywordentry.class).where(Keywordentry.T_ILI_TID.eq(keywordId)).selectOne(ctx));return keywordId;});
                 try(var c=admin.getConnection();var ps=c.prepareStatement("SELECT operation,old_values->>'keyword',new_values IS NULL,aggregate_dataset_oid FROM audit.row_change WHERE table_name='datasetkeyword' AND command_id=?")){ps.setObject(1,del.commandId());try(var rs=ps.executeQuery()){assertTrue(rs.next());assertEquals("D",rs.getString(1));assertEquals("demo",rs.getString(2));assertTrue(rs.getBoolean(3));assertEquals(rootId.toString(),rs.getString(4));}}
                 long version;
                 try(var c=admin.getConnection();var ps=c.prepareStatement("SELECT row_version FROM di_management.dataset WHERE t_ili_tid=?")){

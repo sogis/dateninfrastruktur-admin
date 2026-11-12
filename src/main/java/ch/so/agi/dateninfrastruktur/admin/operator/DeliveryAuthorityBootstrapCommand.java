@@ -12,7 +12,7 @@ import ch.so.agi.dateninfrastruktur.admin.ingestion.*;
 
 /** Explicit local first assignment. No MVC/Spring bean and no normal-start invocation. */
 public final class DeliveryAuthorityBootstrapCommand {
-    public record Request(int schemaVersion,UUID commandId,UUID officeId,UUID datasetId,String verifiedIssuer,String verifiedSubject,String reason){}
+    public record Request(int schemaVersion,UUID commandId,String officeId,UUID datasetId,String verifiedIssuer,String verifiedSubject,String reason){}
     public static UUID bootstrap(AuditedUnitOfWork unit,ActorContext operator,Request request){
         if(!"service".equals(operator.kind()) || request.schemaVersion()!=1 || request.commandId()==null || (request.officeId()==null)==(request.datasetId()==null) || request.verifiedIssuer()==null || request.verifiedIssuer().isBlank() || request.verifiedIssuer().length()>1024 || request.verifiedSubject()==null || request.verifiedSubject().isBlank() || request.verifiedSubject().length()>255 || request.reason()==null || request.reason().isBlank() || request.reason().length()>4000)throw IngestionProblem.invalid("INVALID_INPUT");
         var command=new CommandContext(request.commandId(),UUID.randomUUID(),"operator.bootstrap_submitters",request.reason());
@@ -43,7 +43,7 @@ public final class DeliveryAuthorityBootstrapCommand {
         Path path=Path.of(args[0]);var permissions=Files.getPosixFilePermissions(path);if(permissions.stream().anyMatch(p->p.name().startsWith("GROUP_")||p.name().startsWith("OTHERS_")) || !Files.isRegularFile(path,LinkOption.NOFOLLOW_LINKS) || Files.size(path)>16384)throw new IllegalArgumentException("Private bounded regular request required");
         var request=CanonicalJson.JSON.readValue(Files.readAllBytes(path),Request.class);var actor=new ActorContext(required("DI_OPERATOR_ISSUER"),required("DI_OPERATOR_SUBJECT"),"service",null);
         try(var ds=new HikariDataSource()){
-            ds.setJdbcUrl(required("DI_MANAGEMENT_WRITER_JDBCURL"));ds.setUsername("di_writer");ds.setPassword(required("DI_MANAGEMENT_WRITER_PASSWORD"));ds.setMaximumPoolSize(1);RuntimeContractVerifier.require(ds);
+            ds.setJdbcUrl(required("DI_MANAGEMENT_WRITER_JDBCURL"));ds.setUsername("di_writer");ds.setPassword(required("DI_MANAGEMENT_WRITER_PASSWORD"));ds.setMaximumPoolSize(1);
             var runtime=ManagementRuntime.create(ds);try{System.out.println("Configured manage_submitters assignment "+bootstrap(new AuditedUnitOfWork(runtime),actor,request)+"; no other authority or data grant created.");}finally{runtime.shutdown();}
         }
     }

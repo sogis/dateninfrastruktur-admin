@@ -1,6 +1,6 @@
 package ch.so.agi.dateninfrastruktur.admin;
 
-import ch.so.agi.dateninfrastruktur.admin.persistence.RuntimeContractVerifier;
+import ch.so.agi.dateninfrastruktur.admin.persistence.ManagementDatabase;
 
 /** Invokes the same packaged verifier as normal Admin startup using an owned Compose fixture. */
 public final class SchemaRuntimeProbe {
@@ -9,7 +9,7 @@ public final class SchemaRuntimeProbe {
             throw new IllegalStateException("Isolated schema fixture required");
         }
         try (var source = ManagementFixture.source("di_writer", "DI_TEST_WRITER_PASSWORD")) {
-            RuntimeContractVerifier.require(source);
+            ManagementDatabase.require(source);
         }
         System.out.println("Packaged Java verifier accepted current physical schema and artifact digest");
     }

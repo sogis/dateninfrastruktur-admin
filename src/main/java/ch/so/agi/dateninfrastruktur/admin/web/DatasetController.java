@@ -57,7 +57,7 @@ public final class DatasetController {
                 @RequestParam(defaultValue = "") String search,
                 @RequestParam(defaultValue = "") String publicationStatus,
                 @RequestParam(defaultValue = "") String accessLevel,
-                @RequestParam(required = false) UUID ownerOffice,
+                @RequestParam(required = false) String ownerOffice,
                 @RequestParam(defaultValue = "0") int page) {
         var filters = new DatasetFilters(search, publicationStatus, accessLevel, ownerOffice, page);
         var result = query.datasets(new VerifiedActorResolver().resolve(authentication), filters);
@@ -89,7 +89,7 @@ public final class DatasetController {
         var actor = new VerifiedActorResolver().resolve(authentication);
         var errors = new LinkedHashMap<String, String>();
         var command = parseUuid(commandId);
-        var office = parseUuid(ownerOffice);
+        String office = ownerOffice.isBlank() || ownerOffice.length() > 1024 ? null : ownerOffice;
         String selectedOffice = office == null ? ownerOffice : office.toString();
         if (office == null) {
             errors.put("ownerOffice", "Wählen Sie ein zuständiges Amt aus.");
@@ -156,7 +156,7 @@ public final class DatasetController {
                   @RequestParam(defaultValue = "") String search,
                   @RequestParam(defaultValue = "") String publicationStatus,
                   @RequestParam(defaultValue = "") String accessLevel,
-                  @RequestParam(required = false) UUID ownerOffice,
+                  @RequestParam(required = false) String ownerOffice,
                   @RequestParam(defaultValue = "0") int page,
                   @RequestParam(defaultValue = "false") boolean created,
                   @RequestParam(defaultValue = "") String result) {

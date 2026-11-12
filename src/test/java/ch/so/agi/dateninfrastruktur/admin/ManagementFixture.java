@@ -17,7 +17,7 @@ final class ManagementFixture implements AutoCloseable {
     final AuthorityService authority=new AuthorityService(runtime);
     final AccessWorkflowService workflow=new AccessWorkflowService(unit,authority);
     final CatalogCommandService catalog=new CatalogCommandService(unit,authority);
-    final UUID office=UUID.randomUUID(); UUID managerId=UUID.randomUUID();
+    final String office=UUID.randomUUID().toString(); UUID managerId=UUID.randomUUID();
     final String suffix=UUID.randomUUID().toString();
     final ActorContext manager,anna,ben;
     static ActorContext actor(String subject){return new ActorContext("https://identity.example.invalid",subject,"user",null);}

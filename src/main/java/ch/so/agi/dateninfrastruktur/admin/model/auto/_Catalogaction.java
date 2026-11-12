@@ -11,6 +11,7 @@ import org.apache.cayenne.exp.property.BaseProperty;
 import org.apache.cayenne.exp.property.DateProperty;
 import org.apache.cayenne.exp.property.EntityProperty;
 import org.apache.cayenne.exp.property.NumericIdProperty;
+import org.apache.cayenne.exp.property.NumericProperty;
 import org.apache.cayenne.exp.property.PropertyFactory;
 import org.apache.cayenne.exp.property.SelfProperty;
 import org.apache.cayenne.exp.property.StringProperty;
@@ -40,6 +41,7 @@ public abstract class _Catalogaction extends PersistentObject {
     public static final BaseProperty<UUID> COMMANDID = PropertyFactory.createBase("commandid", UUID.class);
     public static final DateProperty<LocalDateTime> PERFORMEDAT = PropertyFactory.createDate("performedat", LocalDateTime.class);
     public static final StringProperty<String> REASON = PropertyFactory.createString("reason", String.class);
+    public static final NumericProperty<Long> T_BASKET = PropertyFactory.createNumeric("tBasket", Long.class);
     public static final BaseProperty<UUID> T_ILI_TID = PropertyFactory.createBase("tIliTid", UUID.class);
     public static final EntityProperty<Principal> ACTOR1 = PropertyFactory.createEntity("actor1", Principal.class);
     public static final EntityProperty<Distribution> AFFECTEDDISTRIBUTION1 = PropertyFactory.createEntity("affecteddistribution1", Distribution.class);
@@ -51,6 +53,7 @@ public abstract class _Catalogaction extends PersistentObject {
     protected UUID commandid;
     protected LocalDateTime performedat;
     protected String reason;
+    protected long tBasket;
     protected UUID tIliTid;
 
     protected Object actor1;
@@ -97,6 +100,16 @@ public abstract class _Catalogaction extends PersistentObject {
     public String getReason() {
         beforePropertyRead("reason");
         return this.reason;
+    }
+
+    public void setTBasket(long tBasket) {
+        beforePropertyWrite("tBasket", this.tBasket, tBasket);
+        this.tBasket = tBasket;
+    }
+
+    public long getTBasket() {
+        beforePropertyRead("tBasket");
+        return this.tBasket;
     }
 
     public void setTIliTid(UUID tIliTid) {
@@ -164,6 +177,8 @@ public abstract class _Catalogaction extends PersistentObject {
                 return this.performedat;
             case "reason":
                 return this.reason;
+            case "tBasket":
+                return this.tBasket;
             case "tIliTid":
                 return this.tIliTid;
             case "actor1":
@@ -199,6 +214,9 @@ public abstract class _Catalogaction extends PersistentObject {
                 break;
             case "reason":
                 this.reason = (String)val;
+                break;
+            case "tBasket":
+                this.tBasket = val == null ? 0 : (long)val;
                 break;
             case "tIliTid":
                 this.tIliTid = (UUID)val;
@@ -238,6 +256,7 @@ public abstract class _Catalogaction extends PersistentObject {
         out.writeObject(this.commandid);
         out.writeObject(this.performedat);
         out.writeObject(this.reason);
+        out.writeLong(this.tBasket);
         out.writeObject(this.tIliTid);
         out.writeObject(this.actor1);
         out.writeObject(this.affecteddistribution1);
@@ -253,6 +272,7 @@ public abstract class _Catalogaction extends PersistentObject {
         this.commandid = (UUID)in.readObject();
         this.performedat = (LocalDateTime)in.readObject();
         this.reason = (String)in.readObject();
+        this.tBasket = in.readLong();
         this.tIliTid = (UUID)in.readObject();
         this.actor1 = in.readObject();
         this.affecteddistribution1 = in.readObject();

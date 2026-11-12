@@ -25,7 +25,7 @@ public final class DeliveryServiceIdentityCommand {
         var file=Path.of(args[0]);if(!Files.isRegularFile(file,LinkOption.NOFOLLOW_LINKS)||Files.size(file)>8192||Files.getPosixFilePermissions(file).stream().anyMatch(p->p.name().startsWith("GROUP_")||p.name().startsWith("OTHERS_")))throw new IllegalArgumentException("Private regular identity request required");
         var request=CanonicalJson.JSON.readValue(Files.readAllBytes(file),Request.class);
         try(var ds=new HikariDataSource()){
-            ds.setJdbcUrl(required("DI_MANAGEMENT_WRITER_JDBCURL"));ds.setUsername("di_writer");ds.setPassword(required("DI_MANAGEMENT_WRITER_PASSWORD"));ds.setMaximumPoolSize(1);RuntimeContractVerifier.require(ds);
+            ds.setJdbcUrl(required("DI_MANAGEMENT_WRITER_JDBCURL"));ds.setUsername("di_writer");ds.setPassword(required("DI_MANAGEMENT_WRITER_PASSWORD"));ds.setMaximumPoolSize(1);
             var runtime=ManagementRuntime.create(ds);try{
                 register(new AuditedUnitOfWork(runtime),new ActorContext(required("DI_OPERATOR_ISSUER"),required("DI_OPERATOR_SUBJECT"),"service",null),request,required("DI_INGESTION_ISSUER"));
                 System.out.println("Verified delivery service identity registered; no Fach grant created.");
