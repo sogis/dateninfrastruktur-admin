@@ -2,7 +2,7 @@ package ch.so.agi.dateninfrastruktur.admin.delivery;
 
 import ch.so.agi.dateninfrastruktur.admin.access.AuthorityService;
 import ch.so.agi.dateninfrastruktur.admin.access.BusinessException;
-import ch.so.agi.dateninfrastruktur.admin.audit.ActorContext;
+import ch.so.agi.dateninfrastruktur.admin.identity.ActorContext;
 import ch.so.agi.dateninfrastruktur.admin.identity.PrincipalRepository;
 import ch.so.agi.dateninfrastruktur.admin.model.*;
 import ch.so.agi.dateninfrastruktur.admin.persistence.CayenneSql;

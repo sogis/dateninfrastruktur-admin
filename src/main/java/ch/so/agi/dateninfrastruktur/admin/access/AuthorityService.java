@@ -3,7 +3,7 @@ import java.util.Map;
 import java.util.UUID;
 import org.apache.cayenne.ObjectContext;
 import org.apache.cayenne.runtime.CayenneRuntime;
-import ch.so.agi.dateninfrastruktur.admin.audit.ActorContext;
+import ch.so.agi.dateninfrastruktur.admin.identity.ActorContext;
 import ch.so.agi.dateninfrastruktur.admin.persistence.CayenneSql;
 
 public final class AuthorityService {

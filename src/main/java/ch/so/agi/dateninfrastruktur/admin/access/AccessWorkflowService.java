@@ -9,12 +9,13 @@ import java.util.function.Function;
 import org.apache.cayenne.ObjectContext;
 import org.apache.cayenne.runtime.CayenneRuntime;
 import org.apache.cayenne.query.ObjectSelect;
-import ch.so.agi.dateninfrastruktur.admin.audit.*;
+import ch.so.agi.dateninfrastruktur.admin.command.CommandContext;
+import ch.so.agi.dateninfrastruktur.admin.identity.ActorContext;
 import ch.so.agi.dateninfrastruktur.admin.identity.PrincipalRepository;
 import ch.so.agi.dateninfrastruktur.admin.model.*;
 import ch.so.agi.dateninfrastruktur.admin.persistence.*;
 
-/** Request, decision, grant, receipt and audit share one physical outer transaction. */
+/** Access requests, decisions and grants are written in a single transaction. */
 public final class AccessWorkflowService {
     public record Validity(Instant from,Instant until){}
     private final CayenneRuntime runtime;

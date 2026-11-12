@@ -2,7 +2,7 @@ package ch.so.agi.dateninfrastruktur.admin.authorization;
 import javax.sql.DataSource;
 import java.util.Optional;
 import java.util.UUID;
-import ch.so.agi.dateninfrastruktur.admin.audit.ActorContext;
+import ch.so.agi.dateninfrastruktur.admin.identity.ActorContext;
 
 /** Exactly one fresh primary-PostgreSQL statement; no user-right or classification cache. */
 public final class JdbcAuthorizationRepository {

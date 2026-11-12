@@ -15,7 +15,7 @@ import ch.so.agi.dateninfrastruktur.admin.access.ManagementQueryService;
 import ch.so.agi.dateninfrastruktur.admin.access.ManagementQueryService.DatasetDetail;
 import ch.so.agi.dateninfrastruktur.admin.access.ManagementQueryService.DatasetIssue;
 import ch.so.agi.dateninfrastruktur.admin.access.ManagementQueryService.DatasetVersion;
-import ch.so.agi.dateninfrastruktur.admin.audit.ActorContext;
+import ch.so.agi.dateninfrastruktur.admin.identity.ActorContext;
 import ch.so.agi.dateninfrastruktur.admin.catalog.DatasetIssueService;
 import ch.so.agi.dateninfrastruktur.admin.security.VerifiedActorResolver;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
