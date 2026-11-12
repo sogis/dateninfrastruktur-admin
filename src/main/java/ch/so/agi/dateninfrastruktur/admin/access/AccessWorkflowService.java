@@ -3,9 +3,11 @@ package ch.so.agi.dateninfrastruktur.admin.access;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
 import org.apache.cayenne.ObjectContext;
+import org.apache.cayenne.runtime.CayenneRuntime;
 import org.apache.cayenne.query.ObjectSelect;
 import ch.so.agi.dateninfrastruktur.admin.audit.*;
 import ch.so.agi.dateninfrastruktur.admin.identity.PrincipalRepository;
@@ -15,22 +17,49 @@ import ch.so.agi.dateninfrastruktur.admin.persistence.*;
 /** Request, decision, grant, receipt and audit share one physical outer transaction. */
 public final class AccessWorkflowService {
     public record Validity(Instant from,Instant until){}
-    private final AuditedUnitOfWork unit;
+    private final CayenneRuntime runtime;
     private final AuthorityService authority;
-    private final PrincipalRepository principals=new PrincipalRepository();
-    private final CommandReceiptRepository receipts=new CommandReceiptRepository();
-    private final AggregateWriteGuard guard=new AggregateWriteGuard();
-    public AccessWorkflowService(AuditedUnitOfWork unit,AuthorityService authority){this.unit=unit;this.authority=authority;}
-    private UUID execute(ActorContext actor,CommandContext command,String action,String hash,
-                         Function<ObjectContext,CommandReceiptRepository.Receipt> work){
-        if(!action.equals(command.actionCode()))throw BusinessException.invalid("Ungültige Aktion.");
-        return unit.execute(actor,command,context->{
-            var previous=receipts.findOrReserve(context,actor,command,hash);
-            if(previous!=null)return previous.reference();
-            var result=work.apply(context);receipts.complete(context,actor,command,result);return result.reference();
-        });
+    private final PrincipalRepository principals = new PrincipalRepository();
+
+    public AccessWorkflowService(CayenneRuntime runtime, AuthorityService authority) {
+        this.runtime = runtime;
+        this.authority = authority;
     }
-    private CommandReceiptRepository.Receipt result(UUID id,String code){return new CommandReceiptRepository.Receipt(id,code);}
+
+    private UUID execute(CommandContext command, String action, Function<ObjectContext, UUID> work) {
+        if (!action.equals(command.actionCode())) throw BusinessException.invalid("Ungültige Aktion.");
+        return ManagementTransactions.write(runtime, work);
+    }
+
+    private Accessdecision replay(ObjectContext context, ActorContext actor, CommandContext command, Dataset root,
+                                  Principal beneficiary, String action, String reason, UUID requestId) {
+        ManagementTransactions.lockCommand(context, command.commandId());
+        var prior = ObjectSelect.query(Accessdecision.class).where(Accessdecision.COMMANDID.eq(command.commandId())).selectOne(context);
+        if (prior == null) return null;
+        UUID priorRequest = prior.getRequest1() == null ? null : prior.getRequest1().getTIliTid();
+        if (!prior.getActor1().getTIliTid().equals(principals.requireActive(context, actor).getTIliTid())
+                || !prior.getDataset1().getTIliTid().equals(root.getTIliTid())
+                || !prior.getBeneficiary1().getTIliTid().equals(beneficiary.getTIliTid())
+                || !action.equals(prior.getAkind()) || !reason.equals(prior.getReason())
+                || !Objects.equals(requestId, priorRequest)) {
+            throw BusinessException.conflict("Entscheid-ID bereits vergeben.");
+        }
+        return prior;
+    }
+
+    private Accessgrant existingGrant(ObjectContext context, Accessdecision decision, Validity validity) {
+        var grant = ObjectSelect.query(Accessgrant.class).where(Accessgrant.GRANTINGDECISION1.eq(decision)).selectOne(context);
+        if (grant == null || validity == null
+                || (validity.from() != null && !UtcTime.toDatabase(validity.from()).equals(grant.getValidfrom()))
+                || !Objects.equals(validity.until() == null ? null : UtcTime.toDatabase(validity.until()), grant.getValiduntil())) {
+            throw BusinessException.conflict("Entscheid-ID bereits vergeben.");
+        }
+        return grant;
+    }
+
+    private static void pending(Accessrequest request) {
+        if (!"pending".equals(request.getAstatus())) throw BusinessException.conflict("Diese Anfrage ist bereits abgeschlossen.");
+    }
     private Dataset dataset(ObjectContext context,UUID id){
         var row=ObjectSelect.query(Dataset.class).where(Dataset.T_ILI_TID.eq(id)).selectOne(context);
         if(row==null)throw BusinessException.missing();return row;
@@ -65,22 +94,22 @@ public final class AccessWorkflowService {
     }
     public UUID request(ActorContext actor,CommandContext command,UUID datasetId,String explanation,Instant until){
         String clean=reason(explanation);
-        return execute(actor,command,"request",CommandReceiptRepository.payloadHash(datasetId,clean,until),ctx->{
+        return execute(command,"request",ctx->{
             var root=lockRoot(ctx,datasetId);restrictedPublished(root);
-            var applicant=principals.findOrRegisterVerifiedUser(ctx,actor,command);
+            var applicant=principals.findOrRegisterVerifiedUser(ctx,actor);
             var now=CayenneSql.now(ctx);
             if(until!=null && !UtcTime.toDatabase(until).isAfter(now))throw BusinessException.invalid("Das gewünschte Enddatum liegt in der Vergangenheit.");
             if(effective(ctx,actor,datasetId))throw BusinessException.conflict("Ein Datenzugang ist bereits wirksam.");
             var pending=ObjectSelect.query(Accessrequest.class).where(Accessrequest.DATASET1.eq(root)
                 .andExp(Accessrequest.APPLICANT1.dot(Principal.T_ILI_TID).eq(applicant.getTIliTid())).andExp(Accessrequest.ASTATUS.eq("pending"))).selectOne(ctx);
             if(pending!=null)throw BusinessException.conflict("Es besteht bereits eine offene Anfrage.");
-            var request=ctx.newObject(Accessrequest.class);request.setTIliTid(UUID.randomUUID());
+            var request=ctx.newObject(Accessrequest.class);request.setTBasket(ManagementBaskets.require(ctx, ManagementBaskets.Topic.Access));request.setTIliTid(UUID.randomUUID());
             request.setApplicant1(applicant);request.setDataset1(root);request.setAstatus("pending");
             request.setReason(clean);request.setRequestedat(now);request.setRequestedvaliduntil(until==null?null:UtcTime.toDatabase(until));
-            return result(request.getTIliTid(),"REQUESTED");
+            return request.getTIliTid();
         });
     }
-    private Accessrequest lockedRequest(ObjectContext ctx,ActorContext actor,UUID id,long expected,boolean deciding){
+    private Accessrequest lockedRequest(ObjectContext ctx,ActorContext actor,UUID id,boolean deciding){
         // Resolve only the immutable parent identifier before acquiring locks; no decision uses this initial snapshot.
         var rows=CayenneSql.rows(ctx,"SELECT d.t_ili_tid AS dataset,p.aissuer,p.asubject FROM di_management.accessrequest r JOIN di_management.dataset d ON d.t_id=r.dataset JOIN di_management.principal p ON p.t_id=r.applicant WHERE r.t_ili_tid=CAST(#bind($id) AS uuid)",Map.of("id",id.toString()));
         if(rows.isEmpty())throw BusinessException.missing();
@@ -89,66 +118,83 @@ public final class AccessWorkflowService {
         else if(!actor.issuer().equals(rows.getFirst().get("aissuer")) || !actor.subject().equals(rows.getFirst().get("asubject")))throw BusinessException.forbidden();
         lockRoot(ctx,dataset);
         if(deciding)authority.require(ctx,actor,dataset,"manage_access");
-        guard.lockRequest(ctx,id,expected);
+        CayenneSql.rows(ctx,"SELECT t_id FROM di_management.accessrequest WHERE t_ili_tid=CAST(#bind($id) AS uuid) FOR UPDATE",Map.of("id",id.toString()));
         var request=ObjectSelect.query(Accessrequest.class).where(Accessrequest.T_ILI_TID.eq(id)).selectOne(ctx);
-        if(!"pending".equals(request.getAstatus()))throw BusinessException.conflict("Diese Anfrage ist bereits abgeschlossen.");
         return request;
     }
-    public UUID cancel(ActorContext actor,CommandContext command,UUID requestId,long expected){
-        return execute(actor,command,"cancel_request",CommandReceiptRepository.payloadHash(requestId,expected),ctx->{
-            var request=lockedRequest(ctx,actor,requestId,expected,false);var person=principals.requireActive(ctx,actor);
+    public UUID cancel(ActorContext actor,CommandContext command,UUID requestId){
+        return execute(command,"cancel_request",ctx->{
+            var request=lockedRequest(ctx,actor,requestId,false);pending(request);var person=principals.requireActive(ctx,actor);
             if(!person.getTIliTid().equals(request.getApplicant1().getTIliTid()))throw BusinessException.forbidden();
-            request.setAstatus("cancelled");return result(requestId,"CANCELLED");
+            request.setAstatus("cancelled");return requestId;
         });
     }
-    public UUID decide(ActorContext actor,CommandContext command,UUID requestId,long expected,boolean approve,Validity validity,String explanation){
+    public UUID decide(ActorContext actor,CommandContext command,UUID requestId,boolean approve,Validity validity,String explanation){
         String clean=reason(explanation);String action=approve?"approve":"deny";
-        return execute(actor,command,action,CommandReceiptRepository.payloadHash(requestId,expected,approve,validity,clean),ctx->{
-            var request=lockedRequest(ctx,actor,requestId,expected,true);var root=request.getDataset1();
+        return execute(command,action,ctx->{
+            var request=lockedRequest(ctx,actor,requestId,true);var root=request.getDataset1();
             authority.require(ctx,actor,root.getTIliTid(),"manage_access");restrictedPublished(root);
-            var applicant=request.getApplicant1();if(!applicant.isAactive())throw BusinessException.conflict("Das anfragende Konto ist deaktiviert.");
+            var applicant=request.getApplicant1();
+            var previous = replay(ctx, actor, command, root, applicant, action, clean, requestId);
+            if (previous != null) {
+                if (approve) existingGrant(ctx, previous, validity);
+                return previous.getTIliTid();
+            }
+            pending(request);
+            if(!applicant.isAactive())throw BusinessException.conflict("Das anfragende Konto ist deaktiviert.");
             var now=CayenneSql.now(ctx);var checked=approve?validity(validity,now):null;
             var decision=decision(ctx,actor,command,root,applicant,action,clean,now);decision.setRequest1(request);
             request.setAstatus(approve?"approved":"denied");
-            if(approve)grant(ctx,root,applicant,decision,checked);
-            return result(decision.getTIliTid(),approve?"APPROVED":"DENIED");
+            if (approve) {
+                ctx.commitChanges();
+                grant(ctx,root,applicant,decision,checked);
+            }
+            return decision.getTIliTid();
         });
     }
     private Accessdecision decision(ObjectContext ctx,ActorContext actor,CommandContext command,Dataset root,Principal beneficiary,String kind,String reason,LocalDateTime now){
-        var row=ctx.newObject(Accessdecision.class);row.setTIliTid(UUID.randomUUID());row.setAkind(kind);
+        var row=ctx.newObject(Accessdecision.class);row.setTBasket(ManagementBaskets.require(ctx, ManagementBaskets.Topic.Access));row.setTIliTid(UUID.randomUUID());row.setAkind(kind);
         row.setCommandid(command.commandId());row.setDecidedat(now);row.setReason(reason);
         row.setActor1(principals.requireActive(ctx,actor));row.setBeneficiary1(beneficiary);row.setDataset1(root);return row;
     }
     private Accessgrant grant(ObjectContext ctx,Dataset root,Principal beneficiary,Accessdecision decision,Validity validity){
-        var row=ctx.newObject(Accessgrant.class);row.setTIliTid(UUID.randomUUID());row.setDataset1(root);
+        var row=ctx.newObject(Accessgrant.class);row.setTBasket(ManagementBaskets.require(ctx, ManagementBaskets.Topic.Access));row.setTIliTid(UUID.randomUUID());row.setDataset1(root);
         row.setBeneficiary1(beneficiary);row.setGrantingdecision1(decision);row.setPermission("read_data");
         row.setValidfrom(UtcTime.toDatabase(validity.from()));row.setValiduntil(validity.until()==null?null:UtcTime.toDatabase(validity.until()));return row;
     }
-    public UUID grantDirect(ActorContext actor,CommandContext command,UUID datasetId,long expected,UUID beneficiaryId,Validity validity,String explanation){
+    public UUID grantDirect(ActorContext actor,CommandContext command,UUID datasetId,UUID beneficiaryId,Validity validity,String explanation){
         String clean=reason(explanation);
-        return execute(actor,command,"direct_grant",CommandReceiptRepository.payloadHash(datasetId,expected,beneficiaryId,validity,clean),ctx->{
-            authority.require(ctx,actor,datasetId,"manage_access");guard.lockDataset(ctx,datasetId,expected);var root=dataset(ctx,datasetId);
+        return execute(command,"direct_grant",ctx->{
+            var root=lockRoot(ctx,datasetId);
             authority.require(ctx,actor,datasetId,"manage_access");restrictedPublished(root);
             var beneficiary=principals.findByOid(ctx,beneficiaryId);
             if(beneficiary==null || !beneficiary.isAactive())throw BusinessException.invalid("Die gewählte bekannte Identität ist nicht aktiv.");
+            var previous = replay(ctx, actor, command, root, beneficiary, "direct_grant", clean, null);
+            if (previous != null) return existingGrant(ctx, previous, validity).getTIliTid();
             var now=CayenneSql.now(ctx);var checked=validity(validity,now);
             var decision=decision(ctx,actor,command,root,beneficiary,"direct_grant",clean,now);
-            return result(grant(ctx,root,beneficiary,decision,checked).getTIliTid(),"GRANTED");
+            ctx.commitChanges();
+            return grant(ctx,root,beneficiary,decision,checked).getTIliTid();
         });
     }
-    public UUID revoke(ActorContext actor,CommandContext command,UUID grantId,long expected,String explanation){
+    public UUID revoke(ActorContext actor,CommandContext command,UUID grantId,String explanation){
         String clean=reason(explanation);
-        return execute(actor,command,"revoke",CommandReceiptRepository.payloadHash(grantId,expected,clean),ctx->{
+        return execute(command,"revoke",ctx->{
             var rows=CayenneSql.rows(ctx,"SELECT d.t_ili_tid AS dataset FROM di_management.accessgrant g JOIN di_management.dataset d ON d.t_id=g.dataset WHERE g.t_ili_tid=CAST(#bind($id) AS uuid)",Map.of("id",grantId.toString()));
             if(rows.isEmpty())throw BusinessException.missing();
             var root=lockRoot(ctx,UUID.fromString(rows.getFirst().get("dataset").toString()));
             authority.require(ctx,actor,root.getTIliTid(),"manage_access");
-            var lock=CayenneSql.rows(ctx,"SELECT row_version FROM di_management.accessgrant WHERE t_ili_tid=CAST(#bind($id) AS uuid) FOR UPDATE",Map.of("id",grantId.toString())).getFirst();
-            if(((Number)lock.get("row_version")).longValue()!=expected)throw new AggregateWriteGuard.StaleAggregateException();
+            CayenneSql.rows(ctx,"SELECT t_id FROM di_management.accessgrant WHERE t_ili_tid=CAST(#bind($id) AS uuid) FOR UPDATE",Map.of("id",grantId.toString())).getFirst();
             var grant=ObjectSelect.query(Accessgrant.class).where(Accessgrant.T_ILI_TID.eq(grantId)).selectOne(ctx);
+            var previous = replay(ctx, actor, command, root, grant.getBeneficiary1(), "revoke", clean, null);
+            if (previous != null) {
+                if (grant.getRevocationdecision1() == null || !grant.getRevocationdecision1().getTIliTid().equals(previous.getTIliTid()))
+                    throw BusinessException.conflict("Entscheid-ID bereits vergeben.");
+                return grantId;
+            }
             if(grant.getRevokedat()!=null)throw BusinessException.conflict("Diese Freigabe wurde bereits entzogen.");
             var now=CayenneSql.now(ctx);var decision=decision(ctx,actor,command,root,grant.getBeneficiary1(),"revoke",clean,now);
-            grant.setRevokedat(now);grant.setRevocationdecision1(decision);return result(grantId,"REVOKED");
+            grant.setRevokedat(now);grant.setRevocationdecision1(decision);return grantId;
         });
     }
 }

@@ -38,7 +38,6 @@
     @endif
     <form class="management-form" method="post" action="${formPath}">
         @template.fragment.command-fields(commandId = issueForm.commandId(), csrf = csrf)
-        <input type="hidden" name="expectedVersion" value="${issueForm.expectedVersion()}">
         @if(creating)
             <div class="form-field">
                 <label for="key">Ausgabeschlüssel</label>

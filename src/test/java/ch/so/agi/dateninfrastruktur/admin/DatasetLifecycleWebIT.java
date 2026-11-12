@@ -84,7 +84,6 @@ class DatasetLifecycleWebIT {
                 assertEquals(0, page.locator("a[href='" + path + "/edit']").count());
                 assertEquals(403, get(path + "/edit", limited).statusCode());
                 var direct = loadForm(page, "/access/requests/new?dataset=" + id, limited, List.of("commandId"));
-                direct.fields().put("expectedVersion", Long.toString(fixture.version("dataset", id)));
                 direct.fields().put("published", "true");
                 fillMetadata(direct, "Unzulässige Änderung");
                 show(page, post(path + "/edit", limited, direct, List.of()), 403);
@@ -92,7 +91,7 @@ class DatasetLifecycleWebIT {
             }
 
             var stale = loadForm(page, path + "/edit", fixture.manager,
-                List.of("commandId", "expectedVersion", "published"));
+                List.of("commandId", "published"));
             assertEquals("true", stale.fields().get("published"));
             assertEquals("test@example.invalid", page.locator("input[name=contactEmail]").inputValue());
             for (String field : List.of("identifier", "kind", "ownerOffice", "publisherOffice")) {
@@ -101,29 +100,20 @@ class DatasetLifecycleWebIT {
             String previousIdentifier = dataset(fixture, id).getIdentifier();
 
             var update = loadForm(page, path + "/edit", fixture.manager,
-                List.of("commandId", "expectedVersion", "published"));
+                List.of("commandId", "published"));
             fillMetadata(update, "Speicherstand");
             update.fields().put("identifier", "unzulassige-kennung");
             update.fields().put("kind", "series");
             update.fields().put("ownerOffice", UUID.randomUUID().toString());
             assertRedirect(post(path + "/edit", fixture.manager, update, List.of("Energie", "Raum_und_Umwelt")), path);
-            long savedVersion = fixture.version("dataset", id);
             assertRedirect(post(path + "/edit", fixture.manager, update, List.of("Energie", "Raum_und_Umwelt")), path);
-            assertEquals(savedVersion, fixture.version("dataset", id));
 
-            String lostTitle = "Nicht übernehmen <img id=stale-injection>";
-            fillMetadata(stale, lostTitle);
-            show(page, post(path + "/edit", fixture.manager, stale, List.of("Finanzen")), 409);
-            assertEquals(lostTitle, page.locator("input[name=title]").inputValue());
-            assertEquals("Messreihe\nZweite Zeile", page.locator("textarea[name=keywords]").inputValue());
-            assertTrue(page.locator("input[name=themes][value=Finanzen]").isChecked());
-            assertTrue(page.getByText("Aktuellen Datensatz neu laden").isVisible());
-            assertEquals(0, page.locator("#stale-injection").count());
-            screenshot(page, "dataset-edit-conflict.png");
-            assertEquals(savedVersion, fixture.version("dataset", id));
+            String latest = "Neueste Eingabe";
+            fillMetadata(stale, latest);
+            assertRedirect(post(path + "/edit", fixture.manager, stale, List.of("Finanzen")), path);
 
             var saved = dataset(fixture, id);
-            assertEquals("Speicherstand", saved.getTitle());
+            assertEquals(latest, saved.getTitle());
             assertEquals("mailto:pflege@example.invalid", saved.primaryContact().getEmail());
             assertEquals("Importierter Wert", saved.getSurveymethod());
             assertEquals(previousIdentifier, saved.getIdentifier());
@@ -183,23 +173,18 @@ class DatasetLifecycleWebIT {
         throws Exception {
         String detail = path(id);
         String path = detail + "/" + action;
-        long version = fixture.version("dataset", id);
-        var names = level == null ? List.of("commandId", "expectedVersion") : List.of("commandId", "expectedVersion", "level");
+        var names = level == null ? List.of("commandId") : List.of("commandId", "level");
         var form = loadForm(page, path, fixture.manager, names);
         assertEquals(1, page.locator("form[method=post][action='" + path + "']").count());
         assertTrue(page.getByLabel("Begründung").isVisible());
-        assertEquals(Long.toString(version), form.fields().get("expectedVersion"));
-        assertEquals(version, fixture.version("dataset", id));
         if (level != null) {
             assertEquals(level, form.fields().get("level"));
         }
         if (action.equals("publish")) {
             show(page, post(path, fixture.manager, form, List.of()), 400);
-            assertEquals(version, fixture.version("dataset", id));
         }
         form.fields().put("reason", reason);
         assertRedirect(post(path, fixture.manager, form, List.of()), detail);
-        assertTrue(fixture.version("dataset", id) > version);
     }
 
     private static void preparePublishedEdit(ManagementFixture fixture, UUID id) {

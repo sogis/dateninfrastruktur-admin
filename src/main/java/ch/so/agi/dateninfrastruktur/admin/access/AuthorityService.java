@@ -24,7 +24,8 @@ public final class AuthorityService {
             SELECT EXISTS(SELECT 1 FROM di_management.authorityassignment aa
             JOIN eligible e ON e.t_id=aa.principal JOIN di_management.dataset d
               ON d.t_ili_tid=CAST(#bind($dataset) AS uuid) CROSS JOIN di_now n
-            WHERE aa.capability=#bind($capability) AND (aa.dataset=d.t_id OR aa.office=d.owneroffice)
+            WHERE aa.capability=#bind($capability) AND (aa.dataset=d.t_id OR (aa.office=d.owneroffice
+                AND EXISTS (SELECT 1 FROM di_management.office o WHERE o.t_id=aa.office AND o.aactive)))
             AND aa.revokedat IS NULL AND aa.validfrom<=n.observed_at
             AND (aa.validuntil IS NULL OR n.observed_at<aa.validuntil)) AS allowed
             """,Map.of("issuer",actor.issuer(),"subject",actor.subject(),"dataset",dataset.toString(),"capability",capability)).getFirst();

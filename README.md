@@ -1,7 +1,7 @@
 # Admin – Katalog, Rechte und Anlieferung
 
 Admin verwaltet den Managementkatalog, entscheidet über fachliche Rechte
-und nimmt verifizierte CSV-Lieferungen an. Die Anwendung verwendet Java 25,
+und verwaltet CSV-Submissions. Die Anwendung verwendet Java 25,
 Spring Boot und Apache Cayenne. INTERLIS ist die Quelle des Fachschemas.
 
 Der [gemeinsame Compose-Betrieb](../dateninfrastruktur-dev-stack/docs/operations.md)
@@ -17,12 +17,12 @@ python3 scripts/test_models.py csv
 ```
 
 Der Stack stellt die isolierten Integrationsprüfungen für Lieferrechte,
-HTTP-Sicherheit und Sodata-Katalogmutation bereit. Modellerzeugung und
+HTTP-Sicherheit und konkurrierende Veröffentlichungen bereit. Modellerzeugung und
 Datenbanktests benötigen die im jeweiligen Einstieg beschriebenen Werkzeuge.
 
 - [Modellinvarianten](models/constraints.md)
 - [Schema und XTF-Bootstrap](docs/schema-lifecycle.md)
-- [Lieferrechte und CSV-Annahme](docs/delivery-authorization.md)
+- [Lieferrechte und Submission](docs/delivery-authorization.md)
 - [Management und Dateizugang](docs/management-web.md)
 
 ## Oberfläche lokal entwickeln

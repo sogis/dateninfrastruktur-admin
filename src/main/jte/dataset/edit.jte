@@ -30,7 +30,6 @@
     @endif
     <form class="management-form" method="post" action="${path}/edit">
         @template.fragment.command-fields(commandId = edit.commandId(), csrf = csrf)
-        <input type="hidden" name="expectedVersion" value="${edit.expectedVersion()}">
         <input type="hidden" name="published" value="${Boolean.toString(edit.published())}">
         @template.dataset.metadata-fields(metadata = edit.metadata(), errors = edit.errors())
         <div class="form-actions">

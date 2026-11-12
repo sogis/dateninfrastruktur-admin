@@ -1,46 +1,121 @@
 package ch.so.agi.dateninfrastruktur.admin.web;
-import java.time.Instant;
-import java.util.*;
+
+import ch.so.agi.dateninfrastruktur.admin.access.AuthorityService;
+import ch.so.agi.dateninfrastruktur.admin.access.SubmitterAdministrationService;
+import ch.so.agi.dateninfrastruktur.admin.delivery.DeliveryManagement;
+import ch.so.agi.dateninfrastruktur.admin.security.VerifiedActorResolver;
+import ch.so.agi.dateninfrastruktur.admin.web.UiPage.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import ch.so.agi.dateninfrastruktur.admin.audit.*;
-import ch.so.agi.dateninfrastruktur.admin.ingestion.*;
-import ch.so.agi.dateninfrastruktur.admin.security.*;
-import ch.so.agi.dateninfrastruktur.admin.web.UiPage.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @Controller
+@org.springframework.boot.autoconfigure.condition.ConditionalOnProperty(name="di.web.enabled",havingValue="true",matchIfMissing=true)
+@RequestMapping("/management/delivery")
 public final class DeliveryManagementController {
-    private final ch.so.agi.dateninfrastruktur.admin.access.AuthorityService authority;private final DeliveryManagementQuery query;private final SubmitterAdministrationService managers;private final DeliveryConfigurationService configurations;private final CsvDefinitionRegistry definitions;
-    public DeliveryManagementController(DeliveryManagementQuery query,SubmitterAdministrationService managers,DeliveryConfigurationService configurations,CsvDefinitionRegistry definitions,ch.so.agi.dateninfrastruktur.admin.access.AuthorityService authority){this.authority=authority;this.query=query;this.managers=managers;this.configurations=configurations;this.definitions=definitions;}
-    private static ActorContext actor(Authentication auth){return new VerifiedActorResolver().resolve(auth);}
-    private static CommandContext command(HttpServletRequest req,UUID id,String action,String reason){return new CommandContext(id,(UUID)req.getAttribute(RequestCorrelationFilter.ATTRIBUTE),action,reason);}
-    private static Field field(String name,String label,String type,Object value){return new Field(name,label,type,value);}
-    private static Field hidden(String name,Object value){return field(name,"","hidden",value);}
-    private static String page(Model model, HttpServletRequest req, String title, String intro,
-                               List<Entry> entries, List<Form> forms) {
-        model.addAttribute("page", new UiPage(title, intro, entries, forms));
+    private final DeliveryManagement management;
+    private final SubmitterAdministrationService submitters;
+    private final AuthorityService authority;
+    private final VerifiedActorResolver actors = new VerifiedActorResolver();
+
+    public DeliveryManagementController(DeliveryManagement management, SubmitterAdministrationService submitters,
+                                        AuthorityService authority) {
+        this.management = management;
+        this.submitters = submitters;
+        this.authority = authority;
+    }
+
+    @GetMapping
+    String index(Authentication auth, Model model, HttpServletRequest request) {
+        var actor = actors.resolve(auth);
+        var entries = new ArrayList<Entry>();
+        for (var row : management.datasets(actor)) {
+            var id = UUID.fromString(row.get("id").toString());
+            var rights = authority.describe(actor, id);
+            if (rights.submitters()) entries.add(new Entry(row.get("title").toString(), "/management/delivery/datasets/" + id, Map.of(), List.of()));
+            if (rights.metadata()) entries.add(new Entry("CSV-Konfiguration: " + row.get("title"), "/management/delivery/datasets/" + id + "/configuration", Map.of(), List.of()));
+        }
+        return page(model, request, "Anlieferungen", entries, List.of());
+    }
+
+    @GetMapping("/datasets/{id}")
+    String dataset(Authentication auth, @PathVariable UUID id, Model model, HttpServletRequest request) {
+        var actor = actors.resolve(auth);
+        String base = "/management/delivery/datasets/" + id;
+        var entries = new ArrayList<Entry>();
+        for (var row : management.assignments(actor, id)) {
+            var revoke = new Form("Lieferrecht entziehen", base + "/revoke", List.of(
+                field("assignmentId", "", "hidden", row.get("id")), field("reason", "Begründung", "textarea", "")), "Entziehen");
+            entries.add(new Entry("Lieferrecht", null, row, row.get("revokedat") == null ? List.of(revoke) : List.of()));
+        }
+        for (var row : management.submissions(actor, id)) entries.add(new Entry("Submission", null, row, List.of()));
+        var grant = new Form("Lieferrecht erteilen", base + "/grant", List.of(
+            field("beneficiary", "Principal-ID", "text", ""), field("reason", "Begründung", "textarea", "")), "Erteilen");
+        return page(model, request, "Lieferrechte und Submissions", entries, List.of(grant));
+    }
+
+    @PostMapping("/datasets/{id}/grant")
+    String grant(Authentication auth, @PathVariable UUID id, @RequestParam UUID beneficiary, @RequestParam String reason) {
+        submitters.grant(actors.resolve(auth), new SubmitterAdministrationService.Grant(
+            new SubmitterAdministrationService.Scope(null, id), beneficiary, null, null, reason));
+        return redirect(id);
+    }
+
+    @PostMapping("/datasets/{id}/revoke")
+    String revoke(Authentication auth, @PathVariable UUID id, @RequestParam UUID assignmentId, @RequestParam String reason) {
+        submitters.revoke(actors.resolve(auth), new SubmitterAdministrationService.Scope(null, id), assignmentId, reason);
+        return redirect(id);
+    }
+
+    @GetMapping("/datasets/{id}/configuration")
+    String configuration(Authentication auth, @PathVariable UUID id, Model model, HttpServletRequest request) {
+        if (!authority.describe(actors.resolve(auth), id).metadata()) throw ch.so.agi.dateninfrastruktur.admin.access.BusinessException.forbidden();
+        var form = new Form("CSV-Konfiguration", "/management/delivery/datasets/" + id + "/configuration", List.of(
+            field("issue", "Ausgabe-ID", "text", ""), field("schema", "Schema-ID", "text", ""),
+            new Field("modes", "Liefermodus", "select", "replace_only", List.of("replace_only", "append_only", "replace_and_append")),
+            field("enabled", "Anlieferung aktiv", "checkbox", true)), "Speichern");
+        var create = new Form("CSV-Schema anlegen", "/management/delivery/datasets/" + id + "/schema", List.of(
+            field("columns", "Textspalten, durch Kommas getrennt", "text", ""),
+            field("unique", "Gemeinsamer Schlüssel, durch Kommas getrennt", "text", ""),
+            field("minimum", "Mindestanzahl Objekte (optional)", "number", "")), "Schema anlegen");
+        return page(model, request, "CSV-Konfiguration", List.of(), List.of(form, create));
+    }
+
+    @PostMapping("/datasets/{id}/schema")
+    String schema(Authentication auth, @PathVariable UUID id, @RequestParam String columns,
+                  @RequestParam(defaultValue = "") String unique, @RequestParam(required = false) Integer minimum,
+                  Model model, HttpServletRequest request) {
+        UUID schema = management.createSchema(actors.resolve(auth), id, names(columns), names(unique), minimum);
+        var entry = new Entry("CSV-Schema angelegt", null, Map.of("Schema-ID", schema), List.of());
+        return page(model, request, "CSV-Konfiguration", List.of(entry), List.of());
+    }
+
+    private static List<String> names(String text) {
+        if (text.length() > 4096) throw ch.so.agi.dateninfrastruktur.admin.access.BusinessException.invalid("Zu viele Spalten.");
+        if (text.isBlank()) return List.of();
+        return java.util.Arrays.stream(text.split(",", -1)).map(String::strip).toList();
+    }
+
+    @PostMapping("/datasets/{id}/configuration")
+    String configure(Authentication auth, @PathVariable UUID id, @RequestParam UUID issue, @RequestParam UUID schema,
+                     @RequestParam String modes, @RequestParam(defaultValue = "false") boolean enabled) {
+        management.configure(actors.resolve(auth), id, issue, schema, enabled, modes);
+        return "redirect:/management/delivery/datasets/" + id + "/configuration";
+    }
+
+    private static Field field(String name, String label, String type, Object value) { return new Field(name, label, type, value); }
+    private static String redirect(UUID id) { return "redirect:/management/delivery/datasets/" + id; }
+    private static String page(Model model, HttpServletRequest request, String title, List<Entry> entries, List<Form> forms) {
+        model.addAttribute("page", new UiPage(title, "", entries, forms));
         model.addAttribute("section", NavigationSection.DELIVERY);
-        model.addAttribute("csrf", req.getAttribute("_csrf"));
+        model.addAttribute("csrf", request.getAttribute("_csrf"));
         return "page";
     }
-    private static SubmitterAdministrationService.Scope scope(String kind,String id){return switch(kind){case "datasets"->new SubmitterAdministrationService.Scope(null,UUID.fromString(id));case "offices"->new SubmitterAdministrationService.Scope(id,null);default->throw IngestionProblem.forbidden();};}
-    @GetMapping("/management/delivery") String index(Authentication auth,Model model,HttpServletRequest req){var entries=new ArrayList<Entry>();for(boolean office:List.of(true,false))for(var row:query.scopes(actor(auth),office)){
-        String path="/management/delivery/"+(office?"offices/":"datasets/")+row.get("id");if(office || authority.describe(actor(auth),UUID.fromString(row.get("id").toString())).submitters())entries.add(new Entry(row.get("title").toString(),path,Map.of("kind",office?"Amt":"Datensatz"),List.of()));
-        if(!office && authority.describe(actor(auth),UUID.fromString(row.get("id").toString())).metadata())entries.add(new Entry("CSV-Liefervertrag: "+row.get("title"),path+"/configuration",Map.of(),List.of()));
-    }return page(model,req,"Anlieferung verwalten","Lieferrechte und freigegebene CSV-Verträge in Ihrem Zuständigkeitsbereich.",entries,List.of());}
-    @GetMapping("/management/delivery/{kind:datasets|offices}/{id}") String grants(Authentication auth,@PathVariable String kind,@PathVariable String id,@RequestParam(defaultValue="")String search,Model model,HttpServletRequest req){
-        var scope=scope(kind,id);var actor=actor(auth);var data=query.scope(actor,scope);String base="/management/delivery/"+kind+"/"+id;var entries=new ArrayList<Entry>();
-        for(var row:query.assignments(actor,scope)){List<Form> forms=row.get("revokedat")==null?List.of(new Form("Lieferrecht entziehen",base+"/revoke",List.of(hidden("assignmentId",row.get("id")),hidden("expectedVersion",row.get("revision")),field("reason","Begründung","textarea","")),"Lieferrecht entziehen")):List.of();entries.add(new Entry("Lieferrecht",null,row,forms));}
-        for(var p:query.principals(actor,scope,search)){var fields=new ArrayList<Field>(List.of(hidden("beneficiary",p.get("id")),hidden("expectedVersion",data.get("revision")),field("from","Gültig ab (UTC, optional)","text",""),field("until","Gültig bis (UTC, optional)","text",""),field("reason","Begründung","textarea","")));if(kind.equals("offices"))fields.add(field("officeConsent","Für alle heutigen und künftigen Datensätze dieses Amts bestätigen","checkbox",false));entries.add(new Entry("Bekannte Identität",null,p,List.of(new Form("Lieferrecht erteilen",base+"/grant",fields,"Lieferrecht erteilen"))));}
-        model.addAttribute("identitySearch", true);
-        return page(model,req,"Lieferrechte verwalten",data.get("title")+". "+(kind.equals("offices")?"Amtsrechte gelten für alle heutigen und künftigen Datensätze des Amts. ":"")+"Lieferrechte erlauben keine Dateilektüre, Metadatenbearbeitung oder Rechteverwaltung.",entries,List.of());
-    }
-    private static Instant instant(String value){return value==null || value.isBlank()?null:Instant.parse(value);}
-    @PostMapping("/management/delivery/{kind:datasets|offices}/{id}/grant") String grant(Authentication auth,HttpServletRequest req,@PathVariable String kind,@PathVariable String id,@RequestParam UUID commandId,@RequestParam UUID beneficiary,@RequestParam long expectedVersion,@RequestParam(defaultValue="")String from,@RequestParam(defaultValue="")String until,@RequestParam String reason,@RequestParam(defaultValue="false")boolean officeConsent){if(kind.equals("offices") && !officeConsent)throw IngestionProblem.invalid("INVALID_SCOPE");managers.grant(actor(auth),command(req,commandId,"submitter.grant",reason),new SubmitterAdministrationService.Grant(scope(kind,id),beneficiary,expectedVersion,instant(from),instant(until),reason));return "redirect:/management/delivery/"+kind+"/"+id;}
-    @PostMapping("/management/delivery/{kind:datasets|offices}/{id}/revoke") String revoke(Authentication auth,HttpServletRequest req,@PathVariable String kind,@PathVariable String id,@RequestParam UUID commandId,@RequestParam UUID assignmentId,@RequestParam long expectedVersion,@RequestParam String reason){query.scope(actor(auth),scope(kind,id));managers.revoke(actor(auth),command(req,commandId,"submitter.revoke",reason),assignmentId,expectedVersion,reason);return "redirect:/management/delivery/"+kind+"/"+id;}
-    @GetMapping("/management/delivery/datasets/{id}/configuration") String configuration(Authentication auth,@PathVariable UUID id,Model model,HttpServletRequest req){var data=query.configuration(actor(auth),id);var fields=List.of(hidden("expectedVersion",data.get("revision")),new Field("definitionKey","Genehmigter CSV-Vertrag","select",data.get("definitionkey")==null?"population-v1":data.get("definitionkey").toString(),definitions.keys()),new Field("enabled","CSV-Anlieferung aktiv","select",String.valueOf(Boolean.TRUE.equals(data.get("enabled"))),List.of("true","false")),new Field("automaticPublication","Validierte Lieferung automatisch veröffentlichen","select",String.valueOf(Boolean.TRUE.equals(data.get("automaticpublication"))),List.of("true","false")),new Field("allowedModes","Erlaubte Liefermodi","select",data.get("allowedmodes")==null?"replace_only":data.get("allowedmodes").toString(),List.of("replace_only","append_only","replace_and_append")),hidden("schemaId",data.get("schema_id")),field("publicationConsent","Automatische fachliche Annahme und Veröffentlichung validierter Lieferungen ausdrücklich bestätigen","checkbox",false));return page(model,req,"CSV-Liefervertrag",data.get("title")+": Aktivierte Autopublikation nimmt gültige Lieferungen berechtigter Personen ohne Einzelprüfung an. Lieferrechte werden bei der Annahme erneut geprüft.",List.of(),List.of(new Form("Liefervertrag konfigurieren","/management/delivery/datasets/"+id+"/configuration",fields,"Liefervertrag speichern")));}
-    @PostMapping("/management/delivery/datasets/{id}/configuration") String configure(Authentication auth,HttpServletRequest req,@PathVariable UUID id,@RequestParam UUID commandId,@RequestParam long expectedVersion,@RequestParam boolean enabled,@RequestParam boolean automaticPublication,@RequestParam String definitionKey,@RequestParam String allowedModes,@RequestParam(defaultValue="")String schemaId,@RequestParam(defaultValue="false")boolean publicationConsent){if(automaticPublication && !publicationConsent)throw IngestionProblem.invalid("INVALID_INPUT");configurations.update(actor(auth),command(req,commandId,"csv.configure","CSV-Liefervertrag"),id,new DeliveryConfigurationService.Update(expectedVersion,enabled,automaticPublication,definitionKey,allowedModes,schemaId.isBlank()?null:UUID.fromString(schemaId)));return "redirect:/management/delivery/datasets/"+id+"/configuration";}
 }

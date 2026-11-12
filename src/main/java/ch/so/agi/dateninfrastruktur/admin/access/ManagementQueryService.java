@@ -1,7 +1,6 @@
 package ch.so.agi.dateninfrastruktur.admin.access;
 import java.time.LocalDate;
 import java.util.*;
-import javax.sql.DataSource;
 import org.apache.cayenne.ObjectContext;
 import org.apache.cayenne.runtime.CayenneRuntime;
 import ch.so.agi.dateninfrastruktur.admin.audit.ActorContext;
@@ -19,8 +18,8 @@ public final class ManagementQueryService {
         DATASET_AUTHORITY.formatted("aa.capability IN ('manage_metadata', 'publish', 'manage_access')");
     private static final String REQUEST_DECISION_SCOPE =
         DATASET_AUTHORITY.formatted("aa.capability = 'manage_access'");
-    private final CayenneRuntime runtime;private final AuthorityService authority;private final DataSource audit;
-    public ManagementQueryService(CayenneRuntime runtime,AuthorityService authority,DataSource audit){this.runtime=runtime;this.authority=authority;this.audit=audit;}
+    private final CayenneRuntime runtime;private final AuthorityService authority;
+    public ManagementQueryService(CayenneRuntime runtime,AuthorityService authority){this.runtime=runtime;this.authority=authority;}
     private Map<String,Object> params(ActorContext actor){return new HashMap<>(Map.of("issuer",actor.issuer(),"subject",actor.subject()));}
     private List<Map<String,Object>> rows(ObjectContext ctx,String sql,Map<String,?> p){
         return CayenneSql.rows(ctx,sql,p).stream().map(r->Collections.unmodifiableMap(new HashMap<String,Object>(r))).toList();
@@ -131,7 +130,7 @@ public final class ManagementQueryService {
     public record DatasetDetail(UUID id, String identifier, String title, String description, String contactName,
                                 String contactEmail, List<String> themes, List<String> keywords,
                                 DatasetOffice ownerOffice, DatasetOffice publisherOffice, String kind,
-                                String publicationStatus, String accessLevel, long revision, LocalDate modified, boolean hasIssues) {}
+                                String publicationStatus, String accessLevel, LocalDate modified, boolean hasIssues) {}
 
     public DatasetDetail detail(ActorContext actor, UUID id) {
         return runtime.performInTransaction(() -> {
@@ -140,8 +139,8 @@ public final class ManagementQueryService {
             var parameters = Map.of("id", id.toString());
             var result = rows(context, """
                 SELECT d.t_ili_tid AS id, d.identifier, d.title, d.adescription AS description,
-                       d.contactname, d.contactemail, d.akind AS kind, d.publicationstatus, d.accesslevel,
-                       d.row_version AS revision, to_char(d.modified, 'YYYY-MM-DD') AS modified,
+                       contact.aname AS contactname, contact.email AS contactemail, d.akind AS kind, d.publicationstatus, d.accesslevel,
+                       to_char(d.modified, 'YYYY-MM-DD') AS modified,
                        EXISTS (SELECT 1 FROM di_management.datasetissue issue WHERE issue.dataset = d.t_id) AS has_issues,
                        owner.t_ili_tid AS office_id, owner.aname AS office_name,
                        owner.abbreviation AS office_abbreviation, owner.identifier AS office_identifier,
@@ -150,6 +149,11 @@ public final class ManagementQueryService {
                 FROM di_management.dataset d
                 JOIN di_management.office owner ON owner.t_id = d.owneroffice
                 JOIN di_management.office publisher ON publisher.t_id = d.publisheroffice
+                LEFT JOIN LATERAL (
+                    SELECT c.aname,c.email FROM di_management.datasetcontact link
+                    JOIN di_management.contactpoint c ON c.t_id=link.contactpoints
+                    WHERE link.datasets=d.t_id ORDER BY c.t_ili_tid LIMIT 1
+                ) contact ON true
                 WHERE d.t_ili_tid = CAST(#bind($id) AS uuid)
                 """, parameters);
             if (result.isEmpty()) {
@@ -157,13 +161,13 @@ public final class ManagementQueryService {
             }
             var row = result.getFirst();
             var themes = rows(context, """
-                SELECT theme FROM di_management.datasettheme t
-                JOIN di_management.dataset d ON d.t_id = t.dataset
+                SELECT t.acode AS theme FROM di_management.themeentry t
+                JOIN di_management.dataset d ON d.t_id = t.dataset_themes
                 WHERE d.t_ili_tid = CAST(#bind($id) AS uuid) ORDER BY theme
                 """, parameters).stream().map(theme -> (String) theme.get("theme")).toList();
             var keywords = rows(context, """
-                SELECT keyword FROM di_management.datasetkeyword k
-                JOIN di_management.dataset d ON d.t_id = k.dataset
+                SELECT k.avalue AS keyword FROM di_management.keywordentry k
+                JOIN di_management.dataset d ON d.t_id = k.dataset_keywords
                 WHERE d.t_ili_tid = CAST(#bind($id) AS uuid) ORDER BY keyword
                 """, parameters).stream().map(keyword -> (String) keyword.get("keyword")).toList();
             var publisher = new DatasetOffice((String) row.get("publisher_id"), (String) row.get("publisher_name"),
@@ -172,7 +176,7 @@ public final class ManagementQueryService {
                 (String) row.get("description"), (String) row.get("contactname"), (String) row.get("contactemail"),
                 themes, keywords, datasetOffice(row), publisher, (String) row.get("kind"),
                 (String) row.get("publicationstatus"), (String) row.get("accesslevel"),
-                ((Number) row.get("revision")).longValue(), LocalDate.parse((String) row.get("modified")),
+                LocalDate.parse((String) row.get("modified")),
                 Boolean.TRUE.equals(row.get("has_issues")));
         });
     }
@@ -186,7 +190,7 @@ public final class ManagementQueryService {
         String filter=own?"p.aissuer=#bind($issuer) AND p.asubject=#bind($subject)":REQUEST_DECISION_SCOPE+" AND r.astatus='pending'";
         return rows(runtime.newContext(),AuthorityService.ELIGIBLE+"""
           SELECT r.t_ili_tid AS id,d.t_ili_tid AS dataset,d.title,r.astatus AS status,r.reason,r.requestedat,r.requestedvaliduntil,
-                 r.row_version AS revision,p.t_ili_tid AS applicant,p.displayname,p.asubject AS subject
+                 p.t_ili_tid AS applicant,p.displayname,p.asubject AS subject
           FROM di_management.accessrequest r JOIN di_management.dataset d ON d.t_id=r.dataset
           JOIN di_management.principal p ON p.t_id=r.applicant WHERE
           """+filter+" ORDER BY r.requestedat DESC,r.t_id DESC LIMIT 50 OFFSET #bind($offset)",p);
@@ -285,7 +289,7 @@ public final class ManagementQueryService {
     public List<Map<String,Object>> grants(ActorContext actor,UUID dataset){return runtime.performInTransaction(()->{
         var ctx=runtime.newContext();authority.require(ctx,actor,dataset,"manage_access");
         return rows(ctx,"""
-          SELECT g.t_ili_tid AS id,g.row_version AS revision,p.t_ili_tid AS beneficiary,p.akind AS kind,p.displayname,p.asubject AS subject,
+          SELECT g.t_ili_tid AS id,p.t_ili_tid AS beneficiary,p.akind AS kind,p.displayname,p.asubject AS subject,
             g.validfrom,g.validuntil,g.revokedat,CASE WHEN g.revokedat IS NOT NULL THEN 'entzogen'
             WHEN g.validfrom>timezone('UTC',clock_timestamp()) THEN 'zukünftig'
             WHEN g.validuntil<=timezone('UTC',clock_timestamp()) THEN 'abgelaufen' ELSE 'wirksam' END AS status
@@ -301,13 +305,4 @@ public final class ManagementQueryService {
         WHERE d.publicationstatus='published' AND g.revokedat IS NULL AND g.validfrom<=n.observed_at
           AND (g.validuntil IS NULL OR n.observed_at<g.validuntil) ORDER BY d.title,g.t_id LIMIT 100
         """,params(actor)));}
-    public List<Map<String,Object>> audit(ActorContext actor,UUID dataset,long before){
-        authority.requireAny(actor,dataset);
-        var result=new ArrayList<Map<String,Object>>();
-        try(var connection=audit.getConnection();var statement=connection.prepareStatement("SELECT change_id,recorded_at,actor_subject,action_code,operation,table_name,command_id,request_id,old_values,new_values FROM audit.row_change WHERE aggregate_dataset_oid=? AND change_id<? ORDER BY change_id DESC LIMIT 50")){
-            statement.setString(1,dataset.toString());statement.setLong(2,before<=0?Long.MAX_VALUE:before);
-            try(var r=statement.executeQuery()){var md=r.getMetaData();while(r.next()){var row=new LinkedHashMap<String,Object>();for(int i=1;i<=md.getColumnCount();i++)row.put(md.getColumnLabel(i),r.getObject(i)==null?"":r.getObject(i).toString());result.add(Collections.unmodifiableMap(row));}}
-            return List.copyOf(result);
-        }catch(java.sql.SQLException error){throw new BusinessException(503,"AUDIT_UNAVAILABLE","Die Historie ist vorübergehend nicht verfügbar.");}
-    }
 }

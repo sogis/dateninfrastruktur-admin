@@ -17,7 +17,6 @@ import ch.so.agi.dateninfrastruktur.admin.access.ManagementQueryService.DatasetI
 import ch.so.agi.dateninfrastruktur.admin.access.ManagementQueryService.DatasetVersion;
 import ch.so.agi.dateninfrastruktur.admin.audit.ActorContext;
 import ch.so.agi.dateninfrastruktur.admin.catalog.DatasetIssueService;
-import ch.so.agi.dateninfrastruktur.admin.persistence.AggregateWriteGuard.StaleAggregateException;
 import ch.so.agi.dateninfrastruktur.admin.security.VerifiedActorResolver;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
@@ -70,13 +69,12 @@ public final class DatasetIssueController {
     @GetMapping("/new")
     ModelAndView createForm(Authentication authentication, HttpServletRequest request, @PathVariable UUID dataset) {
         var detail = manageableDataset(actor(authentication), dataset);
-        return form(request, detail, null, "", "", "", "", List.of(), UUID.randomUUID(),
-            detail.revision(), Map.of(), null, false, 200);
+        return form(request, detail, null, "", "", "", "", List.of(), UUID.randomUUID(), Map.of(), null, false, 200);
     }
 
     @PostMapping
     ModelAndView create(Authentication authentication, HttpServletRequest request, @PathVariable UUID dataset,
-                        @RequestParam UUID commandId, @RequestParam long expectedVersion,
+                        @RequestParam UUID commandId,
                         @RequestParam(defaultValue = "") String key, @RequestParam(defaultValue = "") String label) {
         var actor = actor(authentication);
         var errors = labelErrors(label);
@@ -85,21 +83,19 @@ public final class DatasetIssueController {
         }
         if (!errors.isEmpty()) {
             return form(request, manageableDataset(actor, dataset), null, key, label, "", "", List.of(),
-                commandId, expectedVersion, errors, null, false, 400);
+                commandId, errors, null, false, 400);
         }
         try {
             service.createIssue(actor, DatasetController.command(request, commandId, "create_issue", null),
-                dataset, expectedVersion, key, label.strip());
+                dataset, key, label.strip());
             return redirect(dataset, "created");
-        } catch (StaleAggregateException stale) {
-            return form(request, query.detail(actor, dataset), null, key, label, "", "", List.of(),
-                commandId, expectedVersion, Map.of(), staleMessage(), true, 409);
+
         } catch (BusinessException error) {
             if (!error.code().equals("DUPLICATE_ISSUE_KEY")) {
                 throw error;
             }
             return form(request, manageableDataset(actor, dataset), null, key, label, "", "", List.of(),
-                commandId, expectedVersion, Map.of("key", error.getMessage()), null, false, 409);
+                commandId, Map.of("key", error.getMessage()), null, false, 409);
         }
     }
 
@@ -114,12 +110,12 @@ public final class DatasetIssueController {
             throw BusinessException.forbidden();
         }
         return form(request, detail, selected, selected.key(), selected.label(), selected.note(), selected.publicationStatus(),
-            allowedStatuses(selected, capabilities), UUID.randomUUID(), detail.revision(), Map.of(), null, false, 200);
+            allowedStatuses(selected, capabilities), UUID.randomUUID(), Map.of(), null, false, 200);
     }
 
     @PostMapping("/{issue}/edit")
     ModelAndView update(Authentication authentication, HttpServletRequest request, @PathVariable UUID dataset,
-                        @PathVariable UUID issue, @RequestParam UUID commandId, @RequestParam long expectedVersion,
+                        @PathVariable UUID issue, @RequestParam UUID commandId,
                         @RequestParam(defaultValue = "") String label, @RequestParam(defaultValue = "") String note,
                         @RequestParam(defaultValue = "") String status) {
         var actor = actor(authentication);
@@ -138,18 +134,12 @@ public final class DatasetIssueController {
                 throw BusinessException.forbidden();
             }
             return form(request, detail, selected, selected.key(), label, note, status, allowedStatuses(selected, capabilities),
-                commandId, expectedVersion, errors, null, false, 400);
+                commandId, errors, null, false, 400);
         }
-        try {
-            service.updateIssueMetadata(actor, DatasetController.command(request, commandId, "update_issue", null),
-                dataset, expectedVersion, issue, label.strip(), note.isBlank() ? null : note, status);
+        service.updateIssueMetadata(actor, DatasetController.command(request, commandId, "update_issue", null),
+                dataset, issue, label.strip(), note.isBlank() ? null : note, status);
             return redirect(dataset, "saved");
-        } catch (StaleAggregateException stale) {
-            var detail = query.detail(actor, dataset);
-            var selected = query.issue(actor, dataset, issue);
-            return form(request, detail, selected, selected.key(), label, note, status, DatasetLabels.PUBLICATION_STATUSES,
-                commandId, expectedVersion, Map.of(), staleMessage(), true, 409);
-        }
+
     }
 
     @GetMapping("/{issue}/current")
@@ -161,21 +151,17 @@ public final class DatasetIssueController {
         if (selected.current()) {
             throw BusinessException.conflict("Diese Ausgabe ist bereits aktuell.");
         }
-        return currentView(request, detail, selected, UUID.randomUUID(), detail.revision(), null, false, 200);
+        return currentView(request, detail, selected, UUID.randomUUID(), null, false, 200);
     }
 
     @PostMapping("/{issue}/current")
     ModelAndView makeCurrent(Authentication authentication, HttpServletRequest request, @PathVariable UUID dataset,
-                             @PathVariable UUID issue, @RequestParam UUID commandId, @RequestParam long expectedVersion) {
+                             @PathVariable UUID issue, @RequestParam UUID commandId) {
         var actor = actor(authentication);
-        try {
-            service.setCurrentIssue(actor, DatasetController.command(request, commandId, "set_current_issue", null),
-                dataset, expectedVersion, issue);
+        service.setCurrentIssue(actor, DatasetController.command(request, commandId, "set_current_issue", null),
+                dataset, issue);
             return redirect(dataset, "current");
-        } catch (StaleAggregateException stale) {
-            return currentView(request, query.detail(actor, dataset), query.issue(actor, dataset, issue),
-                commandId, expectedVersion, staleMessage(), true, 409);
-        }
+
     }
 
     @GetMapping("/{issue}/versions")
@@ -235,19 +221,19 @@ public final class DatasetIssueController {
 
     private static ModelAndView form(HttpServletRequest request, DatasetDetail dataset, DatasetIssue issue,
                                      String key, String label, String note, String status, List<DatasetLabels.Choice> statuses,
-                                     UUID commandId, long expectedVersion, Map<String, String> errors, String message,
+                                     UUID commandId, Map<String, String> errors, String message,
                                      boolean stale, int httpStatus) {
         var view = new ModelAndView("dataset/issue-form", HttpStatusCode.valueOf(httpStatus));
         view.addObject("issueForm", new IssueFormView(dataset, issue, key, label, note == null ? "" : note, status, statuses,
-            commandId, expectedVersion, Collections.unmodifiableMap(new LinkedHashMap<>(errors)), message, stale));
+            commandId, Collections.unmodifiableMap(new LinkedHashMap<>(errors)), message, stale));
         view.addObject("csrf", request.getAttribute("_csrf"));
         return view;
     }
 
     private static ModelAndView currentView(HttpServletRequest request, DatasetDetail dataset, DatasetIssue issue,
-                                            UUID commandId, long expectedVersion, String message, boolean stale, int status) {
+                                            UUID commandId, String message, boolean stale, int status) {
         var view = new ModelAndView("dataset/issue-current", HttpStatusCode.valueOf(status));
-        view.addObject("currentForm", new IssueCurrentView(dataset, issue, commandId, expectedVersion, message, stale));
+        view.addObject("currentForm", new IssueCurrentView(dataset, issue, commandId, message, stale));
         view.addObject("csrf", request.getAttribute("_csrf"));
         return view;
     }
@@ -266,9 +252,9 @@ public final class DatasetIssueController {
     public record IssueListView(DatasetDetail dataset, List<IssueRow> issues, boolean canCreate, String notice) {}
     public record IssueRow(DatasetIssue issue, boolean canEdit, boolean canMakeCurrent) {}
     public record IssueFormView(DatasetDetail dataset, DatasetIssue issue, String key, String label, String note,
-                                String status, List<DatasetLabels.Choice> statuses, UUID commandId, long expectedVersion,
+                                String status, List<DatasetLabels.Choice> statuses, UUID commandId,
                                 Map<String, String> errors, String message, boolean stale) {}
-    public record IssueCurrentView(DatasetDetail dataset, DatasetIssue issue, UUID commandId, long expectedVersion,
+    public record IssueCurrentView(DatasetDetail dataset, DatasetIssue issue, UUID commandId,
                                    String message, boolean stale) {}
     public record VersionView(DatasetDetail dataset, DatasetIssue issue, List<DatasetVersion> versions) {}
 }

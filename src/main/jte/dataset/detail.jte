@@ -100,7 +100,6 @@
             <h2 id="dataset-related">Weitere Bereiche</h2>
             <ul class="dataset-action-links">
                 <li><a href="${path}/issues">Ausgaben</a></li>
-                <li><a href="${path}/audit">Änderungshistorie</a></li>
                 @if(detail.canManageGrants())
                     <li><a href="${path}/grants">Freigaben verwalten</a></li>
                 @endif

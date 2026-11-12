@@ -5,9 +5,6 @@ ARG PG_TOOL_IMAGE=postgres_tools
 FROM ${JDK_IMAGE} AS jvm-build
 WORKDIR /workspace
 RUN apt-get update && apt-get install -y --no-install-recommends python3 && rm -rf /var/lib/apt/lists/*
-COPY --from=topics_source contracts /opt/csv-registry/contracts
-COPY --from=topics_source models /opt/csv-registry/models
-ENV DI_CSV_BUNDLE_ROOT=/opt/csv-registry
 COPY gradlew settings.gradle build.gradle ./
 COPY gradle ./gradle
 COPY src ./src

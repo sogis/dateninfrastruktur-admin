@@ -16,9 +16,9 @@ class DatabaseCatalogMutationIT {
             var runtime=ManagementRuntime.create(ds);
             try{
                 var actor=new ActorContext(values.get("managerIssuer").toString(),values.get("managerSubject").toString(),"user",null);
-                var row=ObjectSelect.query(Dataset.class).where(Dataset.T_ILI_TID.eq(id)).selectOne(runtime.newContext());long version=runtime.performInTransaction(()->((Number)CayenneSql.rows(runtime.newContext(),"SELECT row_version FROM di_management.dataset WHERE t_ili_tid=CAST(#bind($id) AS uuid)",Map.of("id",id.toString())).getFirst().get("row_version")).longValue());
+                var row=ObjectSelect.query(Dataset.class).where(Dataset.T_ILI_TID.eq(id)).selectOne(runtime.newContext());
                 var patch=new CatalogCommandService.Metadata("Katalog aktualisiert ohne Reload",row.getAdescription(),row.primaryContact().getAname(),row.primaryContact().getEmail(),new TreeSet<>(row.getThemeentries().stream().map(Themeentry::getAcode).toList()),new TreeSet<>(row.getKeywordentries().stream().map(Keywordentry::getAvalue).toList()));
-                new CatalogCommandService(new AuditedUnitOfWork(runtime),new AuthorityService(runtime)).update(actor,ManagementFixture.command("save_published"),id,version,patch,true);
+                new CatalogCommandService(runtime,new AuthorityService(runtime)).update(actor,ManagementFixture.command("save_published"),id,patch,true);
             }finally{runtime.shutdown();}
         }
     }

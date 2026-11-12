@@ -1,21 +1,32 @@
-# Verwaltung der CSV-Lieferrechte
-
-`manage_submitters` delegiert `submit_data` mit Zeit, Begründung und fachlichem
-Scope. Ein Amtsrecht umfasst auch künftige Datensätze des Amtes. Die Oberfläche
-fordert dafür eine ausdrückliche Bestätigung. `read_data`, Publikation,
-Metadatenpflege und SQL-Rechte werden getrennt vergeben.
+# Lieferrechte und Submission
 
 Die erste begrenzte `manage_submitters`-Zuweisung erfolgt über den
 [Management-XTF-Bootstrap](schema-lifecycle.md). Der Betreiber prüft
-Issuer und Subject der Person und trägt genau einen Scope ein, ein Amt
-oder einen Datensatz. Die OID eines Amtes ist eine Text-TID.
+Issuer und Subject und trägt genau einen Scope ein, ein Amt oder einen
+Datensatz. Ein Amtsscope gilt für die aktuellen Datensätze des Amts.
 
-Admin prüft aktuelle
-Lieferberechtigung an den servergebundenen Submissions und Ausführungen. Der
-Jenkinsjob verarbeitet den gebundenen Plan. Technische Jobparameter begründen
-keine Fachrechte.
+Die interne REST-API unter `/internal/deliveries` prüft Keycloak-JWT und
+den aktuellen Principal. Benutzer können berechtigte Ausgaben abfragen,
+eine Submission per PUT anlegen, lesen und im Status pending abbrechen.
+Die URL enthält die UUID der Submission. Beim Anlegen werden Dataset,
+Issue, Modus und gegebenenfalls die Metadaten der Eingabedatei übergeben.
+Der verifizierte Benutzer wird als Submitter gespeichert.
 
-Der Admin-Fachcommit erfordert die Integritätsbelege der Verarbeitung und die
-erneute Prüfung von Scope und Basisversion. ClickHouse-Projektion und deren
-Wiederanlauf erfolgen nach der PostgreSQL-Annahme. Die aktiven Definitionen
-liegen im [Themenrepo](../../dateninfrastruktur-themenrepo/README.md).
+Der registrierte technische Principal ruft start, complete, reject oder
+fail auf. Start prüft das aktuelle Lieferrecht des gespeicherten
+Submitters und bindet Schema und Ausgangsversion. Das CSV-Validierungsmodell
+entsteht direkt aus DataSchema, AttributeDefinition und UniqueDefinition.
+Complete prüft die Kandidatendatei und kontrolliert in einer kurzen
+PostgreSQL-Transaktion das Lieferrecht und die Ausgangsversion erneut.
+Ein anderer inzwischen angenommener Snapshot führt zu 409. Ein identischer
+Abschluss kann wiederholt werden.
+
+Die isolierte Integration prüft Dateien in einem explizit vorbereiteten,
+privaten Kandidatenverzeichnis. Der Schlüssel wird aus der Submission
+abgeleitet. Grösse und Datei-SHA256 werden geprüft, bevor die Transaktion
+beginnt. Der normale Stack konfiguriert dieses Testverzeichnis nicht.
+GRETL und Jenkins benötigen ihre Folgeintegration für den produktiven
+Transport und die Prüfung der vorbereiteten Artefakte.
+
+Die API ist über das Gateway gesperrt. Browser-Formulare der Admin-UI
+verwenden weiterhin JWT, Origin-Prüfung und CSRF-Schutz.

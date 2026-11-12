@@ -31,6 +31,14 @@ public class ManagementSecurityConfiguration {
         private BearerTokenAuthenticationFilter bearer(JwtDecoder decoder){
             return new BearerTokenAuthenticationFilter(new ProviderManager(new JwtAuthenticationProvider(decoder)));
         }
+        @Bean @Order(8) SecurityFilterChain deliveries(HttpSecurity http, JwtDecoder decoder)throws Exception {
+            return http.securityMatcher("/internal/deliveries", "/internal/deliveries/**")
+                .csrf(csrf -> csrf.disable())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(errors -> errors.authenticationEntryPoint((req,res,error) -> res.setStatus(401)))
+                .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
+                .addFilterAfter(bearer(decoder), SecurityContextHolderFilter.class).build();
+        }
         @Bean @Order(10) SecurityFilterChain internal(HttpSecurity http,JwtDecoder decoder,@Value("${di.web.gateway-secret}")String secret)throws Exception{
             return http.securityMatcher("/internal/**").authorizeHttpRequests(a->a.requestMatchers(org.springframework.http.HttpMethod.GET,"/internal/authorization/check").permitAll().anyRequest().denyAll())
                 .sessionManagement(s->s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

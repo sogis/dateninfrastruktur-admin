@@ -6,8 +6,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import ch.so.agi.dateninfrastruktur.admin.access.BusinessException;
-import ch.so.agi.dateninfrastruktur.admin.ingestion.IngestionProblem;
-import ch.so.agi.dateninfrastruktur.admin.persistence.AggregateWriteGuard;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.RequestPath;
@@ -82,17 +80,9 @@ public final class ManagementExceptionHandler {
     private static Failure failure(Exception error) {
         Throwable cause = error;
         for (int i = 0; i < 10 && cause != null; i++, cause = cause.getCause()) {
-            if (cause instanceof IngestionProblem problem) {
-                return new Failure(problem.status(), problem.code(), problem.getMessage());
-            }
+
             if (cause instanceof BusinessException business) {
                 return new Failure(business.status(), business.code(), business.getMessage());
-            }
-            if (cause instanceof AggregateWriteGuard.StaleAggregateException) {
-                return new Failure(409, "STALE_VERSION", "Der Eintrag wurde inzwischen verändert. Bitte neu laden.");
-            }
-            if (cause instanceof AggregateWriteGuard.MissingAggregateException) {
-                return new Failure(404, "NOT_FOUND", "Der Eintrag wurde nicht gefunden.");
             }
         }
         if (error instanceof MethodArgumentTypeMismatchException || error instanceof MissingServletRequestParameterException

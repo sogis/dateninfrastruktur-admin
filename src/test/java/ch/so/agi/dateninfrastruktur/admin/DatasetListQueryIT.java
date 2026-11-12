@@ -28,7 +28,7 @@ class DatasetListQueryIT {
     @Test
     void paginationUsesAnUnambiguousOrderForIdenticalTitlesWithinScope() {
         try (var owned = new ManagementFixture(); var foreign = new ManagementFixture()) {
-            var query = new ManagementQueryService(owned.runtime, owned.authority, owned.admin);
+            var query = new ManagementQueryService(owned.runtime, owned.authority);
             String title = "Gleicher Prüftitel";
             var expected = new ArrayList<UUID>();
             for (int index = 0; index < 51; index++) {
@@ -61,7 +61,7 @@ class DatasetListQueryIT {
     @Test
     void searchAndIndependentStatusAndOfficeFiltersStayWithinScope() {
         try (var owned = new ManagementFixture(); var foreign = new ManagementFixture()) {
-            var query = new ManagementQueryService(owned.runtime, owned.authority, owned.admin);
+            var query = new ManagementQueryService(owned.runtime, owned.authority);
             var emptyOffice = query.datasets(owned.manager, new DatasetFilters(null, null, null, null, 0));
             assertFalse(emptyOffice.hasDatasets());
             assertTrue(emptyOffice.canCreate());
@@ -69,10 +69,8 @@ class DatasetListQueryIT {
             UUID open = create(owned, "MiXeD-Identifier", "Verkehr 50%_Planung", "standalone");
             UUID restricted = create(owned, "restricted", "Verkehr 50xyPlanung", "standalone");
             create(foreign, "foreign", "Verkehr 50%_Planung", "standalone");
-            owned.catalog.transition(owned.manager, command("publish"), open,
-                owned.version("dataset", open), "publish", "Testpublikation");
-            owned.catalog.changeAccessLevel(owned.manager, command("change_access_level"), open,
-                owned.version("dataset", open), "open", "Offene Prüfdaten");
+            owned.catalog.transition(owned.manager, command("publish"), open, "publish", "Testpublikation");
+            owned.catalog.changeAccessLevel(owned.manager, command("change_access_level"), open, "open", "Offene Prüfdaten");
 
             for (String literal : List.of("%", "_", "mixed-identifier")) {
                 var matched = query.datasets(owned.manager, new DatasetFilters(literal, null, null, null, 0));
@@ -120,10 +118,9 @@ class DatasetListQueryIT {
     @Test
     void managementListingsFollowCurrentDetailAndDecisionPermissions() {
         try (var fixture = new ManagementFixture()) {
-            var query = new ManagementQueryService(fixture.runtime, fixture.authority, fixture.admin);
+            var query = new ManagementQueryService(fixture.runtime, fixture.authority);
             UUID dataset = fixture.published();
             UUID request = fixture.workflow.request(fixture.anna, command("request"), dataset, "Sichtprüfung", null);
-            long revision = fixture.version("accessrequest", request);
             var filters = new DatasetFilters(null, null, null, fixture.office, 0);
             assertEquals(List.of(request.toString()),
                 query.requests(fixture.anna, true, 0).stream().map(row -> row.get("id").toString()).toList());
@@ -175,7 +172,7 @@ class DatasetListQueryIT {
                 var pending = query.requests(actor, false, 0).stream().map(row -> row.get("id").toString()).toList();
                 if ("manage_access".equals(capability)) {
                     assertEquals(List.of(request.toString()), pending);
-                    fixture.workflow.decide(actor, command("approve"), request, revision, true, fixture.validity(), "Prüfung");
+                    fixture.workflow.decide(actor, command("approve"), request, true, fixture.validity(), "Prüfung");
                     assertEquals("approved", fixture.request(request).getAstatus());
                     assertFalse(query.effective(fixture.anna).isEmpty());
                     var applicantPage = query.datasets(fixture.anna, filters);
@@ -196,9 +193,8 @@ class DatasetListQueryIT {
                 } else {
                     assertTrue(pending.isEmpty(), capability);
                     assertForbidden(() ->
-                        fixture.workflow.decide(actor, command("approve"), request, revision, true, fixture.validity(), "Prüfung"));
+                        fixture.workflow.decide(actor, command("approve"), request, true, fixture.validity(), "Prüfung"));
                     assertEquals("pending", fixture.request(request).getAstatus());
-                    assertEquals(revision, fixture.version("accessrequest", request));
                 }
             }
         }

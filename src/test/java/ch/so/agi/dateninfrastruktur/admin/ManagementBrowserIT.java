@@ -23,7 +23,6 @@ import ch.so.agi.dateninfrastruktur.admin.access.ManagementQueryService.DatasetP
 import ch.so.agi.dateninfrastruktur.admin.access.ManagementQueryService.DatasetRow;
 import ch.so.agi.dateninfrastruktur.admin.authorization.DownloadAuthorizationService;
 import ch.so.agi.dateninfrastruktur.admin.catalog.CatalogCommandService;
-import ch.so.agi.dateninfrastruktur.admin.persistence.AggregateWriteGuard.StaleAggregateException;
 import ch.so.agi.dateninfrastruktur.admin.security.ManagementSecurityConfiguration;
 import ch.so.agi.dateninfrastruktur.admin.web.AuthorizationController;
 import ch.so.agi.dateninfrastruktur.admin.web.DatasetController;
@@ -131,12 +130,12 @@ class ManagementBrowserIT {
             eq(DATASET), eq("Testanfrage"), isNull());
 
         UUID accessRequest = UUID.randomUUID();
-        when(workflow.cancel(any(), any(), eq(accessRequest), eq(2L))).thenThrow(new StaleAggregateException());
-        String staleFields = "commandId=" + UUID.randomUUID() + "&expectedVersion=2&_csrf="
+        when(workflow.cancel(any(), any(), eq(accessRequest))).thenThrow(BusinessException.conflict("Diese Anfrage ist bereits abgeschlossen."));
+        String staleFields = "commandId=" + UUID.randomUUID() + "&_csrf="
             + URLEncoder.encode(csrf, StandardCharsets.UTF_8);
         var stale = send(post("/access/requests/" + accessRequest + "/cancel", ORIGIN, cookie, staleFields));
         assertHtml(stale, 409);
-        assertTrue(stale.body().contains("inzwischen verändert"));
+        assertTrue(stale.body().contains("bereits abgeschlossen"));
     }
 
     @Test
@@ -163,18 +162,6 @@ class ManagementBrowserIT {
             new ObjectMapper().readValue(api.body(), Map.class)
         );
         verifyNoInteractions(downloadAuthorization);
-    }
-
-    @Test
-    void auditKeepsItsDisclosureAndEscapesRecordedValues() throws Exception {
-        when(query.audit(any(), eq(DATASET), eq(0L))).thenReturn(List.of(Map.of(
-            "change_id", 17, "old_values", "<img id=audit-injection>", "new_values", "Neue Metadaten"
-        )));
-
-        var audit = send(browser("/management/datasets/" + DATASET + "/audit").GET());
-        assertHtml(audit, 200);
-        assertTrue(audit.body().contains("<summary>Vorherige Werte anzeigen</summary>&lt;img id=audit-injection&gt;"));
-        assertTrue(audit.body().contains("<summary>Neue Werte anzeigen</summary>Neue Metadaten"));
     }
 
     @Test

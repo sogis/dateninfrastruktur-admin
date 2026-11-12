@@ -36,7 +36,6 @@
     @endif
     <form class="management-form" method="post" action="${path}/${action.path()}">
         @template.fragment.command-fields(commandId = confirmation.commandId(), csrf = csrf)
-        <input type="hidden" name="expectedVersion" value="${confirmation.expectedVersion()}">
         @if(action == DatasetAction.ACCESS)
             <input type="hidden" name="level" value="${confirmation.targetAccess()}">
         @endif

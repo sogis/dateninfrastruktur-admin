@@ -25,10 +25,6 @@ public class ManagementConfiguration {
         return ManagementRuntime.create(source);
     }
     @Bean
-    public AuditedUnitOfWork auditedUnitOfWork(CayenneRuntime runtime) {
-        return new AuditedUnitOfWork(runtime);
-    }
-    @Bean
     public ManagementSchemaHealth managementSchema(
             @Qualifier("managementWriterDataSource") HikariDataSource source) {
         return new ManagementSchemaHealth(source);

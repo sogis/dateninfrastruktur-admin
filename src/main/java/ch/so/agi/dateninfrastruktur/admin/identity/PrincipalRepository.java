@@ -20,7 +20,7 @@ public final class PrincipalRepository {
         if(principal==null || !principal.isAactive() || "group".equals(principal.getAkind()))throw BusinessException.forbidden();
         return principal;
     }
-    public Principal findOrRegisterVerifiedUser(ObjectContext context,ActorContext actor,CommandContext command){
+    public Principal findOrRegisterVerifiedUser(ObjectContext context,ActorContext actor){
         if(!"user".equals(actor.kind()))throw BusinessException.forbidden();
         // Only registration of the same external identity is serialized, not unrelated commands.
         CayenneSql.rows(context,"SELECT pg_advisory_xact_lock(hashtextextended(jsonb_build_array("+
@@ -31,7 +31,6 @@ public final class PrincipalRepository {
         created.setTBasket(ManagementBaskets.require(context, ManagementBaskets.Topic.Access));
         created.setAissuer(actor.issuer());created.setAsubject(actor.subject());created.setAkind("user");
         created.setAactive(true);created.setProvisionedat(CayenneSql.now(context));
-        new AuditContextWriter().bind(context,new ActorContext(actor.issuer(),actor.subject(),"user",created.getTIliTid()),command);
         return created;
     }
 }

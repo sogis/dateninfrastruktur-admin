@@ -19,7 +19,6 @@ import ch.so.agi.dateninfrastruktur.admin.access.ManagementQueryService.DatasetR
 import ch.so.agi.dateninfrastruktur.admin.audit.ActorContext;
 import ch.so.agi.dateninfrastruktur.admin.audit.CommandContext;
 import ch.so.agi.dateninfrastruktur.admin.catalog.CatalogCommandService;
-import ch.so.agi.dateninfrastruktur.admin.persistence.AggregateWriteGuard.StaleAggregateException;
 import ch.so.agi.dateninfrastruktur.admin.security.RequestCorrelationFilter;
 import ch.so.agi.dateninfrastruktur.admin.security.VerifiedActorResolver;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -186,39 +185,37 @@ public final class DatasetController {
         requireEdit(dataset, authority.describe(actor, id));
         var metadata = new DatasetMetadataForm(dataset.title(), dataset.description(), dataset.contactName(),
             DatasetMetadataForm.emailAddress(dataset.contactEmail()), dataset.themes(), String.join("\n", dataset.keywords()));
-        return editView(request, dataset, metadata, UUID.randomUUID(), dataset.revision(),
+        return editView(request, dataset, metadata, UUID.randomUUID(),
             dataset.publicationStatus().equals("published"), Map.of(), null, false, 200);
     }
 
     @PostMapping(DATASETS + "/{id}/edit")
     ModelAndView edit(Authentication authentication, HttpServletRequest request, @PathVariable UUID id,
-                      @RequestParam UUID commandId, @RequestParam long expectedVersion,
+                      @RequestParam UUID commandId,
                       @RequestParam boolean published, @ModelAttribute DatasetMetadataForm metadata) {
         var actor = new VerifiedActorResolver().resolve(authentication);
         var errors = metadata.errors();
         if (!errors.isEmpty()) {
             var dataset = query.detail(actor, id);
             requireEdit(dataset, authority.describe(actor, id));
-            boolean stale = dataset.revision() != expectedVersion;
-            return editView(request, dataset, metadata, commandId, expectedVersion, published, errors,
+            boolean stale = false;
+            return editView(request, dataset, metadata, commandId, published, errors,
                 stale ? "Der Datensatz wurde inzwischen geändert. Laden Sie den aktuellen Stand." : null,
                 stale, stale ? 409 : 400);
         }
         try {
             catalog.update(actor, command(request, commandId, published ? "save_published" : "save_draft", null),
-                id, expectedVersion, metadata.metadata(), published);
+                id, metadata.metadata(), published);
             return redirectToDataset(id, "result=saved");
-        } catch (StaleAggregateException stale) {
-            return editView(request, query.detail(actor, id), metadata, commandId, expectedVersion, published, Map.of(),
-                "Der Datensatz wurde inzwischen geändert. Ihre Eingaben wurden nicht gespeichert.", true, 409);
+
         } catch (BusinessException error) {
             if (error.status() != 400 && error.status() != 409) {
                 throw error;
             }
             var dataset = query.detail(actor, id);
             requireEdit(dataset, authority.describe(actor, id));
-            return editView(request, dataset, metadata, commandId, expectedVersion, published, Map.of(),
-                error.getMessage(), dataset.revision() != expectedVersion, error.status());
+            return editView(request, dataset, metadata, commandId, published, Map.of(),
+                error.getMessage(), false, error.status());
         }
     }
 
@@ -237,10 +234,10 @@ public final class DatasetController {
     }
 
     private static ModelAndView editView(HttpServletRequest request, DatasetDetail dataset, DatasetMetadataForm metadata,
-                                         UUID commandId, long expectedVersion, boolean published, Map<String, String> errors,
+                                         UUID commandId, boolean published, Map<String, String> errors,
                                          String message, boolean stale, int status) {
         var view = new ModelAndView("dataset/edit", HttpStatusCode.valueOf(status));
-        view.addObject("edit", new EditView(dataset, metadata, commandId, expectedVersion, published,
+        view.addObject("edit", new EditView(dataset, metadata, commandId, published,
             Collections.unmodifiableMap(new LinkedHashMap<>(errors)), message, stale));
         view.addObject("csrf", request.getAttribute("_csrf"));
         return view;
@@ -256,7 +253,7 @@ public final class DatasetController {
     public record DetailView(DatasetDetail dataset, boolean canEdit, List<DatasetAction> actions, boolean canManageGrants,
                              boolean canConfigureDelivery, String listHref, String notice, String contactAddress) {}
 
-    public record EditView(DatasetDetail dataset, DatasetMetadataForm metadata, UUID commandId, long expectedVersion,
+    public record EditView(DatasetDetail dataset, DatasetMetadataForm metadata, UUID commandId,
                            boolean published, Map<String, String> errors, String message, boolean stale) {}
 
     private static String datasetUri(String path, DatasetFilters filters, int page) {

@@ -75,11 +75,6 @@ tasks.named('integrationTest') {
 }
 
 jte { generate(); binaryStaticContent = true }
-tasks.register('operator', JavaExec) {
-    classpath = sourceSets.main.runtimeClasspath
-    mainClass = 'ch.so.agi.dateninfrastruktur.admin.operator.AuthorityBootstrapCommand'
-}
-
 // Explicit test-profile tooling; never part of the web image or normal startup.
 tasks.register('composeTestRuntime', Copy) {
     dependsOn tasks.named('testClasses')
@@ -91,14 +86,6 @@ tasks.register('composeTestRuntime', Copy) {
 // Generation remains an explicit development command; normal builds never introspect a DB.
 tasks.named('compileJava') { mustRunAfter tasks.named('cgen') }
 tasks.named('processResources') { mustRunAfter tasks.named('cdbimport'), tasks.named('normalizeCayenneUuid') }
-
-// One trusted technical contract source in TOPICS; package it, never retype its columns.
-tasks.named('processResources') {
-    from(System.getenv('DI_CSV_BUNDLE_ROOT') ?: '../dateninfrastruktur-themenrepo') {
-        include 'contracts/**', 'models/*.ili'
-        into 'ingestion'
-    }
-}
 
 // The development container keeps Gradle and JTE output outside the source mount.
 if (providers.gradleProperty('adminDevBuild').isPresent()) {

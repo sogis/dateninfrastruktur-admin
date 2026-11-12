@@ -11,7 +11,6 @@ import ch.so.agi.dateninfrastruktur.admin.access.ManagementQueryService;
 import ch.so.agi.dateninfrastruktur.admin.access.ManagementQueryService.DatasetDetail;
 import ch.so.agi.dateninfrastruktur.admin.audit.ActorContext;
 import ch.so.agi.dateninfrastruktur.admin.catalog.CatalogCommandService;
-import ch.so.agi.dateninfrastruktur.admin.persistence.AggregateWriteGuard.StaleAggregateException;
 import ch.so.agi.dateninfrastruktur.admin.security.VerifiedActorResolver;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatusCode;
@@ -43,13 +42,13 @@ public final class DatasetLifecycleController {
         var actor = new VerifiedActorResolver().resolve(authentication);
         var operation = DatasetAction.valueOf(action.toUpperCase(Locale.ROOT));
         var dataset = allowedDataset(actor, id, operation);
-        return confirmation(request, dataset, operation, UUID.randomUUID(), dataset.revision(),
+        return confirmation(request, dataset, operation, UUID.randomUUID(),
             targetAccess(dataset, operation), "", null, false, 200);
     }
 
     @PostMapping(ACTION)
     ModelAndView apply(Authentication authentication, HttpServletRequest request, @PathVariable UUID id,
-                       @PathVariable String action, @RequestParam UUID commandId, @RequestParam long expectedVersion,
+                       @PathVariable String action, @RequestParam UUID commandId,
                        @RequestParam(defaultValue = "") String reason, @RequestParam(defaultValue = "") String level) {
         var actor = new VerifiedActorResolver().resolve(authentication);
         var operation = DatasetAction.valueOf(action.toUpperCase(Locale.ROOT));
@@ -59,8 +58,8 @@ public final class DatasetLifecycleController {
             : access && !level.equals("open") && !level.equals("restricted") ? "Der gewählte Datenzugang ist ungültig." : null;
         if (validation != null) {
             var dataset = allowedDataset(actor, id, operation);
-            boolean stale = dataset.revision() != expectedVersion;
-            return confirmation(request, dataset, operation, commandId, expectedVersion, targetAccess(dataset, operation),
+            boolean stale = false;
+            return confirmation(request, dataset, operation, commandId, targetAccess(dataset, operation),
                 reason, stale ? "Der Datensatz wurde inzwischen geändert. Prüfen Sie den aktuellen Stand." : validation,
                 stale, stale ? 409 : 400);
         }
@@ -69,21 +68,19 @@ public final class DatasetLifecycleController {
             String commandCode = access ? "change_access_level" : operation.path();
             var command = DatasetController.command(request, commandId, commandCode, justification);
             if (access) {
-                catalog.changeAccessLevel(actor, command, id, expectedVersion, level, justification);
+                catalog.changeAccessLevel(actor, command, id, level, justification);
             } else {
-                catalog.transition(actor, command, id, expectedVersion, operation.path(), justification);
+                catalog.transition(actor, command, id, operation.path(), justification);
             }
             return DatasetController.redirectToDataset(id, "result=" + operation.path());
-        } catch (StaleAggregateException stale) {
-            return confirmation(request, query.detail(actor, id), operation, commandId, expectedVersion, access ? level : "",
-                reason, "Der Datensatz wurde inzwischen geändert. Die Aktion wurde nicht ausgeführt.", true, 409);
+
         } catch (BusinessException error) {
             if (error.status() != 400 && error.status() != 409) {
                 throw error;
             }
             var dataset = query.detail(actor, id);
-            boolean stale = dataset.revision() != expectedVersion || !operation.allowed(dataset, authority.describe(actor, id));
-            return confirmation(request, dataset, operation, commandId, expectedVersion, targetAccess(dataset, operation),
+            boolean stale = !operation.allowed(dataset, authority.describe(actor, id));
+            return confirmation(request, dataset, operation, commandId, targetAccess(dataset, operation),
                 reason, error.getMessage(), stale, error.status());
         }
     }
@@ -104,15 +101,15 @@ public final class DatasetLifecycleController {
     }
 
     private static ModelAndView confirmation(HttpServletRequest request, DatasetDetail dataset, DatasetAction action,
-                                             UUID commandId, long expectedVersion, String targetAccess, String reason,
+                                             UUID commandId, String targetAccess, String reason,
                                              String error, boolean stale, int status) {
         var view = new ModelAndView("dataset/confirm", HttpStatusCode.valueOf(status));
-        view.addObject("confirmation", new ConfirmationView(dataset, action, commandId, expectedVersion, targetAccess,
+        view.addObject("confirmation", new ConfirmationView(dataset, action, commandId, targetAccess,
             reason, error, stale));
         view.addObject("csrf", request.getAttribute("_csrf"));
         return view;
     }
 
-    public record ConfirmationView(DatasetDetail dataset, DatasetAction action, UUID commandId, long expectedVersion,
+    public record ConfirmationView(DatasetDetail dataset, DatasetAction action, UUID commandId,
                                    String targetAccess, String reason, String error, boolean stale) {}
 }

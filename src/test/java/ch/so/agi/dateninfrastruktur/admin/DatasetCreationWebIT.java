@@ -88,7 +88,7 @@ class DatasetCreationWebIT {
         }
 
         @Bean ManagementQueryService managementQuery(ManagementFixture fixture) {
-            return new ManagementQueryService(fixture.runtime, fixture.authority, fixture.admin);
+            return new ManagementQueryService(fixture.runtime, fixture.authority);
         }
 
         @Bean AuthorityService authority(ManagementFixture fixture) {
@@ -244,7 +244,7 @@ class DatasetCreationWebIT {
             var principal = ObjectSelect.query(Principal.class).where(Principal.T_ILI_TID.eq(fixture.managerId))
                 .selectOne(context);
             var office = context.newObject(Office.class);
-            office.setTIliTid(UUID.randomUUID().toString());
+            office.setTIliTid("office-" + UUID.randomUUID());
             office.setIdentifier("office-second-" + fixture.suffix);
             office.setAbbreviation("T" + fixture.suffix.substring(0, 7));
             office.setAname("Prüfamt");

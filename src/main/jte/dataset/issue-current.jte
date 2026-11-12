@@ -24,7 +24,6 @@
     @endif
     <form class="management-form" method="post" action="${action}">
         @template.fragment.command-fields(commandId = currentForm.commandId(), csrf = csrf)
-        <input type="hidden" name="expectedVersion" value="${currentForm.expectedVersion()}">
         <div class="form-actions">
             <button class="button" type="submit" disabled="${currentForm.stale()}">Als aktuelle Ausgabe wählen</button>
             <a href="${path}">Abbrechen</a>

@@ -34,11 +34,11 @@ class ManagementHttpSecurityIT {
             assertEquals(302,send(request("/access/requests",token).header("Cookie",cookie).header("Origin",System.getenv("DI_TEST_GATEWAY")).header("Content-Type","application/x-www-form-urlencoded").POST(HttpRequest.BodyPublishers.ofString(body+"&_csrf="+encoded(csrf)))));
             UUID requestId;
             try(var connection=f.admin.getConnection();var ps=connection.prepareStatement("SELECT r.t_ili_tid FROM di_management.accessrequest r JOIN di_management.dataset d ON d.t_id=r.dataset WHERE d.t_ili_tid=?")){ps.setObject(1,root);try(var rs=ps.executeQuery()){assertTrue(rs.next());requestId=rs.getObject(1,UUID.class);}}
-            var decision=f.workflow.decide(f.manager,ManagementFixture.command("approve"),requestId,f.version("accessrequest",requestId),true,f.validity(),"HTTP-Freigabe");
+            var decision=f.workflow.decide(f.manager,ManagementFixture.command("approve"),requestId,true,f.validity(),"HTTP-Freigabe");
             assertEquals(204,send(request("/internal/authorization/check",token).header("X-DI-Gateway-Credential",System.getenv("DI_TEST_GATEWAY_SECRET")).header("X-Forwarded-Uri",path).header("X-Forwarded-Method","GET").GET()));
             UUID grantId;
             try(var connection=f.admin.getConnection();var ps=connection.prepareStatement("SELECT g.t_ili_tid FROM di_management.accessgrant g JOIN di_management.accessdecision d ON d.t_id=g.grantingdecision WHERE d.t_ili_tid=?")){ps.setObject(1,decision);try(var rs=ps.executeQuery()){assertTrue(rs.next());grantId=rs.getObject(1,UUID.class);}}
-            f.workflow.revoke(f.manager,ManagementFixture.command("revoke"),grantId,f.version("accessgrant",grantId),"HTTP-Entzug");
+            f.workflow.revoke(f.manager,ManagementFixture.command("revoke"),grantId,"HTTP-Entzug");
             assertEquals(403,send(request("/internal/authorization/check",token).header("X-DI-Gateway-Credential",System.getenv("DI_TEST_GATEWAY_SECRET")).header("X-Forwarded-Uri",path).header("X-Forwarded-Method","GET").GET()));
             // The read-only confirmation route still requires publication authority.
             assertEquals(403,send(request("/management/datasets/"+root+"/publish",token).GET()));

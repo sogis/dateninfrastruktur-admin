@@ -37,31 +37,30 @@ public final class ManagementController {
     private Instant instant(String text){return text==null || text.isBlank()?null:Instant.parse(text);}
     @PostMapping("/access/requests") String request(Authentication auth,HttpServletRequest req,@RequestParam UUID commandId,@RequestParam UUID dataset,@RequestParam String reason,@RequestParam(defaultValue="")String until){workflow.request(actor(auth),command(req,commandId,"request",reason),dataset,reason,instant(until));return "redirect:/access/me";}
     @GetMapping("/access/me") String mine(Authentication auth,Model model,HttpServletRequest req,@RequestParam(defaultValue="0")int page){
-        var entries=new ArrayList<Entry>();for(var r:query.requests(actor(auth),true,page)){var forms=new ArrayList<Form>();if("pending".equals(r.get("status")))forms.add(form("Anfrage zurückziehen","/access/requests/"+r.get("id")+"/cancel","Zurückziehen",hidden("expectedVersion",r.get("revision"))));entries.add(new Entry(r.get("title").toString(),null,r,forms));}
+        var entries=new ArrayList<Entry>();for(var r:query.requests(actor(auth),true,page)){var forms=new ArrayList<Form>();if("pending".equals(r.get("status")))forms.add(form("Anfrage zurückziehen","/access/requests/"+r.get("id")+"/cancel","Zurückziehen"));entries.add(new Entry(r.get("title").toString(),null,r,forms));}
         for(var r:query.effective(actor(auth)))entries.add(entry("Wirksamer Dateizugang: "+r.get("title"),null,r));
         return page(model,NavigationSection.MY_ACCESS,"Meine Anfragen und Zugänge","Aufgeführt sind aktuelle Dateifreigaben. Ein entzogener direkter Grant kann durch einen Gruppenweg ergänzt bleiben.",entries,List.of(),req);
     }
-    @PostMapping("/access/requests/{id}/cancel") String cancel(Authentication auth,HttpServletRequest req,@PathVariable UUID id,@RequestParam UUID commandId,@RequestParam long expectedVersion){workflow.cancel(actor(auth),command(req,commandId,"cancel_request",null),id,expectedVersion);return "redirect:/access/me";}
+    @PostMapping("/access/requests/{id}/cancel") String cancel(Authentication auth,HttpServletRequest req,@PathVariable UUID id,@RequestParam UUID commandId){workflow.cancel(actor(auth),command(req,commandId,"cancel_request",null),id);return "redirect:/access/me";}
     @GetMapping("/management/requests") String pending(Authentication auth,Model model,HttpServletRequest req,@RequestParam(defaultValue="0")int page){
-        var entries=query.requests(actor(auth),false,page).stream().map(r->entry(r.get("title").toString(),null,r,form("Anfrage genehmigen","/management/requests/"+r.get("id")+"/approve","Genehmigen",hidden("expectedVersion",r.get("revision")),field("until","Gültig bis (UTC, optional)","text",""),field("reason","Begründung","textarea","")),form("Anfrage ablehnen","/management/requests/"+r.get("id")+"/deny","Ablehnen",hidden("expectedVersion",r.get("revision")),field("reason","Begründung","textarea","")))).toList();
+        var entries=query.requests(actor(auth),false,page).stream().map(r->entry(r.get("title").toString(),null,r,form("Anfrage genehmigen","/management/requests/"+r.get("id")+"/approve","Genehmigen",field("until","Gültig bis (UTC, optional)","text",""),field("reason","Begründung","textarea","")),form("Anfrage ablehnen","/management/requests/"+r.get("id")+"/deny","Ablehnen",field("reason","Begründung","textarea","")))).toList();
         return page(model,NavigationSection.REQUESTS,"Offene Zugangsanfragen","Nur Anfragen in Ihrem aktuellen Zuständigkeitsbereich.",entries,List.of(),req);
     }
-    @PostMapping("/management/requests/{id}/{action:approve|deny}") String decide(Authentication auth,HttpServletRequest req,@PathVariable UUID id,@PathVariable String action,@RequestParam UUID commandId,@RequestParam long expectedVersion,@RequestParam String reason,@RequestParam(defaultValue="")String until){boolean approve="approve".equals(action);workflow.decide(actor(auth),command(req,commandId,action,reason),id,expectedVersion,approve,approve?new AccessWorkflowService.Validity(null,instant(until)):null,reason);return "redirect:/management/requests";}
+    @PostMapping("/management/requests/{id}/{action:approve|deny}") String decide(Authentication auth,HttpServletRequest req,@PathVariable UUID id,@PathVariable String action,@RequestParam UUID commandId,@RequestParam String reason,@RequestParam(defaultValue="")String until){boolean approve="approve".equals(action);workflow.decide(actor(auth),command(req,commandId,action,reason),id,approve,approve?new AccessWorkflowService.Validity(null,instant(until)):null,reason);return "redirect:/management/requests";}
     @GetMapping("/management/datasets/{id}/grants") String grants(Authentication auth,@PathVariable UUID id,Model model,HttpServletRequest req,@RequestParam(defaultValue="")String search){
         var entries=new ArrayList<Entry>();
         for(var r:query.grants(actor(auth),id)){
-            var forms=r.get("revokedat")==null?List.of(new Form("Direkte Freigabe entziehen","/management/grants/"+r.get("id")+"/revoke",List.of(hidden("expectedVersion",r.get("revision")),hidden("dataset",id),field("reason","Begründung","textarea","")),"Diesen Grant entziehen")):List.<Form>of();
+            var forms=r.get("revokedat")==null?List.of(new Form("Direkte Freigabe entziehen","/management/grants/"+r.get("id")+"/revoke",List.of(hidden("dataset",id),field("reason","Begründung","textarea","")),"Diesen Grant entziehen")):List.<Form>of();
             entries.add(new Entry("Freigabe "+r.get("id"),null,r,forms));
         }
         if (!search.isBlank()) {
             var actor = actor(auth);
             var principals = query.principals(actor, id, search);
             if (!principals.isEmpty()) {
-                long revision = query.detail(actor, id).revision();
                 for (var principal : principals) {
                     entries.add(entry("Bekannte Identität " + principal.get("id"), null, principal,
                         form("Direkt freigeben", "/management/datasets/" + id + "/grants", "Direktfreigabe erteilen",
-                            hidden("beneficiary", principal.get("id")), hidden("expectedVersion", revision),
+                            hidden("beneficiary", principal.get("id")),
                             field("until", "Gültig bis (UTC, optional)", "text", ""),
                             field("reason", "Begründung", "textarea", ""))));
                 }
@@ -70,26 +69,7 @@ public final class ManagementController {
         model.addAttribute("identitySearch", true);
         return page(model,NavigationSection.DATASETS,"Freigaben verwalten","Ein Entzug betrifft diesen Grant; andere direkte oder Gruppenwege können fortbestehen.",entries,List.of(),req);
     }
-    @PostMapping("/management/datasets/{id}/grants") String direct(Authentication auth,HttpServletRequest req,@PathVariable UUID id,@RequestParam UUID commandId,@RequestParam UUID beneficiary,@RequestParam long expectedVersion,@RequestParam String reason,@RequestParam(defaultValue="")String until){workflow.grantDirect(actor(auth),command(req,commandId,"direct_grant",reason),id,expectedVersion,beneficiary,new AccessWorkflowService.Validity(null,instant(until)),reason);return "redirect:/management/datasets/"+id+"/grants";}
-    @PostMapping("/management/grants/{id}/revoke") String revoke(Authentication auth,HttpServletRequest req,@PathVariable UUID id,@RequestParam UUID commandId,@RequestParam UUID dataset,@RequestParam long expectedVersion,@RequestParam String reason){workflow.revoke(actor(auth),command(req,commandId,"revoke",reason),id,expectedVersion,reason);return "redirect:/management/datasets/"+dataset+"/grants";}
-    @GetMapping("/management/datasets/{id}/audit")
-    String audit(Authentication auth, @PathVariable UUID id, Model model,
-                 @RequestParam(defaultValue = "0") long before) {
-        model.addAttribute("entries", query.audit(actor(auth), id, before).stream().map(AuditEntry::from).toList());
-        return "audit";
-    }
+    @PostMapping("/management/datasets/{id}/grants") String direct(Authentication auth,HttpServletRequest req,@PathVariable UUID id,@RequestParam UUID commandId,@RequestParam UUID beneficiary,@RequestParam String reason,@RequestParam(defaultValue="")String until){workflow.grantDirect(actor(auth),command(req,commandId,"direct_grant",reason),id,beneficiary,new AccessWorkflowService.Validity(null,instant(until)),reason);return "redirect:/management/datasets/"+id+"/grants";}
+    @PostMapping("/management/grants/{id}/revoke") String revoke(Authentication auth,HttpServletRequest req,@PathVariable UUID id,@RequestParam UUID commandId,@RequestParam UUID dataset,@RequestParam String reason){workflow.revoke(actor(auth),command(req,commandId,"revoke",reason),id,reason);return "redirect:/management/datasets/"+dataset+"/grants";}
 
-    public record AuditEntry(String id, String recordedAt, String actor, String action, String operation,
-                             String table, String commandId, String requestId, String previousValues, String newValues) {
-        private static AuditEntry from(Map<String, Object> row) {
-            return new AuditEntry(auditValue(row, "change_id"), auditValue(row, "recorded_at"),
-                auditValue(row, "actor_subject"), auditValue(row, "action_code"), auditValue(row, "operation"),
-                auditValue(row, "table_name"), auditValue(row, "command_id"), auditValue(row, "request_id"),
-                auditValue(row, "old_values"), auditValue(row, "new_values"));
-        }
-
-        private static String auditValue(Map<String, Object> row, String key) {
-            return Objects.toString(row.get(key), "—");
-        }
-    }
 }

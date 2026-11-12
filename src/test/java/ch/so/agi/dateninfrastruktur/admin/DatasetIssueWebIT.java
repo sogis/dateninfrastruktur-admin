@@ -59,7 +59,7 @@ class DatasetIssueWebIT {
     @Import({DatasetCreationWebIT.WebFixture.class, DatasetIssueController.class})
     static class WebFixture {
         @Bean DatasetIssueService issueService(ManagementFixture fixture) {
-            return new DatasetIssueService(fixture.unit, fixture.authority);
+            return new DatasetIssueService(fixture.runtime, fixture.authority);
         }
     }
 
@@ -82,9 +82,8 @@ class DatasetIssueWebIT {
              var context = chromium.newContext(browserOptions(fixture.manager))) {
             UUID series = series(fixture);
             UUID foreignSeries = series(foreign);
-            var foreignService = new DatasetIssueService(foreign.unit, foreign.authority);
-            UUID foreignIssue = foreignService.createIssue(foreign.manager, command("create_issue"), foreignSeries,
-                foreign.version("dataset", foreignSeries), "foreign-issue", "Fremde Ausgabe");
+            var foreignService = new DatasetIssueService(foreign.runtime, foreign.authority);
+            UUID foreignIssue = foreignService.createIssue(foreign.manager, command("create_issue"), foreignSeries, "foreign-issue", "Fremde Ausgabe");
             seedVersions(foreign, foreignIssue, "foreign");
 
             String path = issues(series);
@@ -119,26 +118,19 @@ class DatasetIssueWebIT {
             assertEquals("in_review", updated.getPublicationstatus());
 
             var stale = form(page, item + "/edit", fixture.manager);
-            long beforeCurrent = fixture.version("dataset", series);
             var current = form(page, item + "/current", fixture.manager);
-            assertEquals(beforeCurrent, fixture.version("dataset", series));
             assertNull(dataset(fixture, series).getCurrentissue1());
             assertRedirect(post(item + "/current", fixture.manager, current, Map.of()), path);
             assertEquals(issue, dataset(fixture, series).getCurrentissue1().getTIliTid());
 
-            long currentRevision = fixture.version("dataset", series);
-            show(page, post(item + "/edit", fixture.manager, stale,
-                Map.of("label", "Veraltete Eingabe", "note", "Nicht überschreiben", "status", "draft")), 409);
-            assertEquals("Veraltete Eingabe", page.locator("form input[name=label]").inputValue());
-            assertEquals(currentRevision, fixture.version("dataset", series));
-            assertEquals(label, issue(fixture, issue).getLabel());
+            assertRedirect(post(item + "/edit", fixture.manager, stale,
+                Map.of("label", label, "note", "Neueste Eingabe", "status", "in_review")), path);
+            assertEquals("Neueste Eingabe", issue(fixture, issue).getNote());
 
-            var forged = new Form(creation.cookie(), creation.csrf(), UUID.randomUUID().toString(),
-                Long.toString(currentRevision));
+            var forged = new Form(creation.cookie(), creation.csrf(), UUID.randomUUID().toString());
             assertEquals(400, post(path + "/" + foreignIssue + "/edit", fixture.manager, forged,
                 Map.of("label", "Fremde Änderung", "note", "", "status", "draft")).statusCode());
             assertEquals(400, post(path + "/" + foreignIssue + "/current", fixture.manager, forged, Map.of()).statusCode());
-            assertEquals(currentRevision, fixture.version("dataset", series));
             assertEquals(issue, dataset(fixture, series).getCurrentissue1().getTIliTid());
             assertEquals("Fremde Ausgabe", issue(foreign, foreignIssue).getLabel());
 
@@ -151,7 +143,6 @@ class DatasetIssueWebIT {
             screenshot(page, "dataset-issues-series.png");
 
             seedVersions(fixture, issue, "eigene");
-            long beforeReading = fixture.version("dataset", series);
             show(page, get(item + "/versions", fixture.manager), 200);
             assertEquals(0, page.locator("form").count());
             var rows = page.getByRole(AriaRole.ROW).allTextContents();
@@ -168,7 +159,6 @@ class DatasetIssueWebIT {
             assertEquals(403, get(item + "/versions", fixture.ben).statusCode());
             assertEquals(404, get(path + "/" + foreignIssue + "/versions", fixture.manager).statusCode());
             assertEquals(405, post(item + "/versions", fixture.manager, forged, Map.of()).statusCode());
-            assertEquals(beforeReading, fixture.version("dataset", series));
         }
     }
 
@@ -188,22 +178,18 @@ class DatasetIssueWebIT {
             assertEquals(1, page.locator("a[href='" + standalonePath + "/" + standardIssue + "/versions']").count());
 
             var csrf = form(page, issues(series) + "/new", fixture.manager);
-            long version = fixture.version("dataset", standalone);
-            var forged = new Form(csrf.cookie(), csrf.csrf(), UUID.randomUUID().toString(), Long.toString(version));
+            var forged = new Form(csrf.cookie(), csrf.csrf(), UUID.randomUUID().toString());
             assertEquals(409, post(standalonePath, fixture.manager, forged,
                 Map.of("key", "unexpected", "label", "Zweite Ausgabe")).statusCode());
             assertEquals(409, post(standalonePath + "/" + standardIssue + "/edit", fixture.manager, forged,
                 Map.of("label", "Unzulässig", "note", "", "status", "draft")).statusCode());
             assertEquals(409, post(standalonePath + "/" + standardIssue + "/current", fixture.manager, forged,
                 Map.of()).statusCode());
-            assertEquals(version, fixture.version("dataset", standalone));
             assertEquals(1, dataset(fixture, standalone).getDatasetissues().size());
 
-            var service = new DatasetIssueService(fixture.unit, fixture.authority);
-            UUID issue = service.createIssue(fixture.manager, command("create_issue"), series,
-                fixture.version("dataset", series), "initial", "Erste Ausgabe");
-            fixture.catalog.transition(fixture.manager, command("publish"), series,
-                fixture.version("dataset", series), "publish", "Serienmetadaten geprüft");
+            var service = new DatasetIssueService(fixture.runtime, fixture.authority);
+            UUID issue = service.createIssue(fixture.manager, command("create_issue"), series, "initial", "Erste Ausgabe");
+            fixture.catalog.transition(fixture.manager, command("publish"), series, "publish", "Serienmetadaten geprüft");
             grantMetadataOnly(fixture, series);
 
             String publishedPath = issues(series);
@@ -213,12 +199,9 @@ class DatasetIssueWebIT {
             assertEquals(403, get(publishedPath + "/new", fixture.anna).statusCode());
 
             var requester = form(page, "/access/requests/new?dataset=" + series, fixture.anna);
-            long publishedVersion = fixture.version("dataset", series);
-            var denied = new Form(requester.cookie(), requester.csrf(), UUID.randomUUID().toString(),
-                Long.toString(publishedVersion));
+            var denied = new Form(requester.cookie(), requester.csrf(), UUID.randomUUID().toString());
             assertEquals(403, post(publishedPath, fixture.anna, denied,
                 Map.of("key", "metadata-only", "label", "Unberechtigt")).statusCode());
-            assertEquals(publishedVersion, fixture.version("dataset", series));
             assertEquals(1, dataset(fixture, series).getDatasetissues().size());
         }
     }
@@ -318,14 +301,13 @@ class DatasetIssueWebIT {
         show(page, response, 200);
         String cookie = response.headers().allValues("set-cookie").stream()
             .filter(value -> value.startsWith("XSRF-TOKEN=")).map(value -> value.split(";", 2)[0]).findFirst().orElseThrow();
-        var expected = page.locator("form input[name=expectedVersion]");
         return new Form(cookie, page.locator("form input[name=_csrf]").inputValue(),
-            page.locator("form input[name=commandId]").inputValue(), expected.count() == 0 ? "" : expected.inputValue());
+            page.locator("form input[name=commandId]").inputValue());
     }
 
     private HttpResponse<String> post(String path, ActorContext actor, Form form, Map<String, String> values) throws Exception {
         String fields = "_csrf=" + encode(form.csrf()) + "&commandId=" + encode(form.commandId())
-            + "&expectedVersion=" + encode(form.expectedVersion()) + values.entrySet().stream()
+            + values.entrySet().stream()
                 .map(entry -> "&" + entry.getKey() + "=" + encode(entry.getValue())).collect(Collectors.joining());
         var request = request(path, actor).header("Origin", "http://management.test")
             .header("Cookie", form.cookie()).header("Content-Type", "application/x-www-form-urlencoded")
@@ -355,5 +337,5 @@ class DatasetIssueWebIT {
         }
     }
 
-    private record Form(String cookie, String csrf, String commandId, String expectedVersion) {}
+    private record Form(String cookie, String csrf, String commandId) {}
 }
