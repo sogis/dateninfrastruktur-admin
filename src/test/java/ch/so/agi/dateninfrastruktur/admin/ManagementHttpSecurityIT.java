@@ -46,7 +46,10 @@ class ManagementHttpSecurityIT {
             assertEquals(401,send(request("/internal/authorization/check",null).header("X-DI-Gateway-Credential",System.getenv("DI_TEST_GATEWAY_SECRET")).header("X-Forwarded-Uri",path).header("X-Forwarded-Method","GET").GET()));
             assertEquals(400,send(request("/internal/authorization/check",token).header("X-DI-Gateway-Credential",System.getenv("DI_TEST_GATEWAY_SECRET")).header("X-Forwarded-Uri",path+"?override=1").header("X-Forwarded-Method","GET").GET()));
             assertEquals(405,send(request("/internal/authorization/check",token).header("X-DI-Gateway-Credential",System.getenv("DI_TEST_GATEWAY_SECRET")).header("X-Forwarded-Uri",path).header("X-Forwarded-Method","POST").GET()));
-            assertEquals(403,HTTP.send(HttpRequest.newBuilder(URI.create(System.getenv().getOrDefault("DI_TEST_GATEWAY_URL",System.getenv("DI_TEST_GATEWAY"))+"/internal/authorization/check")).header("X-DI-Gateway-Credential",System.getenv("DI_TEST_GATEWAY_SECRET")).GET().build(),HttpResponse.BodyHandlers.discarding()).statusCode());
+            String gatewayUrl=System.getenv().getOrDefault("DI_TEST_GATEWAY_URL",System.getenv("DI_TEST_GATEWAY"));
+            var gatewayRequest=HttpRequest.newBuilder(URI.create(gatewayUrl+"/internal/authorization/check"))
+                .header("X-DI-Gateway-Credential",System.getenv("DI_TEST_GATEWAY_SECRET")).GET();
+            assertEquals(403,send(gatewayRequest));
         }
     }
 }

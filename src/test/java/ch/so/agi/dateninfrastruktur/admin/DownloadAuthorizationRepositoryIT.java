@@ -21,8 +21,30 @@ class DownloadAuthorizationRepositoryIT {
             schema.setModelname("DI_DownloadTest_"+root.toString().replace("-",""));
             issue.setAschema1(schema);
         }
-        var version=ctx.newObject(Dataversion.class);version.setTIliTid(UUID.randomUUID());version.setTBasket(dataset.getTBasket());version.setIssue1(issue);version.setAschema1(schema);version.setVersionkey("v"+sequence);version.setAsequence(sequence);version.setAvailability("available");version.setValidationstatus("success");version.setAcceptedat(CayenneSql.now(ctx));
-        var distribution=ctx.newObject(Distribution.class);UUID id=UUID.randomUUID();distribution.setTIliTid(id);distribution.setTBasket(dataset.getTBasket());distribution.setVersion1(version);distribution.setAformat("csv");distribution.setFilename("data.csv");distribution.setMediatype("text/csv");distribution.setAvailability("available");distribution.setBytesize(10L);distribution.setSha256("0".repeat(64));distribution.setObjectkey("downloads/"+id+"/data.csv");return id;
+        var version=ctx.newObject(Dataversion.class);
+        version.setTIliTid(UUID.randomUUID());
+        version.setTBasket(dataset.getTBasket());
+        version.setIssue1(issue);
+        version.setAschema1(schema);
+        version.setVersionkey("v"+sequence);
+        version.setAsequence(sequence);
+        version.setAvailability("available");
+        version.setValidationstatus("success");
+        version.setAcceptedat(CayenneSql.now(ctx));
+
+        var distribution=ctx.newObject(Distribution.class);
+        UUID id=UUID.randomUUID();
+        distribution.setTIliTid(id);
+        distribution.setTBasket(dataset.getTBasket());
+        distribution.setVersion1(version);
+        distribution.setAformat("csv");
+        distribution.setFilename("data.csv");
+        distribution.setMediatype("text/csv");
+        distribution.setAvailability("available");
+        distribution.setBytesize(10L);
+        distribution.setSha256("0".repeat(64));
+        distribution.setObjectkey("downloads/"+id+"/data.csv");
+        return id;
     });}
     @Test void freshSingleStatementEvaluatesAllAvailableVersionsGroupsValidityAndRevocation(){
         try(var f=new ManagementFixture()){
