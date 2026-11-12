@@ -1,0 +1,293 @@
+<?xml version='1.0' encoding='utf-8'?>
+<ili:transfer xmlns:access="http://www.interlis.ch/xtf/2.4/SO_AGI_DataInfrastructure_Access_20261112" xmlns:catalog="http://www.interlis.ch/xtf/2.4/SO_AGI_DataInfrastructure_Catalog_20261112" xmlns:delivery="http://www.interlis.ch/xtf/2.4/SO_AGI_DataInfrastructure_Delivery_20261112" xmlns:ili="http://www.interlis.ch/xtf/2.4/INTERLIS" xmlns:organization="http://www.interlis.ch/xtf/2.4/SO_AGI_DataInfrastructure_Organization_20261112">
+  <ili:headersection>
+    <ili:models>
+      <ili:model>SO_AGI_DataInfrastructure_Organization_20261112</ili:model>
+      <ili:model>SO_AGI_DataInfrastructure_Catalog_20261112</ili:model>
+      <ili:model>SO_AGI_DataInfrastructure_Access_20261112</ili:model>
+      <ili:model>SO_AGI_DataInfrastructure_Delivery_20261112</ili:model>
+    </ili:models>
+    <ili:sender>Synthetischer Management-Bootstrap</ili:sender>
+  </ili:headersection>
+  <ili:datasection>
+    <organization:Organization ili:bid="e647eda9-902a-5361-af68-290e51850ec6">
+      <organization:Office ili:tid="ch.so.test.office.long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-a">
+        <organization:identifier>office-a</organization:identifier>
+        <organization:name>Testamt A</organization:name>
+        <organization:abbreviation>A</organization:abbreviation>
+        <organization:active>true</organization:active>
+      </organization:Office>
+      <organization:Office ili:tid="ch.so.test.office.b">
+        <organization:identifier>office-b</organization:identifier>
+        <organization:name>Testamt B</organization:name>
+        <organization:abbreviation>B</organization:abbreviation>
+        <organization:active>true</organization:active>
+      </organization:Office>
+      <organization:ContactPoint ili:tid="ch.so.test.contact.a">
+        <organization:name>Synthetischer Kontakt</organization:name>
+        <organization:unit>Teststelle</organization:unit>
+      </organization:ContactPoint>
+    </organization:Organization>
+    <catalog:Catalog ili:bid="64ec07ae-950b-50b7-ac69-88380a95c810">
+      <catalog:Dataset ili:tid="a36af55d-396d-507c-bab3-acb239717bb8">
+        <catalog:identifier>test-open</catalog:identifier>
+        <catalog:kind>standalone</catalog:kind>
+        <catalog:title>Synthetisch open</catalog:title>
+        <catalog:description>Synthetischer Datensatz</catalog:description>
+        <catalog:accessLevel>open</catalog:accessLevel>
+        <catalog:publicationStatus>published</catalog:publicationStatus>
+        <catalog:origin>cantonal</catalog:origin>
+        <catalog:modified>2026-11-12</catalog:modified>
+        <catalog:ownerOffice ili:ref="ch.so.test.office.long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-a" ili:bid="e647eda9-902a-5361-af68-290e51850ec6" />
+        <catalog:publisherOffice ili:ref="ch.so.test.office.long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-a" ili:bid="e647eda9-902a-5361-af68-290e51850ec6" />
+        <catalog:themes>
+          <catalog:ThemeEntry>
+            <catalog:code>Geografie</catalog:code>
+          </catalog:ThemeEntry>
+          <catalog:ThemeEntry>
+            <catalog:code>Verwaltung</catalog:code>
+          </catalog:ThemeEntry>
+        </catalog:themes>
+        <catalog:keywords>
+          <catalog:KeywordEntry>
+            <catalog:value>Test</catalog:value>
+          </catalog:KeywordEntry>
+          <catalog:KeywordEntry>
+            <catalog:value>Bootstrap</catalog:value>
+          </catalog:KeywordEntry>
+        </catalog:keywords>
+      </catalog:Dataset>
+      <catalog:DatasetIssue ili:tid="c5bc014f-39c5-50db-b480-7e782bf09f60">
+        <catalog:issueKey>default</catalog:issueKey>
+        <catalog:label>Standardausgabe</catalog:label>
+        <catalog:publicationStatus>published</catalog:publicationStatus>
+        <catalog:modified>2026-11-12</catalog:modified>
+        <catalog:dataset ili:ref="a36af55d-396d-507c-bab3-acb239717bb8" />
+        <catalog:schema ili:ref="ea5ab3e2-8260-53c2-aea4-ad1bcf6fbd32" />
+        <catalog:currentVersion ili:ref="698760fc-3052-5b39-bdf1-747efb4fb180" />
+      </catalog:DatasetIssue>
+      <catalog:Dataset ili:tid="53c2f2d8-e3dc-54ba-8813-7c1d1cdcd7cd">
+        <catalog:identifier>test-restricted</catalog:identifier>
+        <catalog:kind>standalone</catalog:kind>
+        <catalog:title>Synthetisch restricted</catalog:title>
+        <catalog:description>Synthetischer Datensatz</catalog:description>
+        <catalog:accessLevel>restricted</catalog:accessLevel>
+        <catalog:publicationStatus>published</catalog:publicationStatus>
+        <catalog:origin>cantonal</catalog:origin>
+        <catalog:modified>2026-11-12</catalog:modified>
+        <catalog:ownerOffice ili:ref="ch.so.test.office.b" ili:bid="e647eda9-902a-5361-af68-290e51850ec6" />
+        <catalog:publisherOffice ili:ref="ch.so.test.office.b" ili:bid="e647eda9-902a-5361-af68-290e51850ec6" />
+      </catalog:Dataset>
+      <catalog:DatasetIssue ili:tid="4f7785b6-f07f-5986-9bab-7cc11b8538f9">
+        <catalog:issueKey>default</catalog:issueKey>
+        <catalog:label>Standardausgabe</catalog:label>
+        <catalog:publicationStatus>published</catalog:publicationStatus>
+        <catalog:modified>2026-11-12</catalog:modified>
+        <catalog:dataset ili:ref="53c2f2d8-e3dc-54ba-8813-7c1d1cdcd7cd" />
+        <catalog:schema ili:ref="ea5ab3e2-8260-53c2-aea4-ad1bcf6fbd32" />
+      </catalog:DatasetIssue>
+      <catalog:DatasetContact>
+        <catalog:contactPoints ili:ref="ch.so.test.contact.a" />
+        <catalog:datasets ili:ref="a36af55d-396d-507c-bab3-acb239717bb8" />
+      </catalog:DatasetContact>
+      <catalog:DataVersion ili:tid="698760fc-3052-5b39-bdf1-747efb4fb180">
+        <catalog:versionKey>one</catalog:versionKey>
+        <catalog:sequence>1</catalog:sequence>
+        <catalog:availability>available</catalog:availability>
+        <catalog:acceptedAt>2026-11-12T08:00:00.000</catalog:acceptedAt>
+        <catalog:objectCount>0</catalog:objectCount>
+        <catalog:validationStatus>success</catalog:validationStatus>
+        <catalog:issue ili:ref="c5bc014f-39c5-50db-b480-7e782bf09f60" />
+        <catalog:schema ili:ref="ea5ab3e2-8260-53c2-aea4-ad1bcf6fbd32" />
+      </catalog:DataVersion>
+      <catalog:Distribution ili:tid="7706c1f8-f0f4-5c8b-8981-2a925be1f730">
+        <catalog:format>csv</catalog:format>
+        <catalog:fileName>synthetic.csv</catalog:fileName>
+        <catalog:mediaType>text/csv</catalog:mediaType>
+        <catalog:availability>available</catalog:availability>
+        <catalog:byteSize>10</catalog:byteSize>
+        <catalog:sha256>abababababababababababababababababababababababababababababababab</catalog:sha256>
+        <catalog:objectKey>test-only/synthetic.csv</catalog:objectKey>
+        <catalog:version ili:ref="698760fc-3052-5b39-bdf1-747efb4fb180" />
+      </catalog:Distribution>
+      <catalog:DataSchema ili:tid="ea5ab3e2-8260-53c2-aea4-ad1bcf6fbd32">
+        <catalog:identifier>test-schema</catalog:identifier>
+        <catalog:kind>simple_csv</catalog:kind>
+        <catalog:modelName>DI_ExampleCsv</catalog:modelName>
+      </catalog:DataSchema>
+      <catalog:DeliveryConfiguration ili:tid="a6f8fca7-b80f-5d8b-b2e5-06cd03db0da0">
+        <catalog:enabled>true</catalog:enabled>
+        <catalog:format>csv</catalog:format>
+        <catalog:allowedModes>replace_and_append</catalog:allowedModes>
+        <catalog:dataset ili:ref="a36af55d-396d-507c-bab3-acb239717bb8" />
+      </catalog:DeliveryConfiguration>
+      <catalog:AttributeDefinition ili:tid="35039b2d-91b5-5c13-b244-fe8597dcbeb0">
+        <catalog:name>zone</catalog:name>
+        <catalog:dataType>text</catalog:dataType>
+        <catalog:ordinal>1</catalog:ordinal>
+        <catalog:mandatory>true</catalog:mandatory>
+        <catalog:maxLength>32</catalog:maxLength>
+        <catalog:schema ili:ref="ea5ab3e2-8260-53c2-aea4-ad1bcf6fbd32" />
+      </catalog:AttributeDefinition>
+      <catalog:UniqueField ili:tid="a55256df-b702-5464-9d81-56930aade6f1">
+        <catalog:ordinal>1</catalog:ordinal>
+        <catalog:uniqueDefinition ili:ref="5e99d558-7584-54a5-924a-08b7e10702aa" />
+        <catalog:attribute ili:ref="35039b2d-91b5-5c13-b244-fe8597dcbeb0" />
+      </catalog:UniqueField>
+      <catalog:AttributeDefinition ili:tid="09a106ff-cd80-50a3-9d0c-86a5f532c48e">
+        <catalog:name>code</catalog:name>
+        <catalog:dataType>text</catalog:dataType>
+        <catalog:ordinal>2</catalog:ordinal>
+        <catalog:mandatory>true</catalog:mandatory>
+        <catalog:maxLength>32</catalog:maxLength>
+        <catalog:schema ili:ref="ea5ab3e2-8260-53c2-aea4-ad1bcf6fbd32" />
+      </catalog:AttributeDefinition>
+      <catalog:UniqueField ili:tid="78d4dbc0-0bc0-57d0-be90-de3d75513c95">
+        <catalog:ordinal>2</catalog:ordinal>
+        <catalog:uniqueDefinition ili:ref="5e99d558-7584-54a5-924a-08b7e10702aa" />
+        <catalog:attribute ili:ref="09a106ff-cd80-50a3-9d0c-86a5f532c48e" />
+      </catalog:UniqueField>
+      <catalog:UniqueDefinition ili:tid="5e99d558-7584-54a5-924a-08b7e10702aa">
+        <catalog:name>ZoneCode</catalog:name>
+        <catalog:schema ili:ref="ea5ab3e2-8260-53c2-aea4-ad1bcf6fbd32" />
+      </catalog:UniqueDefinition>
+    </catalog:Catalog>
+    <access:Access ili:bid="bc29f5d7-7c5d-5177-8d1c-cfcef8e49e5b">
+      <access:Principal ili:tid="aca067cc-6587-5a58-b98f-01d980f6021e">
+        <access:kind>user</access:kind>
+        <access:issuer>https://id.test.example</access:issuer>
+        <access:subject>anna</access:subject>
+        <access:displayName>Anna</access:displayName>
+        <access:active>true</access:active>
+        <access:provisionedAt>2026-11-12T08:00:00.000</access:provisionedAt>
+      </access:Principal>
+      <access:Principal ili:tid="98ea50b1-eb3f-5dd0-82d8-e1c5a6be0889">
+        <access:kind>user</access:kind>
+        <access:issuer>https://id.test.example</access:issuer>
+        <access:subject>claudia</access:subject>
+        <access:displayName>Claudia</access:displayName>
+        <access:active>true</access:active>
+        <access:provisionedAt>2026-11-12T08:00:00.000</access:provisionedAt>
+      </access:Principal>
+      <access:Principal ili:tid="08afbc67-c518-5f3e-adfd-99aead0f3029">
+        <access:kind>group</access:kind>
+        <access:issuer>https://id.test.example</access:issuer>
+        <access:subject>team</access:subject>
+        <access:displayName>Team</access:displayName>
+        <access:active>true</access:active>
+        <access:provisionedAt>2026-11-12T08:00:00.000</access:provisionedAt>
+      </access:Principal>
+      <access:Principal ili:tid="1dce0b8c-feb5-56db-994a-d1de03e4e768">
+        <access:kind>service</access:kind>
+        <access:issuer>https://id.test.example</access:issuer>
+        <access:subject>gretl</access:subject>
+        <access:displayName>Gretl</access:displayName>
+        <access:active>true</access:active>
+        <access:provisionedAt>2026-11-12T08:00:00.000</access:provisionedAt>
+      </access:Principal>
+      <access:GroupMembership ili:tid="bab41bc0-91f1-54c7-aa5a-994221a6d49e">
+        <access:validFrom>2026-11-12T08:00:00.000</access:validFrom>
+        <access:reason>Testmitgliedschaft</access:reason>
+        <access:group ili:ref="08afbc67-c518-5f3e-adfd-99aead0f3029" />
+        <access:member ili:ref="aca067cc-6587-5a58-b98f-01d980f6021e" />
+      </access:GroupMembership>
+      <access:AuthorityAssignment ili:tid="888249a9-c5eb-5ad2-910b-f4ae455f11d2">
+        <access:capability>manage_metadata</access:capability>
+        <access:validFrom>2026-11-12T08:00:00.000</access:validFrom>
+        <access:reason>Testrecht</access:reason>
+        <access:principal ili:ref="aca067cc-6587-5a58-b98f-01d980f6021e" />
+        <access:assignedBy ili:ref="98ea50b1-eb3f-5dd0-82d8-e1c5a6be0889" />
+        <access:office ili:ref="ch.so.test.office.long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-a" ili:bid="e647eda9-902a-5361-af68-290e51850ec6" />
+      </access:AuthorityAssignment>
+      <access:AuthorityAssignment ili:tid="0756fba0-e413-54c6-a48e-5a0d821628be">
+        <access:capability>publish</access:capability>
+        <access:validFrom>2026-11-12T08:00:00.000</access:validFrom>
+        <access:reason>Testrecht</access:reason>
+        <access:principal ili:ref="aca067cc-6587-5a58-b98f-01d980f6021e" />
+        <access:assignedBy ili:ref="98ea50b1-eb3f-5dd0-82d8-e1c5a6be0889" />
+        <access:dataset ili:ref="a36af55d-396d-507c-bab3-acb239717bb8" ili:bid="64ec07ae-950b-50b7-ac69-88380a95c810" />
+      </access:AuthorityAssignment>
+      <access:AuthorityAssignment ili:tid="773684af-607f-5dd1-bdba-0c68e9249178">
+        <access:capability>manage_access</access:capability>
+        <access:validFrom>2026-11-12T08:00:00.000</access:validFrom>
+        <access:reason>Testrecht</access:reason>
+        <access:principal ili:ref="aca067cc-6587-5a58-b98f-01d980f6021e" />
+        <access:assignedBy ili:ref="98ea50b1-eb3f-5dd0-82d8-e1c5a6be0889" />
+        <access:dataset ili:ref="a36af55d-396d-507c-bab3-acb239717bb8" ili:bid="64ec07ae-950b-50b7-ac69-88380a95c810" />
+      </access:AuthorityAssignment>
+      <access:AuthorityAssignment ili:tid="41c2f22f-7c11-5d81-9cbd-09df9878605d">
+        <access:capability>manage_submitters</access:capability>
+        <access:validFrom>2026-11-12T08:00:00.000</access:validFrom>
+        <access:reason>Testrecht</access:reason>
+        <access:principal ili:ref="aca067cc-6587-5a58-b98f-01d980f6021e" />
+        <access:assignedBy ili:ref="98ea50b1-eb3f-5dd0-82d8-e1c5a6be0889" />
+        <access:dataset ili:ref="a36af55d-396d-507c-bab3-acb239717bb8" ili:bid="64ec07ae-950b-50b7-ac69-88380a95c810" />
+      </access:AuthorityAssignment>
+      <access:AuthorityAssignment ili:tid="e5c51882-5831-55e5-9693-02be04733cee">
+        <access:capability>submit_data</access:capability>
+        <access:validFrom>2026-11-12T08:00:00.000</access:validFrom>
+        <access:reason>Testrecht</access:reason>
+        <access:principal ili:ref="aca067cc-6587-5a58-b98f-01d980f6021e" />
+        <access:assignedBy ili:ref="98ea50b1-eb3f-5dd0-82d8-e1c5a6be0889" />
+        <access:dataset ili:ref="a36af55d-396d-507c-bab3-acb239717bb8" ili:bid="64ec07ae-950b-50b7-ac69-88380a95c810" />
+      </access:AuthorityAssignment>
+      <access:AccessRequest ili:tid="7a610c81-9990-5b4f-b63b-f6ac1979dec2">
+        <access:reason>Testantrag</access:reason>
+        <access:requestedAt>2026-11-12T08:00:00.000</access:requestedAt>
+        <access:status>approved</access:status>
+        <access:applicant ili:ref="aca067cc-6587-5a58-b98f-01d980f6021e" />
+        <access:dataset ili:ref="53c2f2d8-e3dc-54ba-8813-7c1d1cdcd7cd" ili:bid="64ec07ae-950b-50b7-ac69-88380a95c810" />
+      </access:AccessRequest>
+      <access:AccessDecision ili:tid="041b96dc-74a5-557d-beb0-cad77bb674fa">
+        <access:kind>approve</access:kind>
+        <access:decidedAt>2026-11-12T08:00:00.000</access:decidedAt>
+        <access:reason>Testentscheidung</access:reason>
+        <access:commandId>1d88fbf9-d5bc-5366-89cc-7426587c1d30</access:commandId>
+        <access:actor ili:ref="98ea50b1-eb3f-5dd0-82d8-e1c5a6be0889" />
+        <access:beneficiary ili:ref="aca067cc-6587-5a58-b98f-01d980f6021e" />
+        <access:request ili:ref="7a610c81-9990-5b4f-b63b-f6ac1979dec2" />
+        <access:dataset ili:ref="53c2f2d8-e3dc-54ba-8813-7c1d1cdcd7cd" ili:bid="64ec07ae-950b-50b7-ac69-88380a95c810" />
+      </access:AccessDecision>
+      <access:AccessGrant ili:tid="fe217685-7fdb-5153-9811-de500c845d35">
+        <access:permission>read_data</access:permission>
+        <access:validFrom>2026-11-12T08:00:00.000</access:validFrom>
+        <access:beneficiary ili:ref="aca067cc-6587-5a58-b98f-01d980f6021e" />
+        <access:grantingDecision ili:ref="041b96dc-74a5-557d-beb0-cad77bb674fa" />
+        <access:dataset ili:ref="53c2f2d8-e3dc-54ba-8813-7c1d1cdcd7cd" ili:bid="64ec07ae-950b-50b7-ac69-88380a95c810" />
+      </access:AccessGrant>
+      <access:CatalogAction ili:tid="e17cc955-d66e-554f-8848-72fc0d2185b5">
+        <access:performedAt>2026-11-12T08:00:00.000</access:performedAt>
+        <access:actionCode>publish</access:actionCode>
+        <access:reason>Testpublikation</access:reason>
+        <access:commandId>2e87280b-369f-5486-94ec-6d550da257d3</access:commandId>
+        <access:actor ili:ref="98ea50b1-eb3f-5dd0-82d8-e1c5a6be0889" />
+        <access:dataset ili:ref="a36af55d-396d-507c-bab3-acb239717bb8" ili:bid="64ec07ae-950b-50b7-ac69-88380a95c810" />
+      </access:CatalogAction>
+    </access:Access>
+    <delivery:Delivery ili:bid="d330e966-81a9-5d6f-848b-3ce927383fc3">
+      <delivery:Submission ili:tid="33efe1cf-3701-578c-9ef3-baa6df41dde6">
+        <delivery:createdAt>2026-11-12T08:00:00.000</delivery:createdAt>
+        <delivery:mode>replace</delivery:mode>
+        <delivery:status>pending</delivery:status>
+        <delivery:submittedBy ili:ref="aca067cc-6587-5a58-b98f-01d980f6021e" ili:bid="bc29f5d7-7c5d-5177-8d1c-cfcef8e49e5b" />
+        <delivery:dataset ili:ref="a36af55d-396d-507c-bab3-acb239717bb8" ili:bid="64ec07ae-950b-50b7-ac69-88380a95c810" />
+        <delivery:issue ili:ref="c5bc014f-39c5-50db-b480-7e782bf09f60" ili:bid="64ec07ae-950b-50b7-ac69-88380a95c810" />
+      </delivery:Submission>
+      <delivery:Submission ili:tid="bedf74e2-8629-57d6-ae76-a14f420fe134">
+        <delivery:createdAt>2026-11-12T08:00:00.000</delivery:createdAt>
+        <delivery:startedAt>2026-11-12T08:00:00.000</delivery:startedAt>
+        <delivery:completedAt>2026-11-12T08:00:00.000</delivery:completedAt>
+        <delivery:mode>replace</delivery:mode>
+        <delivery:status>accepted</delivery:status>
+        <delivery:originalFileName>synthetic.csv</delivery:originalFileName>
+        <delivery:inputSha256>abababababababababababababababababababababababababababababababab</delivery:inputSha256>
+        <delivery:inputSize>10</delivery:inputSize>
+        <delivery:submittedBy ili:ref="aca067cc-6587-5a58-b98f-01d980f6021e" ili:bid="bc29f5d7-7c5d-5177-8d1c-cfcef8e49e5b" />
+        <delivery:dataset ili:ref="a36af55d-396d-507c-bab3-acb239717bb8" ili:bid="64ec07ae-950b-50b7-ac69-88380a95c810" />
+        <delivery:issue ili:ref="c5bc014f-39c5-50db-b480-7e782bf09f60" ili:bid="64ec07ae-950b-50b7-ac69-88380a95c810" />
+        <delivery:schema ili:ref="ea5ab3e2-8260-53c2-aea4-ad1bcf6fbd32" ili:bid="64ec07ae-950b-50b7-ac69-88380a95c810" />
+        <delivery:acceptedVersion ili:ref="698760fc-3052-5b39-bdf1-747efb4fb180" ili:bid="64ec07ae-950b-50b7-ac69-88380a95c810" />
+      </delivery:Submission>
+    </delivery:Delivery>
+  </ili:datasection>
+</ili:transfer>

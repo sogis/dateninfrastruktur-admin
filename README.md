@@ -12,7 +12,8 @@ Runtimeordner des Stack.
 
 ```sh
 ./gradlew test
-python3 scripts/test_models.py
+python3 scripts/test_models.py management
+python3 scripts/test_models.py csv
 ```
 
 Der Stack stellt die isolierten Integrationsprüfungen für Lieferrechte,
