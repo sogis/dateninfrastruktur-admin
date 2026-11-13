@@ -6,6 +6,7 @@ import ch.so.agi.dateninfrastruktur.admin.model.*;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -20,8 +21,7 @@ public final class CsvSchemaModel {
     public static String render(Dataschema schema) {
         String name = identifier(schema.getModelname());
         if (!"simple_csv".equals(schema.getAkind())) throw invalid();
-        var attributes = schema.getAttributedefinitions().stream()
-            .sorted(Comparator.comparingInt(Attributedefinition::getOrdinal)).toList();
+        var attributes = orderedAttributes(schema);
         if (attributes.isEmpty()) throw invalid();
         var identifiers = new HashSet<String>();
         var positions = new HashSet<Integer>();
@@ -54,6 +54,11 @@ public final class CsvSchemaModel {
                 .append(minimum).append(";\n");
         }
         return source.append("    END Row;\n  END Snapshot;\nEND ").append(name).append(".\n").toString();
+    }
+
+    static List<Attributedefinition> orderedAttributes(Dataschema schema) {
+        return schema.getAttributedefinitions().stream()
+            .sorted(Comparator.comparingInt(Attributedefinition::getOrdinal)).toList();
     }
 
     private static String type(Attributedefinition attribute) {
