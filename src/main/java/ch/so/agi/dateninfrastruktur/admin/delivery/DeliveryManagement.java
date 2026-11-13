@@ -1,7 +1,7 @@
 package ch.so.agi.dateninfrastruktur.admin.delivery;
 
 import ch.so.agi.dateninfrastruktur.admin.access.*;
-import ch.so.agi.dateninfrastruktur.admin.audit.ActorContext;
+import ch.so.agi.dateninfrastruktur.admin.identity.ActorContext;
 import ch.so.agi.dateninfrastruktur.admin.model.*;
 import ch.so.agi.dateninfrastruktur.admin.persistence.*;
 import org.apache.cayenne.query.ObjectSelect;

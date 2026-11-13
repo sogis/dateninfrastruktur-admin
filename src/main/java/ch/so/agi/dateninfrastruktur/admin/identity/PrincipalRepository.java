@@ -3,7 +3,6 @@ import java.util.Map;
 import java.util.UUID;
 import org.apache.cayenne.ObjectContext;
 import org.apache.cayenne.query.ObjectSelect;
-import ch.so.agi.dateninfrastruktur.admin.audit.*;
 import ch.so.agi.dateninfrastruktur.admin.model.Principal;
 import ch.so.agi.dateninfrastruktur.admin.persistence.CayenneSql;
 import ch.so.agi.dateninfrastruktur.admin.persistence.ManagementBaskets;

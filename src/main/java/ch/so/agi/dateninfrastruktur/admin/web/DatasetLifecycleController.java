@@ -9,7 +9,7 @@ import ch.so.agi.dateninfrastruktur.admin.access.AuthorityService;
 import ch.so.agi.dateninfrastruktur.admin.access.BusinessException;
 import ch.so.agi.dateninfrastruktur.admin.access.ManagementQueryService;
 import ch.so.agi.dateninfrastruktur.admin.access.ManagementQueryService.DatasetDetail;
-import ch.so.agi.dateninfrastruktur.admin.audit.ActorContext;
+import ch.so.agi.dateninfrastruktur.admin.identity.ActorContext;
 import ch.so.agi.dateninfrastruktur.admin.catalog.CatalogCommandService;
 import ch.so.agi.dateninfrastruktur.admin.security.VerifiedActorResolver;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

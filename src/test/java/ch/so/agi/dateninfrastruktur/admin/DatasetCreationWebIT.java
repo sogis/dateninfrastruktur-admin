@@ -17,7 +17,7 @@ import java.util.UUID;
 import ch.so.agi.dateninfrastruktur.admin.access.AccessWorkflowService;
 import ch.so.agi.dateninfrastruktur.admin.access.AuthorityService;
 import ch.so.agi.dateninfrastruktur.admin.access.ManagementQueryService;
-import ch.so.agi.dateninfrastruktur.admin.audit.ActorContext;
+import ch.so.agi.dateninfrastruktur.admin.identity.ActorContext;
 import ch.so.agi.dateninfrastruktur.admin.catalog.CatalogCommandService;
 import ch.so.agi.dateninfrastruktur.admin.model.Authorityassignment;
 import ch.so.agi.dateninfrastruktur.admin.model.Office;

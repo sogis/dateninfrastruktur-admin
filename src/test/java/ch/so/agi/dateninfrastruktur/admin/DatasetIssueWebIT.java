@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import ch.so.agi.dateninfrastruktur.admin.audit.ActorContext;
+import ch.so.agi.dateninfrastruktur.admin.identity.ActorContext;
 import ch.so.agi.dateninfrastruktur.admin.catalog.CatalogCommandService.Create;
 import ch.so.agi.dateninfrastruktur.admin.catalog.DatasetIssueService;
 import ch.so.agi.dateninfrastruktur.admin.model.Authorityassignment;

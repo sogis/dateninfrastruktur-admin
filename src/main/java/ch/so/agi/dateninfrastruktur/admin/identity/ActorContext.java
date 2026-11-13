@@ -1,4 +1,4 @@
-package ch.so.agi.dateninfrastruktur.admin.audit;
+package ch.so.agi.dateninfrastruktur.admin.identity;
 import java.util.Objects;
 import java.util.UUID;
 /** Construct from verified identity only; never bind this record from request parameters. */

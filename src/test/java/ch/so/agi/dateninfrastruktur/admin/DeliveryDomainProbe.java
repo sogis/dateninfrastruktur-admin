@@ -1,7 +1,7 @@
 package ch.so.agi.dateninfrastruktur.admin;
 
 import ch.so.agi.dateninfrastruktur.admin.access.*;
-import ch.so.agi.dateninfrastruktur.admin.audit.ActorContext;
+import ch.so.agi.dateninfrastruktur.admin.identity.ActorContext;
 import ch.so.agi.dateninfrastruktur.admin.delivery.CandidateFiles;
 import ch.so.agi.dateninfrastruktur.admin.delivery.DeliveryService;
 import ch.so.agi.dateninfrastruktur.admin.persistence.ManagementRuntime;

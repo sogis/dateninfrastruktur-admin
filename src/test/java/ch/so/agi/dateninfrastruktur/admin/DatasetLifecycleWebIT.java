@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import ch.so.agi.dateninfrastruktur.admin.audit.ActorContext;
+import ch.so.agi.dateninfrastruktur.admin.identity.ActorContext;
 import ch.so.agi.dateninfrastruktur.admin.model.Authorityassignment;
 import ch.so.agi.dateninfrastruktur.admin.model.Dataset;
 import ch.so.agi.dateninfrastruktur.admin.model.Principal;

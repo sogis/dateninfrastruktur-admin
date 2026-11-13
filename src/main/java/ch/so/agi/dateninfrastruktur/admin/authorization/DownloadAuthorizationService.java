@@ -1,6 +1,6 @@
 package ch.so.agi.dateninfrastruktur.admin.authorization;
 import java.util.Optional;
-import ch.so.agi.dateninfrastruktur.admin.audit.ActorContext;
+import ch.so.agi.dateninfrastruktur.admin.identity.ActorContext;
 public final class DownloadAuthorizationService {
     private final JdbcAuthorizationRepository repository;
     public DownloadAuthorizationService(JdbcAuthorizationRepository repository){this.repository=repository;}

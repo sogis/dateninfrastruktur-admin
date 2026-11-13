@@ -8,7 +8,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ch.so.agi.dateninfrastruktur.admin.access.*;
-import ch.so.agi.dateninfrastruktur.admin.audit.*;
+import ch.so.agi.dateninfrastruktur.admin.command.CommandContext;
+import ch.so.agi.dateninfrastruktur.admin.identity.ActorContext;
 import ch.so.agi.dateninfrastruktur.admin.security.*;
 import ch.so.agi.dateninfrastruktur.admin.web.UiPage.*;
 

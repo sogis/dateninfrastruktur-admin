@@ -1,4 +1,4 @@
-package ch.so.agi.dateninfrastruktur.admin.audit;
+package ch.so.agi.dateninfrastruktur.admin.command;
 import java.util.Objects;
 import java.util.UUID;
 public record CommandContext(UUID commandId, UUID requestId, String actionCode, String reason) {
