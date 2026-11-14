@@ -19,6 +19,7 @@ import ch.so.agi.dateninfrastruktur.admin.access.ManagementQueryService.DatasetR
 import ch.so.agi.dateninfrastruktur.admin.identity.ActorContext;
 import ch.so.agi.dateninfrastruktur.admin.command.CommandContext;
 import ch.so.agi.dateninfrastruktur.admin.catalog.CatalogCommandService;
+import ch.so.agi.dateninfrastruktur.admin.model.Office;
 import ch.so.agi.dateninfrastruktur.admin.security.RequestCorrelationFilter;
 import ch.so.agi.dateninfrastruktur.admin.security.VerifiedActorResolver;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -88,7 +89,7 @@ public final class DatasetController {
         var actor = new VerifiedActorResolver().resolve(authentication);
         var errors = new LinkedHashMap<String, String>();
         var command = parseUuid(commandId);
-        String office = ownerOffice.isBlank() || ownerOffice.length() > 1024 ? null : ownerOffice;
+        String office = ownerOffice.isBlank() || ownerOffice.codePointCount(0, ownerOffice.length()) > Office.MAX_TID_LENGTH ? null : ownerOffice;
         String selectedOffice = office == null ? ownerOffice : office.toString();
         if (office == null) {
             errors.put("ownerOffice", "Wählen Sie ein zuständiges Amt aus.");

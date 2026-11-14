@@ -73,6 +73,13 @@ def verify():
            AND to_regclass('di_api_public.datasets') IS NOT NULL;
     """) != 't':
         raise RuntimeError('Management schema lacks required tables or public views')
+    if sql("""
+        SELECT count(*) FROM information_schema.columns
+        WHERE table_schema = 'di_management'
+          AND table_name IN ('office', 'contactpoint') AND column_name = 't_ili_tid'
+          AND data_type = 'character varying' AND character_maximum_length = 200;
+    """) != '2':
+        raise RuntimeError('Management schema requires varchar(200) TIDs for Office and ContactPoint')
     print('Management models and schemas verified read-only')
 
 

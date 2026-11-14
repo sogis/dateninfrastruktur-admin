@@ -1,8 +1,3 @@
--- ili2pg 5.5.2 generates varchar(200) for textual object TIDs, independently
--- of DCOID's declared TEXT*1024. Preserve the full domain at import/export.
-ALTER TABLE di_management.office ALTER COLUMN t_ili_tid TYPE varchar(1024);
-ALTER TABLE di_management.contactpoint ALTER COLUMN t_ili_tid TYPE varchar(1024);
-
 -- ili2pg does not mark object TIDs NOT NULL or UNIQUE. Structure and
 -- association rows have no object TID and are deliberately excluded.
 ALTER TABLE di_management.office ALTER COLUMN t_ili_tid SET NOT NULL, ADD UNIQUE (t_ili_tid);

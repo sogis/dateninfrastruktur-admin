@@ -21,7 +21,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /** Executed only by the owned Compose mapping fixture. */
 public final class CayenneMappingProbe {
-    private static final String OFFICE = "ch.so.test.cayenne." + "long-office-identity-".repeat(14);
+    private static final String OFFICE_PREFIX = "ch.so.test.cayenne.";
+    private static final String OFFICE = OFFICE_PREFIX + "x".repeat(200 - OFFICE_PREFIX.length());
     private static final UUID PRINCIPAL = UUID.fromString("31a3ed65-194e-42a6-994f-4d137ea113a1");
     private static final UUID DATASET = UUID.fromString("43d011ed-0615-4678-ad95-a2bb3ceec8ca");
     private static final UUID ISSUE = UUID.fromString("e76580b3-7f50-4e7f-b582-28499da3df45");
@@ -40,6 +41,13 @@ public final class CayenneMappingProbe {
                 "di.management.writer.password", System.getenv("DI_TEST_WRITER_PASSWORD"))));
             ConfigurationPropertiesBindingPostProcessor.register(spring);
             spring.register(ManagementConfiguration.class);
+            if ("legacy-width".equals(args[0])) {
+                var failure = assertThrows(RuntimeException.class, spring::refresh);
+                assertTrue(hasCause(failure, "Management schema requires varchar(200) TIDs for Office and ContactPoint"),
+                    failure::toString);
+                System.out.println("CAYENNE_LEGACY_WIDTH_REJECTED=PASS");
+                return;
+            }
             spring.refresh();
             var runtime = spring.getBean(CayenneRuntime.class);
             assertEquals("UP", spring.getBean(ManagementSchemaHealth.class).health().getStatus().getCode());
@@ -89,7 +97,7 @@ public final class CayenneMappingProbe {
         var context = runtime.newContext();
         var dataset = ObjectSelect.query(Dataset.class).where(Dataset.IDENTIFIER.eq("test-open")).selectOne(context);
         assertNotNull(dataset);
-        assertTrue(dataset.getOwneroffice1().getTIliTid().length() > 255);
+        assertEquals(200, dataset.getOwneroffice1().getTIliTid().length());
         assertInstanceOf(UUID.class, dataset.getTIliTid());
         assertEquals(2, dataset.getThemeentries().size());
         assertEquals(2, dataset.getKeywordentries().size());
@@ -111,6 +119,7 @@ public final class CayenneMappingProbe {
 
         var principal = context.newObject(Principal.class);
         setPrincipal(principal, ManagementBaskets.require(context, Access), "cayenne-user");
+        context.commitChanges();
 
         var dataset = context.newObject(Dataset.class);
         dataset.setTIliTid(DATASET);
@@ -124,6 +133,7 @@ public final class CayenneMappingProbe {
         dataset.setModified(TODAY);
         dataset.setOwneroffice1(office);
         dataset.setPublisheroffice1(office);
+        context.commitChanges();
 
         var issue = context.newObject(Datasetissue.class);
         issue.setTIliTid(ISSUE);
@@ -133,6 +143,7 @@ public final class CayenneMappingProbe {
         issue.setPublicationstatus("draft");
         issue.setModified(TODAY);
         issue.setDataset1(dataset);
+        context.commitChanges();
 
         var submission = context.newObject(Submission.class);
         submission.setTIliTid(SUBMISSION);

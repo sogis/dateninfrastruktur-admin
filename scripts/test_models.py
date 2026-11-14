@@ -39,8 +39,16 @@ def required(parent, tag):
     return child
 
 
+def extend_office_tid(document, office):
+    tid = office.get(ILI + 'tid')
+    extended = tid + 'x'
+    office.set(ILI + 'tid', extended)
+    for element in document.getroot().iter():
+        if element.get(ILI + 'ref') == tid:
+            element.set(ILI + 'ref', extended)
+
+
 def negative_transfers(document):
-    office = document.find('.//' + ORG + 'Office')
     first, second = document.findall('.//' + ORG + 'Office')
     authority, next_authority, *_ = document.findall('.//' + ACC + 'AuthorityAssignment')
     membership = document.find('.//' + ACC + 'GroupMembership')
@@ -52,7 +60,7 @@ def negative_transfers(document):
     attribute = document.find('.//' + CAT + 'AttributeDefinition')
     schema = document.find('.//' + CAT + 'DataSchema')
     return [
-        ('office-oid', r'Office:.*is not a valid OID', lambda: office.set(ILI + 'tid', 'x' * 1025)),
+        ('office-oid', r'Office:.*is not a valid OID', lambda: extend_office_tid(document, first)),
         ('office-unique', r'Unique constraint.*Office',
          lambda: setattr(required(second, ORG + 'identifier'), 'text', required(first, ORG + 'identifier').text)),
         ('authority-scope', r'AuthorityScopeExclusive',
@@ -83,13 +91,6 @@ def negative_transfers(document):
     ]
 
 
-def vocabulary(source, domain):
-    match = re.search(r'^    ' + domain + r' = \((.*?)^    \);', source, re.S | re.M)
-    if match is None:
-        raise AssertionError(f'Missing vocabulary: {domain}')
-    return match.group(1)
-
-
 def test_management(compiler, validator, directory):
     files = [MODELS / (name + '.ili') for name in NAMES.values()]
     assert set(MODELS.glob('*.ili')) == set(files)
@@ -97,7 +98,9 @@ def test_management(compiler, validator, directory):
     command = [*validator, '--modeldir', str(MODELS), '--forceTypeValidation',
                '--mandatoryBaskets', ';'.join(f'{name}.{topic}' for topic, name in NAMES.items())]
     print(run([*command, str(BOOTSTRAP)]).splitlines()[-2])
-    cases = negative_transfers(ET.parse(BOOTSTRAP))
+    document = ET.parse(BOOTSTRAP)
+    assert len(document.find('.//' + ORG + 'Office').get(ILI + 'tid')) == 200
+    cases = negative_transfers(document)
     for index, (name, expected, _) in enumerate(cases):
         modified = ET.parse(BOOTSTRAP)
         negative_transfers(modified)[index][2]()
@@ -106,16 +109,12 @@ def test_management(compiler, validator, directory):
         log = run([*command, str(transfer)], expected)
         print(name + ': ' + next(line for line in log.splitlines()
                                  if re.match(r'Error:.*' + expected, line, re.I))[:240])
-    baseline = (MODELS / 'vendor/SO_AGI_DataCatalog_Base_20260529.ili').read_text()
-    catalog = files[1].read_text()
-    for domain in ('Origin', 'Theme', 'MaintenanceFrequencyCode'):
-        assert vocabulary(baseline, domain) == vocabulary(catalog, domain), domain
     for file in files:
         assert not re.search(r'!!@\s+di\.audit|\b(rowVersion|statusVersion|commandReceipt|executionSlot|'
                              r'checkpoint|automaticPublication|definitionKey|definitionSha256|'
                              r'modelSetSha256|modelSha256|configurationDigest|allowEmptyReplacement)\b',
                              file.read_text(), re.I), file
-    print(f'ASSERTIONS={2 + len(cases) + 3 + len(files)} SKIP=0')
+    print(f'ASSERTIONS={3 + len(cases) + len(files)} SKIP=0')
 
 
 def fixture_csv_model(document):

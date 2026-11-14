@@ -104,7 +104,7 @@
 		<db-attribute name="phone" type="VARCHAR" length="64" />
 		<db-attribute name="t_basket" type="BIGINT" isMandatory="true" length="19" />
 		<db-attribute name="t_id" type="BIGINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="19" />
-		<db-attribute name="t_ili_tid" type="VARCHAR" isMandatory="true" length="1024" />
+		<db-attribute name="t_ili_tid" type="VARCHAR" isMandatory="true" length="200" />
 		<db-attribute name="unit" type="VARCHAR" length="255" />
 		<db-attribute name="url" type="VARCHAR" length="1023" />
 	</db-entity>
@@ -236,7 +236,7 @@
 		<db-attribute name="phone" type="VARCHAR" length="64" />
 		<db-attribute name="t_basket" type="BIGINT" isMandatory="true" length="19" />
 		<db-attribute name="t_id" type="BIGINT" isPrimaryKey="true" isGenerated="true" isMandatory="true" length="19" />
-		<db-attribute name="t_ili_tid" type="VARCHAR" isMandatory="true" length="1024" />
+		<db-attribute name="t_ili_tid" type="VARCHAR" isMandatory="true" length="200" />
 		<db-attribute name="website" type="VARCHAR" length="1023" />
 	</db-entity>
 	<db-entity name="principal" schema="di_management">

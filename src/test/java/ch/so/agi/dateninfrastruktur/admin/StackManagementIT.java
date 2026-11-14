@@ -28,13 +28,25 @@ class StackManagementIT {
             assertTrue(context.cookies().stream().anyMatch(cookie ->
                     cookie.name.equals("di_management_session") && cookie.httpOnly));
             var create = form(page, DATASETS);
-            assertTrue(create.locator("[name=ownerOffice]").inputValue().length() > 255);
+            var ownerOffice = create.locator("[name=ownerOffice]");
+            String officeTid = ownerOffice.inputValue();
+            assertEquals(200, officeTid.length());
             create.locator("[name=identifier]").fill("s1f-browser");
             create.locator("[name=kind]").selectOption("standalone");
             create.locator("[name=title]").fill("S1 Browserangebot");
             create.locator("[name=description]").fill("Synthetischer Browser-Datensatz");
             create.locator("[name=contactName]").fill("Browserkontakt");
             create.locator("[name=contactEmail]").fill("kontakt@example.invalid");
+            ownerOffice.evaluate("""
+                (field, tid) => {
+                    if (field instanceof HTMLSelectElement) field.add(new Option(tid, tid));
+                    field.value = tid;
+                }
+                """, officeTid + "x");
+            post(page, create, 400);
+            assertTrue(page.locator("#ownerOffice-error").isVisible());
+            create = form(page, DATASETS);
+            create.locator("[name=ownerOffice]").evaluate("(field, tid) => field.value = tid", officeTid);
             post(page, create, 303);
             page.waitForURL("**/management/datasets/*?created=true");
             String detail = URI.create(page.url()).getPath();

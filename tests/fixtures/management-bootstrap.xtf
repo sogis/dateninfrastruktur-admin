@@ -11,7 +11,7 @@
   </ili:headersection>
   <ili:datasection>
     <organization:Organization ili:bid="e647eda9-902a-5361-af68-290e51850ec6">
-      <organization:Office ili:tid="ch.so.test.office.long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-a">
+      <organization:Office ili:tid="ch.so.test.office.long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-a">
         <organization:identifier>office-a</organization:identifier>
         <organization:name>Testamt A</organization:name>
         <organization:abbreviation>A</organization:abbreviation>
@@ -38,8 +38,8 @@
         <catalog:publicationStatus>published</catalog:publicationStatus>
         <catalog:origin>cantonal</catalog:origin>
         <catalog:modified>2026-11-12</catalog:modified>
-        <catalog:ownerOffice ili:ref="ch.so.test.office.long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-a" ili:bid="e647eda9-902a-5361-af68-290e51850ec6" />
-        <catalog:publisherOffice ili:ref="ch.so.test.office.long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-a" ili:bid="e647eda9-902a-5361-af68-290e51850ec6" />
+        <catalog:ownerOffice ili:ref="ch.so.test.office.long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-a" ili:bid="e647eda9-902a-5361-af68-290e51850ec6" />
+        <catalog:publisherOffice ili:ref="ch.so.test.office.long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-a" ili:bid="e647eda9-902a-5361-af68-290e51850ec6" />
         <catalog:themes>
           <catalog:ThemeEntry>
             <catalog:code>Geografie</catalog:code>
@@ -197,7 +197,7 @@
         <access:reason>Testrecht</access:reason>
         <access:principal ili:ref="aca067cc-6587-5a58-b98f-01d980f6021e" />
         <access:assignedBy ili:ref="98ea50b1-eb3f-5dd0-82d8-e1c5a6be0889" />
-        <access:office ili:ref="ch.so.test.office.long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-a" ili:bid="e647eda9-902a-5361-af68-290e51850ec6" />
+        <access:office ili:ref="ch.so.test.office.long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-identity-long-text-a" ili:bid="e647eda9-902a-5361-af68-290e51850ec6" />
       </access:AuthorityAssignment>
       <access:AuthorityAssignment ili:tid="0756fba0-e413-54c6-a48e-5a0d821628be">
         <access:capability>publish</access:capability>

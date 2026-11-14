@@ -16,7 +16,7 @@ import java.util.UUID;
 public final class SubmitterAdministrationService {
     public record Scope(String officeId, UUID datasetId) {
         public Scope {
-            if ((officeId == null) == (datasetId == null) || (officeId != null && (officeId.isBlank() || officeId.length() > 1024))) {
+            if ((officeId == null) == (datasetId == null) || (officeId != null && (officeId.isBlank() || officeId.codePointCount(0, officeId.length()) > Office.MAX_TID_LENGTH))) {
                 throw BusinessException.invalid("Genau einen gültigen Geltungsbereich angeben.");
             }
         }
