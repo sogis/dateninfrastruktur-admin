@@ -14,7 +14,11 @@ public final class ManagementDatabase {
                AND NOT has_schema_privilege(current_user, 'di_management', 'CREATE')
                AND NOT has_table_privilege(current_user, 'di_management.dataset', 'TRUNCATE')
                AND to_regclass('di_management.t_ili2db_basket') IS NOT NULL
-               AND to_regclass('di_management.submission') IS NOT NULL
+               AND to_regclass('di_management.submission') IS NOT NULL,
+               (SELECT count(*) = 2 FROM information_schema.columns
+                WHERE table_schema = 'di_management'
+                  AND table_name IN ('office', 'contactpoint') AND column_name = 't_ili_tid'
+                  AND data_type = 'character varying' AND character_maximum_length = 200)
             FROM pg_roles WHERE rolname = current_user
             """;
         try (var connection = source.getConnection()) {
@@ -22,6 +26,9 @@ public final class ManagementDatabase {
             try (var statement = connection.createStatement(); var result = statement.executeQuery(sql)) {
                 if (!result.next() || !result.getBoolean(1)) {
                     throw new IllegalStateException("Management requires the restricted writer and the installed schema");
+                }
+                if (!result.getBoolean(2)) {
+                    throw new IllegalStateException("Management schema requires varchar(200) TIDs for Office and ContactPoint");
                 }
             }
         } catch (SQLException error) {

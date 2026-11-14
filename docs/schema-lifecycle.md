@@ -4,8 +4,8 @@ Das explizite Compose-Setup legt auf einer leeren Management-Datenbank
 `di_management` mit den vier Managementmodellen `20261112` an. Das
 Werkzeugimage verwendet die in `db/toolchain.json` gepinnten Werkzeuge.
 Ein ili2pg-Schemaimport legt Fach- und Basket-Tabellen an. Sein
-[`--postScript`](../sql/public_views.sql) korrigiert die Text-TID-Breite,
-erzwingt Pflicht und Eindeutigkeit von Objekt-TIDs und erstellt die
+[`--postScript`](../sql/public_views.sql) erzwingt Pflicht und Eindeutigkeit
+von Objekt-TIDs und erstellt die
 read-only Sichten in `di_api_public`. Der PostgreSQL-Treiber von ili2pg
 5.5.2 fragt beim Start PostGIS ab. `--setupPgExt` installiert die
 benötigten Erweiterungen für diese neue Datenbank.
@@ -16,9 +16,11 @@ Datei verfügbar sowie Prüfsumme und Grösse vorhanden sind. Der gespeicherte
 private Key muss zum Pfad `downloads/<distribution-tid>/<dateiname>`
 passen. APISIX holt die Freigabe für jeden Abruf beim Admin ein.
 
-Wiederholtes Setup prüft den vorhandenen Stand lesend. Fremde,
-unvollständige und frühere Managementschemas werden abgewiesen.
-Die normalen Dienste installieren oder migrieren keine Tabellen.
+Setup und Admin-Start prüfen die vorhandenen Text-TID-Spalten für Office
+und ContactPoint lesend. Beide müssen `varchar(200)` sein. Das Setup
+weist auch fremde, unvollständige und frühere Managementschemas ab.
+Diese Schemafassung ist für neue Instanzen vorgesehen. Eine bestehende
+Instanz mit `varchar(1024)` braucht eine separat geplante Datenübernahme.
 
 Für einen neuen, ausdrücklich gewählten Compose-Kontext eine private
 XTF-Datei im gebundenen Runtimeordner bereitstellen. Die

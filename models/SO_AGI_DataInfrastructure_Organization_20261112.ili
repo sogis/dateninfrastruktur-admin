@@ -1,7 +1,7 @@
 INTERLIS 2.4;
 
 /** Eigenstaendig importierbare und exportierbare Amtsstammdaten.
- * Office verwendet bewusst DCOID = OID TEXT*1024 wie das fruehere Basismodell.
+ * Office und ContactPoint verwenden Text-OIDs mit bis zu 200 Zeichen.
  * identifier ist eine fachliche Kennung; OID und identifier duerfen gleich
  * sein, muessen es aber nicht. Kontaktstellen sind von Amtsstammdaten unabhängig.
  */
@@ -9,12 +9,12 @@ MODEL SO_AGI_DataInfrastructure_Organization_20261112 (en)
   AT "https://geo.so.ch/models/AGI" VERSION "2026-11-12" =
 
   DOMAIN
-    DCOID = OID TEXT*1024;
+    DIOID = OID TEXT*200;
     Identifier = TEXT*255;
 
   TOPIC Organization =
     BASKET OID AS INTERLIS.UUIDOID;
-    OID AS SO_AGI_DataInfrastructure_Organization_20261112.DCOID;
+    OID AS SO_AGI_DataInfrastructure_Organization_20261112.DIOID;
 
     CLASS Office =
       identifier : MANDATORY Identifier;
