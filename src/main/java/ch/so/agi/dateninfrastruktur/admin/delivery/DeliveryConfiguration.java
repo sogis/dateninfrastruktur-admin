@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.nio.file.Path;
+import java.net.URI;
 
 @Configuration
 @org.springframework.boot.autoconfigure.condition.ConditionalOnProperty(name="di.web.enabled",havingValue="true",matchIfMissing=true)
@@ -24,7 +24,7 @@ public class DeliveryConfiguration {
 
     @Bean
     DeliveryService deliveryService(CayenneRuntime runtime, AuthorityService authority,
-            @Value("${di.delivery.candidate-root:}") String directory) {
-        return new DeliveryService(runtime, authority, new CandidateFiles(directory.isBlank() ? null : Path.of(directory)));
+            @Value("${di.delivery.origin.url:}") String origin) {
+        return new DeliveryService(runtime, authority, new CandidateFiles(origin.isBlank() ? null : URI.create(origin)));
     }
 }

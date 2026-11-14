@@ -21,12 +21,12 @@ PostgreSQL-Transaktion das Lieferrecht und die Ausgangsversion erneut.
 Ein anderer inzwischen angenommener Snapshot führt zu 409. Ein identischer
 Abschluss kann wiederholt werden.
 
-Die isolierte Integration prüft Dateien in einem explizit vorbereiteten,
-privaten Kandidatenverzeichnis. Der Schlüssel wird aus der Submission
-abgeleitet. Grösse und Datei-SHA256 werden geprüft, bevor die Transaktion
-beginnt. Der normale Stack konfiguriert dieses Testverzeichnis nicht.
-GRETL und Jenkins benötigen ihre Folgeintegration für den produktiven
-Transport und die Prüfung der vorbereiteten Artefakte.
+Der Stack setzt `DI_DELIVERY_ORIGIN_URL` auf den internen, read-only
+Origin. Admin ruft das serverseitig bestimmte Objekt per GET ab und
+vergleicht Dateigrösse und SHA-256 in einem Streamdurchlauf vor der
+Abschlusstransaktion. Start liefert bei Append den kanonischen Schlüssel
+der verfügbaren Basis-CSV sowie bei beiden Liefermodi Modellname,
+Eingabedatei-Metadaten und die geordneten Attribute des gebundenen Schemas.
 
 Die API ist über das Gateway gesperrt. Browser-Formulare der Admin-UI
 verwenden weiterhin JWT, Origin-Prüfung und CSRF-Schutz.

@@ -15,7 +15,12 @@ import java.nio.charset.StandardCharsets;
 import com.zaxxer.hikari.HikariDataSource;
 import org.apache.cayenne.runtime.CayenneRuntime;
 
+import com.sun.net.httpserver.HttpServer;
+import java.net.InetSocketAddress;
+import java.net.URI;
 import java.nio.file.Files;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.util.HexFormat;
@@ -39,16 +44,32 @@ public final class DeliveryDomainProbe {
         try (var writer = source("di_writer", "DI_TEST_WRITER_PASSWORD"); var admin = source("postgres", "DI_TEST_ADMIN_PASSWORD")) {
             CayenneRuntime runtime = ManagementRuntime.create(writer);
             try {
-                exercise(runtime, writer, admin, Path.of("/runtime/candidates"));
+                var objects = new ConcurrentHashMap<String, byte[]>();
+                var origin = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
+                origin.createContext("/downloads/", exchange -> {
+                    try (exchange) {
+                        byte[] bytes = objects.get(exchange.getRequestURI().getPath());
+                        exchange.sendResponseHeaders(bytes == null ? 404 : 200, bytes == null ? -1 : bytes.length);
+                        if (bytes != null) exchange.getResponseBody().write(bytes);
+                    }
+                });
+                origin.start();
+                try {
+                    exercise(runtime, writer, admin, objects,
+                        URI.create("http://127.0.0.1:" + origin.getAddress().getPort() + "/downloads/"));
+                } finally {
+                    origin.stop(0);
+                }
             } finally {
                 runtime.shutdown();
             }
         }
     }
 
-    private static void exercise(CayenneRuntime runtime, HikariDataSource writer, HikariDataSource admin, Path root) throws Exception {
+    private static void exercise(CayenneRuntime runtime, HikariDataSource writer, HikariDataSource admin,
+            Map<String, byte[]> objects, URI origin) throws Exception {
         var authority = new AuthorityService(runtime);
-        var delivery = new DeliveryService(runtime, authority, new CandidateFiles(root));
+        var delivery = new DeliveryService(runtime, authority, new CandidateFiles(origin));
         String sha = HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(CSV));
         var eligibility = delivery.eligible(ANNA, "", 0, 30);
         assertEquals(1, eligibility.size());
@@ -90,8 +111,19 @@ public final class DeliveryDomainProbe {
         Files.writeString(Path.of("/runtime/DI_ExampleCsv.ili"), startedFirst.schemaModel());
         var command = new DeliveryService.Complete(startedFirst.schemaId(), startedFirst.baseVersionId(), "candidate.csv", CSV.length, sha, 1);
         assertEquals(409, assertThrows(BusinessException.class, () -> delivery.complete(GRETL, first, command)).status());
-        prepare(root, startedFirst);
-        prepare(root, startedSecond);
+        assertEquals("DI_ExampleCsv", startedFirst.schemaModelName());
+        assertEquals((long) CSV.length, startedFirst.inputSize());
+        assertEquals(sha, startedFirst.inputSha256());
+        assertEquals(java.util.List.of("zone", "code"),
+            startedFirst.columns().stream().map(DeliveryService.Column::name).toList());
+        assertNull(startedFirst.baseCsvKey());
+        String firstKey = "/" + startedFirst.candidatePrefix() + "candidate.csv";
+        byte[] alteredBytes = CSV.clone();
+        alteredBytes[0] = 'Z';
+        objects.put(firstKey, alteredBytes);
+        assertEquals(409, assertThrows(BusinessException.class, () -> delivery.complete(GRETL, first, command)).status());
+        objects.put(firstKey, CSV);
+        objects.put("/" + startedSecond.candidatePrefix() + "candidate.csv", CSV);
         execute(admin, "UPDATE di_management.authorityassignment SET revokedat=clock_timestamp() WHERE capability='submit_data' AND principal NOT IN (SELECT t_id FROM di_management.principal WHERE akind='group')");
         assertEquals(403, assertThrows(BusinessException.class, () -> delivery.complete(GRETL, first, command)).status());
         execute(admin, "UPDATE di_management.authorityassignment SET revokedat=NULL WHERE capability='submit_data' AND principal NOT IN (SELECT t_id FROM di_management.principal WHERE akind='group')");
@@ -162,12 +194,6 @@ public final class DeliveryDomainProbe {
         } catch (BusinessException error) {
             return error.status();
         }
-    }
-
-    private static void prepare(Path root, DeliveryService.State state) throws Exception {
-        Path target = root.resolve(state.candidatePrefix()).resolve("candidate.csv");
-        Files.createDirectories(target.getParent());
-        Files.write(target, CSV);
     }
 
     private static void execute(HikariDataSource source, String sql) throws Exception {

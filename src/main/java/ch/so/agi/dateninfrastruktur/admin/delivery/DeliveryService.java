@@ -27,8 +27,11 @@ public final class DeliveryService {
                          Long inputSize, String inputSha256) {}
     public record Complete(UUID schemaId, UUID baseVersionId, String fileName,
                            long byteSize, String sha256, long objectCount) {}
+    public record Column(String name, String dataType, boolean mandatory, Integer decimalPlaces) {}
     public record State(UUID id, UUID datasetId, UUID issueId, UUID schemaId, UUID baseVersionId,
-                        UUID acceptedVersionId, String mode, String status, String candidatePrefix, String schemaModel) {}
+                        UUID acceptedVersionId, String mode, String status, String candidatePrefix, String schemaModel,
+                        String schemaModelName, String baseCsvKey, Long inputSize, String inputSha256,
+                        List<Column> columns) {}
     public record Eligible(UUID datasetId, String title, UUID issueId, String issueKey, String allowedModes) {}
 
     private final CayenneRuntime runtime;
@@ -354,10 +357,35 @@ public final class DeliveryService {
     }
 
     private static State state(Submission row) {
+        boolean processing = "processing".equals(row.getAstatus());
+        var schema = row.getAschema1();
+        var columns = processing ? CsvSchemaModel.orderedAttributes(schema).stream()
+            .map(attribute -> new Column(attribute.getAname(), attribute.getDatatype(),
+                attribute.isMandatory(), attribute.getDecimalplaces())).toList() : null;
         return new State(row.getTIliTid(), row.getDataset1().getTIliTid(), row.getIssue1().getTIliTid(),
-            id(row.getAschema1()), id(row.getBaseversion1()), id(row.getAcceptedversion1()), row.getAmode(), row.getAstatus(),
-            "processing".equals(row.getAstatus()) ? "downloads/" + distributionId(row.getTIliTid()) + "/" : null,
-            "processing".equals(row.getAstatus()) ? CsvSchemaModel.render(row.getAschema1()) : null);
+            id(schema), id(row.getBaseversion1()), id(row.getAcceptedversion1()), row.getAmode(), row.getAstatus(),
+            processing ? "downloads/" + distributionId(row.getTIliTid()) + "/" : null,
+            processing ? CsvSchemaModel.render(schema) : null,
+            processing ? schema.getModelname() : null,
+            processing && "append".equals(row.getAmode()) ? baseCsvKey(row.getBaseversion1()) : null,
+            row.getInputsize(), row.getInputsha256(), columns);
+    }
+
+    private static String baseCsvKey(Dataversion version) {
+        var keys = version.getDistributions().stream()
+            .filter(distribution -> "csv".equals(distribution.getAformat())
+                && "available".equals(distribution.getAvailability()))
+            .map(distribution -> {
+                String fileName = distribution.getFilename();
+                if (!CandidateFiles.isCsvFileName(fileName)) return null;
+                String key = "downloads/" + distribution.getTIliTid() + "/" + fileName;
+                return key.equals(distribution.getObjectkey()) ? key : null;
+            })
+            .filter(Objects::nonNull).toList();
+        if (keys.size() != 1) {
+            throw BusinessException.conflict("Append benötigt genau eine verfügbare Basis-CSV.");
+        }
+        return keys.getFirst();
     }
 
     private static State replay(Submission row, Complete input) {
