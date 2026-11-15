@@ -1,23 +1,24 @@
 # dateninfrastruktur-admin
 
-Im gemeinsamen Dateninfrastruktur-Workspace vor repoübergreifender Arbeit
-`../AGENTS.md` ausdrücklich lesen und die Repo-Grenzen verifizieren. Bei einem
-Einzelclone gelten die lokalen Regeln und Bedienhinweise im README. Für
-repoübergreifende Aufträge zuerst den verifizierten Workspace bereitstellen.
+Bei repoübergreifender Arbeit auch die Workspace-AGENTS lesen und die
+Gitgrenzen prüfen. Bestehende Arbeit und Daten schützen. Gradle und bestehende
+APIs verwenden. Obsolete Pfade löschen und auf spekulative Abstraktionen,
+Kompatibilitätsschichten und eigene Build- oder Reviewinfrastruktur verzichten.
 
-Dieses Repo besitzt Management, fachliche Autorisierung, CSV-Annahme,
-Publikation und PostgreSQL-Verträge. Java, Spring Boot und Apache Cayenne
-folgen den gepinnten Versionen. INTERLIS und gepinntes ili2pg erzeugen das
-Fachschema. Das physische Mapping und die öffentlichen SQL-Sichten gehören
-zum aktuellen Schema-Vertrag.
+Admin verwendet Java 25, Spring Boot 4, Gradle Groovy DSL und Apache Cayenne.
+Die vier Managementmodelle in `models/` sind die Quelle des Fachschemas.
+ili2pg erzeugt das physische Schema. Das SQL-PostScript ergänzt notwendige
+TID-Constraints und die Sichten, über die Sodata ausschliesslich liest.
+Schema-Setup erfolgt explizit. Der Normalstart verändert das Schema nicht.
+Python-Skripte müssen mit Python 3.9 funktionieren.
 
-Fachentscheidungen und ihre DML laufen in einer kurzen Cayenne-Transaktion.
-Der Abschluss einer Submission sperrt und vergleicht die Basisversion in
-derselben Transaktion, die den neuen Stand freigibt. Aktuelle Fachrechte am ganzen
-Datensatz in der jeweiligen Operation prüfen. OIDC/JWT mit Issuer/Audience,
-Browser-CSRF und interne API-Grenzen erhalten. Die Authorization-API trifft
-Entscheide, die Auslieferung übernimmt der Origin.
+OIDC/JWT mit Issuer und Audience, Browser-CSRF, interne API-Grenzen und
+eingeschränkte PostgreSQL-Rollen erhalten. Pro Operation die aktuellen
+Fachrechte am ganzen Datensatz prüfen. Fachentscheidung und DML gehören
+in dieselbe kurze Cayenne-Transaktion. Beim Submission-Abschluss die
+Basisversion innerhalb dieser Transaktion sperren und vergleichen.
+Sichere XTF- und Uploadpfade, Grössenlimits und private Dateirechte erhalten.
 
-Setup und Normalstart gehören zum gemeinsamen Stack. Für Modell- und
-Mappingprüfungen gelten die beschriebenen Befehle im README und die
-gepinnten Werkzeuge im Repo.
+Vor grösseren Änderungen `.agents/skills/simplify-change/SKILL.md` anwenden.
+Vor PR-Abschluss unabhängig mit `.agents/skills/review-change/SKILL.md`
+prüfen. Tests nach dem betroffenen Fachverhalten auswählen.
