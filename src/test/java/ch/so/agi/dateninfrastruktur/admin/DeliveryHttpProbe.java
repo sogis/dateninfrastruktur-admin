@@ -62,22 +62,34 @@ final class DeliveryHttpProbe {
             assertEquals(200, call("GET", eligible, user, null));
             String submission = base + "/" + UUID.randomUUID();
             assertEquals(404, call("GET", submission, user, null));
+            String modelUrl = submission + "/model.ili";
+            assertEquals(404, call("GET", modelUrl, gretl, null));
             String input = "{\"datasetId\":\"" + dataset + "\",\"issueId\":\"" + issue + "\",\"mode\":\"replace\"}";
             assertEquals(403, call("PUT", submission, gretl, input));
             assertEquals(200, call("PUT", submission, user, input));
+            assertEquals(409, call("GET", modelUrl, gretl, null));
             assertEquals(403, call("POST", submission + "/start", user, null));
             assertEquals(403, call("POST", submission + "/start", unknown, null));
             assertEquals(200, call("POST", submission + "/start", gretl, null));
+            assertEquals(401, call("GET", modelUrl, null, null));
+            assertEquals(403, call("GET", modelUrl, user, null));
+            var model = HTTP.send(HttpRequest.newBuilder(URI.create(modelUrl))
+                .header("Authorization", "Bearer " + gretl).build(), HttpResponse.BodyHandlers.ofString());
+            assertEquals(200, model.statusCode());
+            assertEquals("no-store", model.headers().firstValue("Cache-Control").orElseThrow());
+            assertEquals("text/plain;charset=UTF-8", model.headers().firstValue("Content-Type").orElseThrow());
+            assertTrue(model.body().contains("MODEL DI_ExampleCsv"));
             assertEquals(409, call("POST", submission + "/cancel", user, null));
             assertEquals(200, call("POST", submission + "/reject", gretl, "{\"message\":\"synthetic rejected\"}"));
             assertEquals(409, call("POST", submission + "/start", gretl, null));
+            assertEquals(409, call("GET", modelUrl, gretl, null));
         } catch (Exception error) {
             error.printStackTrace(System.err);
             throw error;
         } finally {
             jwks.stop(0);
         }
-        System.out.println("DELIVERY_HTTP_ASSERTIONS=15 SKIP=0");
+        System.out.println("DELIVERY_HTTP_ASSERTIONS=24 SKIP=0");
     }
 
     private static String token(com.nimbusds.jose.jwk.RSAKey key, String subject, String audience, String issuer) throws Exception {

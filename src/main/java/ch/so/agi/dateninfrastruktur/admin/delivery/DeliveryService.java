@@ -25,11 +25,10 @@ import static ch.so.agi.dateninfrastruktur.admin.persistence.ManagementBaskets.T
 public final class DeliveryService {
     public record Create(UUID datasetId, UUID issueId, String mode, String originalFileName,
                          Long inputSize, String inputSha256) {}
-    public record Complete(UUID schemaId, UUID baseVersionId, String fileName,
-                           long byteSize, String sha256, long objectCount) {}
+    public record Complete(Long objectCount) {}
     public record Column(String name, String dataType, boolean mandatory, Integer decimalPlaces) {}
     public record State(UUID id, UUID datasetId, UUID issueId, UUID schemaId, UUID baseVersionId,
-                        UUID acceptedVersionId, String mode, String status, String candidatePrefix, String schemaModel,
+                        UUID acceptedVersionId, String mode, String status, String candidatePrefix,
                         String schemaModelName, String baseCsvKey, Long inputSize, String inputSha256,
                         List<Column> columns) {}
     public record Eligible(UUID datasetId, String title, UUID issueId, String issueKey, String allowedModes) {}
@@ -162,8 +161,20 @@ public final class DeliveryService {
         });
     }
 
+    public String model(ActorContext service, UUID id) {
+        return transaction(context -> {
+            requirePrincipal(context, service, "service");
+            var row = required(context, id);
+            expect(row, "processing");
+            return CsvSchemaModel.render(row.getAschema1());
+        });
+    }
+
     public State complete(ActorContext service, UUID id, Complete input) {
-        CandidateFiles.validate(input);
+        if (input == null || input.objectCount() == null || input.objectCount() < 0
+                || input.objectCount() > 999999999999999999L) {
+            throw BusinessException.invalid("Ungültige Objektanzahl.");
+        }
         var replay = transaction(context -> {
             requirePrincipal(context, service, "service");
             var row = required(context, id);
@@ -173,7 +184,7 @@ public final class DeliveryService {
         });
         if (replay != null) return replay;
 
-        String objectKey = files.verify(distributionId(id), input);
+        var candidate = files.verify(distributionId(id));
         return transaction(context -> {
             var executor = requirePrincipal(context, service, "service");
             var row = locked(context, id);
@@ -184,9 +195,7 @@ public final class DeliveryService {
             if (!row.getDataset1().getTIliTid().equals(issue.getDataset1().getTIliTid())) throw BusinessException.conflict("Ausgabe gehört nicht zur Lieferung.");
             requireSubmit(context, row.getSubmittedby1(), issue, row.getAmode());
             if (!Objects.equals(id(row.getBaseversion1()), id(issue.getCurrentversion1()))
-                || !Objects.equals(input.baseVersionId(), id(row.getBaseversion1()))
-                || !input.schemaId().equals(id(row.getAschema1()))
-                || !input.schemaId().equals(id(issue.getAschema1()))) {
+                || !Objects.equals(id(row.getAschema1()), id(issue.getAschema1()))) {
                 throw BusinessException.conflict("Ausgangsversion oder Schema hat sich geändert.");
             }
             if (row.getOriginalfilename() == null || row.getInputsha256() == null || row.getInputsize() == null) {
@@ -213,12 +222,12 @@ public final class DeliveryService {
             distribution.setTBasket(basket);
             distribution.setVersion1(version);
             distribution.setAformat("csv");
-            distribution.setFilename(input.fileName());
+            distribution.setFilename(CandidateFiles.SNAPSHOT_FILE_NAME);
             distribution.setMediatype("text/csv");
             distribution.setAvailability("available");
-            distribution.setBytesize(input.byteSize());
-            distribution.setSha256(input.sha256());
-            distribution.setObjectkey(objectKey);
+            distribution.setBytesize(candidate.byteSize());
+            distribution.setSha256(candidate.sha256());
+            distribution.setObjectkey(candidate.objectKey());
             context.commitChanges();
             var action = context.newObject(Catalogaction.class);
             action.setTIliTid(UUID.randomUUID());
@@ -365,7 +374,6 @@ public final class DeliveryService {
         return new State(row.getTIliTid(), row.getDataset1().getTIliTid(), row.getIssue1().getTIliTid(),
             id(schema), id(row.getBaseversion1()), id(row.getAcceptedversion1()), row.getAmode(), row.getAstatus(),
             processing ? "downloads/" + distributionId(row.getTIliTid()) + "/" : null,
-            processing ? CsvSchemaModel.render(schema) : null,
             processing ? schema.getModelname() : null,
             processing && "append".equals(row.getAmode()) ? baseCsvKey(row.getBaseversion1()) : null,
             row.getInputsize(), row.getInputsha256(), columns);
@@ -389,14 +397,7 @@ public final class DeliveryService {
     }
 
     private static State replay(Submission row, Complete input) {
-        var version = row.getAcceptedversion1();
-        var distributions = version.getDistributions();
-        if (distributions.size() == 1) {
-            var distribution = distributions.getFirst();
-            var recorded = new Complete(id(row.getAschema1()), id(row.getBaseversion1()), distribution.getFilename(),
-                distribution.getBytesize(), distribution.getSha256(), version.getObjectcount());
-            if (recorded.equals(input)) return state(row);
-        }
+        if (Objects.equals(row.getAcceptedversion1().getObjectcount(), input.objectCount())) return state(row);
         throw BusinessException.conflict("Abschluss unterscheidet sich vom gespeicherten Ergebnis.");
     }
 }

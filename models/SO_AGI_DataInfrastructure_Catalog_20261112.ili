@@ -309,8 +309,8 @@ MODEL SO_AGI_DataInfrastructure_Catalog_20261112 (en)
         availability != #available OR validationStatus == #success;
     END DataVersion;
 
-    /** Konkrete Ausgabedatei. Groesse und Hash stammen aus dem Runner-Ergebnis
-     * und werden durch das Backend gespeichert. objectKey ist der private
+    /** Konkrete Ausgabedatei. Bei einer CSV-Lieferung misst Admin Groesse und
+     * SHA-256 am privaten Origin und speichert beide Werte. objectKey ist der private
      * Storage-Schluessel, keine oeffentliche URL und keine Zugriffsberechtigung.
      */
     CLASS Distribution =

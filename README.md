@@ -39,3 +39,15 @@ unter `src/main/jte` bearbeiten und die Seite im Gateway neu laden.
 Der Entwicklungsmodus kompiliert Java-Änderungen und startet danach den
 Spring-Anwendungskontext neu. Die [Stack-Bedienung](../dateninfrastruktur-dev-stack/docs/operations.md#admin-aus-lokalen-quellen-entwickeln)
 beschreibt den Wechsel und die Rückkehr zum bisherigen Admin-Image.
+
+## CSV-Anlieferung
+
+Jenkins erstellt die Submission mit dem Benutzer-JWT. Der registrierte
+GRETL-Service-Principal startet sie und lädt die dabei gebundene Schemafassung
+als INTERLIS-Datei über `GET /internal/deliveries/{id}/model.ili`. Admin erzeugt
+die Datei aus der Datenbank und kennzeichnet die Antwort als `no-store`.
+
+GRETL meldet beim Abschluss `objectCount`. Admin liest `snapshot.csv` vom
+privaten Origin, ermittelt Grösse und SHA-256 und prüft Rechte, Schema und
+Basisversion vor dem atomaren Wechsel der aktuellen Version. Der Dev-Stack
+prüft den Vertrag mit `python3 scripts/test_delivery_domain.py`.
