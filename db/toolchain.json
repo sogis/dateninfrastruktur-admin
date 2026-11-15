@@ -10,8 +10,8 @@
     "sha256": "0d6fc5dc739a490ef6b027072d58281bb0731c932f03d95662f83d20dc07c8ee"
   },
   "ilivalidator": {
-    "version": "1.15.0",
-    "url": "https://downloads.interlis.ch/ilivalidator/ilivalidator-1.15.0.zip",
-    "sha256": "df7ee8961743e3dfc586f646af4f63d49dabf920e98a4836a32edf676d0b20c7"
+    "version": "1.15.1",
+    "url": "https://downloads.interlis.ch/ilivalidator/ilivalidator-1.15.1.zip",
+    "sha256": "7e5d1f8461b1a53966e245690c75fdefffc0cd7d07d7645e6eae10a81174155a"
   }
 }

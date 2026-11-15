@@ -4,7 +4,6 @@ ARG JRE_IMAGE=eclipse-temurin:25-jre-jammy@sha256:659b528cca74a0edc5c25315ec5819
 ARG PG_TOOL_IMAGE=postgres_tools
 FROM ${JDK_IMAGE} AS jvm-build
 WORKDIR /workspace
-RUN apt-get update && apt-get install -y --no-install-recommends python3 && rm -rf /var/lib/apt/lists/*
 COPY gradlew settings.gradle build.gradle ./
 COPY gradle ./gradle
 COPY src ./src
@@ -27,14 +26,14 @@ COPY --from=jvm-build /opt/java/openjdk /opt/java/openjdk
 COPY --from=rclone-binary /usr/local/bin/rclone /usr/local/bin/rclone
 ENV JAVA_HOME=/opt/java/openjdk PATH=/opt/java/openjdk/bin:$PATH DI_DATABASE_TARGET=postgresql DI_TOOL_RUNTIME=/runtime/tools
 WORKDIR /opt/admin
-COPY scripts/interlis_tools.py scripts/management_db.py scripts/database_target.py ./scripts/
+COPY scripts/interlis_tools.py scripts/database_target.py ./scripts/
 COPY db/toolchain.json ./db/
 RUN mkdir -p /runtime/tools && python3 -c "import sys;sys.path.insert(0,'scripts');from interlis_tools import ensure;ensure()"
 COPY --from=jvm-build /workspace/build/libs/dateninfrastruktur-admin.jar /opt/admin/app.jar
 COPY --from=stack_source services/garage/setup-compose.py /opt/stack-tools/setup_garage.py
 COPY --from=stack_source services/postgres/initialize-compose.py /opt/stack-tools/initialize_postgres.py
 COPY scripts/setup_explicit.py ./scripts/
-COPY sql/public_views.sql ./sql/
+COPY sql ./sql
 COPY models ./models
 ENTRYPOINT ["python3","/opt/admin/scripts/setup_explicit.py"]
 

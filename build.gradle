@@ -29,10 +29,18 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testRuntimeOnly 'org.junit.platform:junit-platform-console'
 }
-tasks.named('test') { useJUnitPlatform() }
-
-tasks.named('test') { exclude '**/*IT.class' }
+tasks.named('test') {
+    useJUnitPlatform()
+    exclude '**/*IT.class'
+}
+tasks.register('modelTest', Exec) {
+    group = 'verification'
+    description = 'Compile and validate the INTERLIS model fixtures.'
+    commandLine 'python3', 'scripts/test_models.py', 'management', 'csv'
+}
 tasks.register('integrationTest', Test) {
+    group = 'verification'
+    description = 'Run integration tests against explicitly configured services.'
     testClassesDirs = sourceSets.test.output.classesDirs
     classpath = sourceSets.test.runtimeClasspath
     include '**/*IT.class'
