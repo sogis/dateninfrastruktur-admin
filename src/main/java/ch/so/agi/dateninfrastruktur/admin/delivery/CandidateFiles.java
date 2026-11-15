@@ -45,6 +45,7 @@ public final class CandidateFiles {
             try (var body = response.body(); InputStream stream = new DigestInputStream(body, digest)) {
                 if (response.statusCode() == 404) throw mismatch();
                 if (response.statusCode() != 200) throw unavailable();
+                if (response.headers().firstValueAsLong("Content-Length").orElse(0) > MAX_BYTES) throw mismatch();
                 byte[] buffer = new byte[8192];
                 long count = 0;
                 for (int read; (read = stream.read(buffer)) != -1;) {

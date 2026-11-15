@@ -36,6 +36,7 @@ public final class DeliveryDomainProbe {
     private static final ActorContext ANNA = actor("anna");
     private static final ActorContext CLAUDIA = actor("claudia");
     private static final ActorContext GRETL = actor("gretl");
+    private static final byte[] OVERSIZED = new byte[0];
     private static final byte[] CSV = "zone,code\nA,1\n".getBytes(java.nio.charset.StandardCharsets.UTF_8);
 
     public static void main(String[] args) throws Exception {
@@ -49,6 +50,17 @@ public final class DeliveryDomainProbe {
                 origin.createContext("/downloads/", exchange -> {
                     try (exchange) {
                         byte[] bytes = objects.get(exchange.getRequestURI().getPath());
+                        if (bytes == OVERSIZED) {
+                            long remaining = 104857601;
+                            exchange.sendResponseHeaders(200, remaining);
+                            byte[] chunk = new byte[65536];
+                            while (remaining > 0) {
+                                int size = (int) Math.min(remaining, chunk.length);
+                                exchange.getResponseBody().write(chunk, 0, size);
+                                remaining -= size;
+                            }
+                            return;
+                        }
                         exchange.sendResponseHeaders(bytes == null ? 404 : 200, bytes == null ? -1 : bytes.length);
                         if (bytes != null) exchange.getResponseBody().write(bytes);
                     }
@@ -110,6 +122,10 @@ public final class DeliveryDomainProbe {
         String model = delivery.model(GRETL, first);
         assertTrue(model.contains("UNIQUE zone, code;"));
         assertEquals(startedFirst, delivery.get(ANNA, first));
+        execute(admin, "UPDATE di_management.datasetissue SET aschema=NULL WHERE t_ili_tid='" + target.issueId() + "'");
+        assertEquals(model, delivery.model(GRETL, first));
+        execute(admin, "UPDATE di_management.datasetissue SET aschema=(SELECT aschema FROM di_management.submission"
+            + " WHERE t_ili_tid='" + first + "') WHERE t_ili_tid='" + target.issueId() + "'");
         Files.writeString(Path.of("/runtime/DI_ExampleCsv.ili"), model);
         var command = new DeliveryService.Complete(1L);
         assertEquals(409, assertThrows(BusinessException.class, () -> delivery.complete(GRETL, first, command)).status());
@@ -121,6 +137,8 @@ public final class DeliveryDomainProbe {
         assertNull(startedFirst.baseCsvKey());
         String firstKey = "/" + startedFirst.candidatePrefix() + "snapshot.csv";
         objects.put(firstKey, new byte[0]);
+        assertEquals(409, assertThrows(BusinessException.class, () -> delivery.complete(GRETL, first, command)).status());
+        objects.put(firstKey, OVERSIZED);
         assertEquals(409, assertThrows(BusinessException.class, () -> delivery.complete(GRETL, first, command)).status());
         objects.put(firstKey, CSV);
         objects.put("/" + startedSecond.candidatePrefix() + "snapshot.csv", CSV);
@@ -185,7 +203,7 @@ public final class DeliveryDomainProbe {
         new AccessWorkflowIT().requestApproveDenyDirectGrantRevokeAreAtomicAndCorrelated();
         new AccessWorkflowIT().ownRequestOnlyAndGrantFailureRollsBackDecision();
         System.out.println("ACCESS_CATALOG_CASES=5 SKIP=0");
-        System.out.println("DELIVERY_DOMAIN_ASSERTIONS=41 SKIP=0");
+        System.out.println("DELIVERY_DOMAIN_ASSERTIONS=43 SKIP=0");
     }
 
     private static int compete(DeliveryService service, UUID id, DeliveryService.Complete command, CyclicBarrier barrier) throws Exception {
