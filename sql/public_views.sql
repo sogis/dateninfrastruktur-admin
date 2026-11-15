@@ -1,3 +1,20 @@
+-- Restore standard string literals after ili2pg has built the CHECKs.
+SET LOCAL standard_conforming_strings = on;
+
+-- ili2pg 5.5.2 emits mandatory checks even for these {0..1} roles.
+-- Keep the foreign keys and leave the optional references nullable.
+ALTER TABLE di_management.dataset DROP CONSTRAINT ili_currentissue;
+ALTER TABLE di_management.datasetissue DROP CONSTRAINT ili_aschema, DROP CONSTRAINT ili_currentversion;
+ALTER TABLE di_management.groupmembership DROP CONSTRAINT ili_revokedby;
+ALTER TABLE di_management.authorityassignment
+    DROP CONSTRAINT ili_dataset, DROP CONSTRAINT ili_office, DROP CONSTRAINT ili_revokedby;
+ALTER TABLE di_management.accessdecision DROP CONSTRAINT ili_request, DROP CONSTRAINT ili_supersedes;
+ALTER TABLE di_management.accessgrant DROP CONSTRAINT ili_revocationdecision;
+ALTER TABLE di_management.catalogaction
+    DROP CONSTRAINT ili_affecteddistribution, DROP CONSTRAINT ili_affectedversion, DROP CONSTRAINT ili_initiator;
+ALTER TABLE di_management.submission
+    DROP CONSTRAINT ili_acceptedversion, DROP CONSTRAINT ili_aschema, DROP CONSTRAINT ili_baseversion;
+
 -- ili2pg does not mark object TIDs NOT NULL or UNIQUE. Structure and
 -- association rows have no object TID and are deliberately excluded.
 ALTER TABLE di_management.office ALTER COLUMN t_ili_tid SET NOT NULL, ADD UNIQUE (t_ili_tid);

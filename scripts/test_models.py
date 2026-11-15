@@ -2,6 +2,7 @@
 """Compile the four management models and validate their synthetic transfers."""
 from argparse import ArgumentParser
 from copy import deepcopy
+import json
 from pathlib import Path
 import re
 import subprocess
@@ -114,7 +115,6 @@ def test_management(compiler, validator, directory):
                              r'checkpoint|automaticPublication|definitionKey|definitionSha256|'
                              r'modelSetSha256|modelSha256|configurationDigest|allowEmptyReplacement)\b',
                              file.read_text(), re.I), file
-    print(f'ASSERTIONS={3 + len(cases) + len(files)} SKIP=0')
 
 
 def fixture_csv_model(document):
@@ -190,7 +190,6 @@ def test_csv_model(compiler, validator, directory):
     # the pinned validator evaluates the very same INTERLIS rules on XTF rows.
     document = ET.parse(BOOTSTRAP)
     schema = document.find('.//' + CAT + 'DataSchema')
-    assertions = 0
     for minimum in (None, 1, 2):
         if minimum is None:
             assert schema.find(CAT + 'minimumObjectCount') is None
@@ -204,7 +203,6 @@ def test_csv_model(compiler, validator, directory):
         model = folder / (name + '.ili')
         model.write_text(source)
         print(run([*compiler, '--no-auto', str(model)]).strip())
-        assertions += 1
         command = [*validator, '--modeldir', str(folder),
                    '--mandatoryBaskets', name + '.Snapshot']
         for label, rows, diagnosis in (
@@ -217,23 +215,23 @@ def test_csv_model(compiler, validator, directory):
             snapshot(transfer, name, fields, rows)
             run([*command, str(transfer)], diagnosis)
             print(f'minimum={minimum} {label}: ' + ('rejected: ' + diagnosis if diagnosis else 'valid'))
-            assertions += 1
-    print(f'ASSERTIONS={assertions} SKIP=0')
 
 
 def main():
     parser = ArgumentParser(description=__doc__)
-    parser.add_argument('check', choices=['management', 'csv'])
+    parser.add_argument('check', choices=['management', 'csv'], nargs='+')
     args = parser.parse_args()
     if not __debug__:
         raise RuntimeError('Assertions must be enabled')
     ensure()
     tools = ROOT / '.runtime/tools'
     compiler = ['java', '-jar', str(tools / 'ili2c/ili2c.jar')]
-    validator = ['java', '-jar', str(next((tools / 'ilivalidator').glob('ilivalidator-*.jar')))]
+    version = json.loads((ROOT / 'db/toolchain.json').read_text())['ilivalidator']['version']
+    validator = ['java', '-jar', str(tools / f'ilivalidator/ilivalidator-{version}.jar')]
     with TemporaryDirectory(prefix='di-model-check-') as work:
-        check = test_management if args.check == 'management' else test_csv_model
-        check(compiler, validator, Path(work))
+        for name in args.check:
+            check = test_management if name == 'management' else test_csv_model
+            check(compiler, validator, Path(work))
 
 
 if __name__ == '__main__':

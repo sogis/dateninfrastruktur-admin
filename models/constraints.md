@@ -1,6 +1,7 @@
 # Managementmodelle
 
-Organization, Catalog, Access und Delivery sind gemeinsam INTERLIS 2.4.
+Admin besitzt die vier autoritativen INTERLIS-2.4-Managementmodelle
+Organization, Catalog, Access und Delivery.
 Die Modellgeneration `20261112` hat je Topic UUID-Baskets. Organization
 verwendet Text-OIDs bis 200 Zeichen. Catalog, Access und Delivery verwenden
 UUID-OIDs. Das Bootstrap-XTF enthält vier getrennte BIDs und ein Amt mit
@@ -26,11 +27,10 @@ Die XTF-Datei unter `tests/fixtures/` relativ zum Repo ist synthetisch.
 Darin enthaltene Dateimetadaten dienen der Modellprüfung.
 
 ```sh
-python3 scripts/test_models.py management
-python3 scripts/test_models.py csv
+./gradlew modelTest
 ```
 
 Die erste Prüfung kompiliert alle Managementmodelle in einem Aufruf und
 prüft positive und negative Transfers. Die zweite erzeugt ein Testmodell
 aus den TEXT-Attributen und der mehrteiligen UNIQUE-Regel des Bootstrap-XTF.
-Sie prüft das Modell mit ili2c und die Datenregeln mit ilivalidator.
+Sie prüft das Modell mit ili2c und die Datenregeln mit ilivalidator 1.15.1.

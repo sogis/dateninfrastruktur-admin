@@ -12,8 +12,10 @@ from tempfile import NamedTemporaryFile, TemporaryDirectory
 from uuid import UUID
 from xml.etree import ElementTree as ET
 
-from database_target import connection
-from management_db import D, R, sql
+from database_target import connection, sql
+
+ROOT = Path(__file__).resolve().parents[1]
+TOOL_RUNTIME = Path(os.environ.get('DI_TOOL_RUNTIME', '/runtime/tools')).resolve()
 
 SCHEMA = 'di_management'
 TOPICS = ('Organization', 'Catalog', 'Access', 'Delivery')
@@ -21,7 +23,8 @@ MODELS = [f'SO_AGI_DataInfrastructure_{name}_20261112' for name in TOPICS]
 XTF = 'http://www.interlis.ch/xtf/2.4/'
 ILI = '{' + XTF + 'INTERLIS}'
 ROLES = ('di_writer', 'di_public')
-POST_SCRIPT = R / 'sql/public_views.sql'
+PRE_SCRIPT = ROOT / 'sql/schema_import.sql'
+POST_SCRIPT = ROOT / 'sql/public_views.sql'
 MAX_XTF_BYTES = 2 * 1024 * 1024
 
 
@@ -30,8 +33,8 @@ def literal(value):
 
 
 def tools():
-    versions = json.loads((R / 'db/toolchain.json').read_text())
-    return R / '.runtime/tools', versions
+    versions = json.loads((ROOT / 'db/toolchain.json').read_text())
+    return ROOT / '.runtime/tools', versions
 
 
 def ili2pg(action, *options):
@@ -39,12 +42,12 @@ def ili2pg(action, *options):
     jar = versions_dir / 'ili2pg' / f"ili2pg-{versions['ili2pg']['version']}.jar"
     target = connection()
     args = [
-        '-jar', str(jar), action, '--dbschema', SCHEMA, '--modeldir', str(R / 'models'),
+        '-jar', str(jar), action, '--dbschema', SCHEMA, '--modeldir', str(ROOT / 'models'),
         '--dbhost', target['PGHOST'], '--dbport', target['PGPORT'],
         '--dbdatabase', target['PGDATABASE'], '--dbusr', target['PGUSER'],
         '--dbpwd', target['PGPASSWORD'], *options,
     ]
-    with NamedTemporaryFile(mode='w', dir=D, suffix='.args') as arguments:
+    with NamedTemporaryFile(mode='w', dir=TOOL_RUNTIME, suffix='.args') as arguments:
         for argument in args:
             arguments.write('"' + argument.replace('\\', '\\\\').replace('"', '\\"')
                             .replace('\n', '\\n').replace('\r', '\\r') + '"\n')
@@ -114,7 +117,9 @@ def setup():
     sql('BEGIN;' + ''.join(commands) + 'COMMIT;')
     ili2pg('--schemaimport', '--models', ';'.join(MODELS), '--createBasketCol',
            '--createTidCol', '--createFk', '--createFkIdx', '--createUnique',
-           '--createNumChecks', '--setupPgExt', '--postScript', str(POST_SCRIPT))
+           '--createNumChecks', '--createTextChecks', '--createDateTimeChecks',
+           '--createMandatoryChecks', '--setupPgExt', '--preScript', str(PRE_SCRIPT),
+           '--postScript', str(POST_SCRIPT))
     verify()
 
 
@@ -176,7 +181,7 @@ def bootstrap(path):
     verify()
     if sql('SELECT count(*) FROM di_management.t_ili2db_basket;') != '0':
         raise RuntimeError('Bootstrap requires empty management baskets')
-    with NamedTemporaryFile(dir=D, suffix='.xtf') as snapshot:
+    with NamedTemporaryFile(dir=TOOL_RUNTIME, suffix='.xtf') as snapshot:
         descriptor = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
         with os.fdopen(descriptor, 'rb') as source:
             mode = os.fstat(source.fileno()).st_mode
@@ -193,7 +198,7 @@ def bootstrap(path):
             raise RuntimeError('Invalid XML or management UUID in bootstrap XTF') from error
         directory, versions = tools()
         jar = directory / 'ilivalidator' / f"ilivalidator-{versions['ilivalidator']['version']}.jar"
-        result = subprocess.run(['java', '-jar', str(jar), '--modeldir', str(R / 'models'),
+        result = subprocess.run(['java', '-jar', str(jar), '--modeldir', str(ROOT / 'models'),
                                  '--forceTypeValidation', snapshot.name], capture_output=True)
         if result.returncode:
             raise RuntimeError('Bootstrap XTF failed the pinned ilivalidator')
@@ -219,7 +224,9 @@ def main():
     connection()
     if bool(args.file) != (args.action in ('import', 'export')):
         parser.error('import and export require exactly one XTF path')
-    with (D / 'management-setup.lock').open('a') as lock:
+    TOOL_RUNTIME.mkdir(parents=True, exist_ok=True)
+    TOOL_RUNTIME.chmod(0o700)
+    with (TOOL_RUNTIME / 'management-setup.lock').open('a') as lock:
         fcntl.flock(lock, fcntl.LOCK_EX)
         if args.action == 'setup':
             setup()
