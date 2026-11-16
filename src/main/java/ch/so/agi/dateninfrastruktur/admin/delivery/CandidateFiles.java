@@ -17,6 +17,9 @@ import java.util.UUID;
 
 /** Verifies files in a trusted, read-only HTTP origin before the publication transaction. */
 public final class CandidateFiles {
+    static final String SNAPSHOT_FILE_NAME = "snapshot.csv";
+    record VerifiedCandidate(String objectKey, long byteSize, String sha256) {}
+
     private static final long MAX_BYTES = 104857600;
     private final URI origin;
     private final HttpClient client = HttpClient.newBuilder().followRedirects(HttpClient.Redirect.NEVER)
@@ -28,19 +31,12 @@ public final class CandidateFiles {
         return value != null && value.matches("[0-9a-f]{64}");
     }
 
-    static void validate(DeliveryService.Complete input) {
-        if (input == null || input.schemaId() == null || !isCsvFileName(input.fileName())
-                || input.byteSize() < 1 || input.byteSize() > MAX_BYTES
-                || input.objectCount() < 0 || input.objectCount() > 999999999999999999L
-                || !isHash(input.sha256())) throw BusinessException.invalid("Ungültige Dateiangaben.");
-    }
-
     static boolean isCsvFileName(String fileName) {
         return fileName != null && fileName.matches("[A-Za-z0-9][A-Za-z0-9._-]{0,123}\\.csv");
     }
 
-    public String verify(UUID distributionId, DeliveryService.Complete input) {
-        String path = distributionId + "/" + input.fileName();
+    VerifiedCandidate verify(UUID distributionId) {
+        String path = distributionId + "/" + SNAPSHOT_FILE_NAME;
         if (origin == null) throw unavailable();
         var request = HttpRequest.newBuilder(origin.resolve(path)).timeout(Duration.ofSeconds(15)).GET().build();
         try {
@@ -49,15 +45,16 @@ public final class CandidateFiles {
             try (var body = response.body(); InputStream stream = new DigestInputStream(body, digest)) {
                 if (response.statusCode() == 404) throw mismatch();
                 if (response.statusCode() != 200) throw unavailable();
+                if (response.headers().firstValueAsLong("Content-Length").orElse(0) > MAX_BYTES) throw mismatch();
                 byte[] buffer = new byte[8192];
                 long count = 0;
                 for (int read; (read = stream.read(buffer)) != -1;) {
                     count += read;
-                    if (count > input.byteSize()) throw mismatch();
+                    if (count > MAX_BYTES) throw mismatch();
                 }
-                if (count != input.byteSize() || !HexFormat.of().formatHex(digest.digest()).equals(input.sha256())) throw mismatch();
+                if (count == 0) throw mismatch();
+                return new VerifiedCandidate("downloads/" + path, count, HexFormat.of().formatHex(digest.digest()));
             }
-            return "downloads/" + path;
         } catch (InterruptedException error) {
             Thread.currentThread().interrupt();
             throw unavailable();

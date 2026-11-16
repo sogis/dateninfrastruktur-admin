@@ -2,7 +2,9 @@ package ch.so.agi.dateninfrastruktur.admin.delivery;
 
 import ch.so.agi.dateninfrastruktur.admin.access.BusinessException;
 import ch.so.agi.dateninfrastruktur.admin.identity.ActorContext;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,6 +45,11 @@ public final class DeliveryController {
     @PostMapping("/{id}/start")
     DeliveryService.State start(JwtAuthenticationToken token, @PathVariable UUID id) { return service.start(actor(token), id); }
 
+    @GetMapping(value = "/{id}/model.ili", produces = "text/plain;charset=UTF-8")
+    ResponseEntity<String> model(JwtAuthenticationToken token, @PathVariable UUID id) {
+        return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(service.model(actor(token), id));
+    }
+
     @PostMapping("/{id}/complete")
     DeliveryService.State complete(JwtAuthenticationToken token, @PathVariable UUID id, @RequestBody DeliveryService.Complete input) {
         return service.complete(actor(token), id, input);
@@ -61,8 +68,8 @@ public final class DeliveryController {
     }
 
     @ExceptionHandler(BusinessException.class)
-    org.springframework.http.ResponseEntity<Map<String, String>> failure(BusinessException error) {
-        return org.springframework.http.ResponseEntity.status(error.status())
+    ResponseEntity<Map<String, String>> failure(BusinessException error) {
+        return ResponseEntity.status(error.status())
             .body(Map.of("code", error.code(), "detail", error.getMessage()));
     }
 

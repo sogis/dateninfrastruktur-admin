@@ -19,6 +19,10 @@ in dieselbe kurze Cayenne-Transaktion. Beim Submission-Abschluss die
 Basisversion innerhalb dieser Transaktion sperren und vergleichen.
 Sichere XTF- und Uploadpfade, Grössenlimits und private Dateirechte erhalten.
 
+Das CSV-Validierungsmodell aus der an die Submission gebundenen
+Schemafassung erzeugen. Admin misst Dateigrösse und SHA-256 am privaten
+Origin. Der GRETL-Job validiert und verarbeitet die CSV.
+
 Vor grösseren Änderungen `.agents/skills/simplify-change/SKILL.md` anwenden.
 Vor PR-Abschluss unabhängig mit `.agents/skills/review-change/SKILL.md`
 prüfen. Tests nach dem betroffenen Fachverhalten auswählen.
