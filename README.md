@@ -33,12 +33,19 @@ und konkurrierende Veröffentlichungen bereit.
 
 ## Oberfläche lokal entwickeln
 
-Der Dev-Stack schaltet Admin mit `./scripts/dev.sh admin on` auf Gradle
-`bootRun` um. CSS unter `src/main/resources/static/assets` und JTE
-unter `src/main/jte` bearbeiten und die Seite im Gateway neu laden.
-Der Entwicklungsmodus kompiliert Java-Änderungen und startet danach den
-Spring-Anwendungskontext neu. Die [Stack-Bedienung](../dateninfrastruktur-dev-stack/docs/operations.md#admin-aus-lokalen-quellen-entwickeln)
-beschreibt den Wechsel und die Rückkehr zum bisherigen Admin-Image.
+Starte Admin mit Java 25 im Admin-Checkout. Verwende das Profil `host-dev`
+und die private `admin-host.properties` aus der vorbereiteten Instanz.
+
+```sh
+SPRING_PROFILES_ACTIVE=host-dev SPRING_CONFIG_ADDITIONAL_LOCATION="file:$admin_config" ./gradlew bootRun
+```
+
+In der IDE gelten dieselben Umgebungsvariablen und das gleiche
+Arbeitsverzeichnis. Spring Boot DevTools übernimmt kompilierte Java-Änderungen.
+JTE unter `src/main/jte` und CSS unter `src/main/resources/static/assets`
+werden beim Neuladen im Browser aus dem Checkout gelesen. Anmeldung und Zugriff
+auf die Oberfläche laufen über das Gateway. Die [Stack-Bedienung](../dateninfrastruktur-dev-stack/docs/operations.md)
+zeigt die Ersteinrichtung und den Pfad für `admin_config`.
 
 ## CSV-Anlieferung
 

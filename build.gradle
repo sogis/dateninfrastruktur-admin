@@ -95,12 +95,3 @@ tasks.register('composeTestRuntime', Copy) {
 // Generation remains an explicit development command; normal builds never introspect a DB.
 tasks.named('compileJava') { mustRunAfter tasks.named('cgen') }
 tasks.named('processResources') { mustRunAfter tasks.named('cdbimport'), tasks.named('normalizeCayenneUuid') }
-
-// The development container keeps Gradle and JTE output outside the source mount.
-if (providers.gradleProperty('adminDevBuild').isPresent()) {
-    layout.buildDirectory.set(file(providers.gradleProperty('adminDevBuild').get()))
-    tasks.named('bootRun') {
-        workingDir '/dev-state'
-        args '--spring.profiles.active=admin-dev'
-    }
-}
