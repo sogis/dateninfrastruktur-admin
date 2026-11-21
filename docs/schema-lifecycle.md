@@ -29,15 +29,21 @@ und ContactPoint lesend. Beide müssen `varchar(200)` sein. Das Setup
 weist auch fremde, unvollständige und frühere Managementschemas ab.
 Diese Schemafassung ist für neue Instanzen vorgesehen.
 
-Für einen neuen, ausdrücklich gewählten Compose-Kontext eine private
-XTF-Datei im gebundenen Runtimeordner bereitstellen. Die
-[synthetische Vorlage](../tests/fixtures/management-bootstrap.xtf) dient
-isolierten Tests. Aus dem Dev-Stack-Checkout ausführen:
+Für einen Import in eine frische Compose-Instanz lege eine XTF-Datei mit
+Dateirechten `0600` im privaten Laufzeitordner ab. Setze `runtime_env`
+auf die private `runtime.env` der Instanz. Aus dem Dev-Stack-Checkout
+ausführen.
 
 ```sh
-python3 scripts/compose_operator.py import "$runtime/management-bootstrap.xtf" --project "$project"
-python3 scripts/compose_operator.py export "$runtime/management-export.xtf" --project "$project"
+runtime_dir=$(dirname "$runtime_env")
+python3 scripts/compose_operator.py import "$runtime_dir/management-bootstrap.xtf" --env "$runtime_env"
+python3 scripts/compose_operator.py export "$runtime_dir/management-export.xtf" --env "$runtime_env"
 ```
+
+Für die [Ersteinrichtung des Host-Admin](https://github.com/sogis/dateninfrastruktur-dev-stack/blob/main/docs/operations.md#ersteinrichtung-auf-macos)
+bindet `bootstrap-dev` die Principals der
+[synthetischen Vorlage](../tests/fixtures/management-bootstrap.xtf) an
+den lokalen Keycloak-Realm und importiert die Beispieldaten.
 
 Der Import ist auf einen leeren Management-Basket-Bestand begrenzt.
 Er prüft den Transfer und die BIDs an Referenzen gegen die tatsächlichen
