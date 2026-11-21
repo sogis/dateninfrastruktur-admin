@@ -4,7 +4,7 @@ Admin verwaltet den Managementkatalog, entscheidet über fachliche Rechte
 und verwaltet CSV-Submissions. Die Anwendung verwendet Java 25,
 Spring Boot 4 und Apache Cayenne 5.0-M3. INTERLIS ist die Quelle des Fachschemas.
 
-Der [gemeinsame Compose-Betrieb](../dateninfrastruktur-dev-stack/docs/operations.md)
+Der [gemeinsame Compose-Betrieb](https://github.com/sogis/dateninfrastruktur-dev-stack/blob/main/docs/operations.md)
 richtet die Management-Datenbank explizit ein. Das Setup importiert die
 vier Modelle in einem ili2pg-Aufruf. Die freigegebenen Sichten entstehen
 im PostScript. Eine vorhandene Management-Datenbank wird lesend geprüft.
@@ -44,8 +44,10 @@ In der IDE gelten dieselben Umgebungsvariablen und das gleiche
 Arbeitsverzeichnis. Spring Boot DevTools übernimmt kompilierte Java-Änderungen.
 JTE unter `src/main/jte` und CSS unter `src/main/resources/static/assets`
 werden beim Neuladen im Browser aus dem Checkout gelesen. Anmeldung und Zugriff
-auf die Oberfläche laufen über das Gateway. Die [Stack-Bedienung](../dateninfrastruktur-dev-stack/docs/operations.md)
-zeigt die Ersteinrichtung und den Pfad für `admin_config`.
+auf die Oberfläche laufen über das Gateway. Der
+[Einstieg in die Admin-Webentwicklung](https://github.com/sogis/dateninfrastruktur-dev-stack/blob/main/docs/operations.md#admin-webentwicklung-vom-checkout-zur-ersten-%C3%A4nderung)
+zeigt die Ersteinrichtung, den Pfad für `admin_config`, die erste Änderung
+und den passenden Browsertest.
 
 ## CSV-Anlieferung
 
